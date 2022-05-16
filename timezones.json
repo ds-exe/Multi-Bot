@@ -1,0 +1,17 @@
+{
+    "utc": "UTC+0",
+    "gmt": "UTC+0",
+    "bst": "UTC+1",
+    "cet": "UTC+1",
+    "cest": "UTC+2",
+    "cst": "UTC-6",
+    "cdt": "UTC-5",
+    "ct": "UTC-5",
+    "est": "UTC-5",
+    "edt": "UTC-4",
+    "et": "UTC-4",
+    "jst": "UTC+9",
+    "pst": "UTC-8",
+    "pdt": "UTC-7",
+    "pt": "UTC-7"
+}
