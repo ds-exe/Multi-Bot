@@ -1,12 +1,18 @@
 const config = require("./config.json");
-const Discord = require("discord.js");
+const { Client, Intents } = require("discord.js");
 const Timestamp = require("./timestamp.js");
 const { setTimezone, getTimezone, open, close } = require("./SQLDatabase.js");
 const Reddit = require("./reddit.js");
 const Music = require("./music");
 const Permissions = require("./permissions.js");
 const Embeds = require("./embeds.js");
-const client = new Discord.Client();
+const client = new Client({
+    intents: [
+        Intents.FLAGS.GUILDS,
+        Intents.FLAGS.GUILD_MESSAGES,
+        Intents.FLAGS.GUILD_VOICE_STATES,
+    ],
+});
 
 const token = config.token;
 const prefix = config.prefix;
@@ -19,7 +25,7 @@ client.on("ready", () => {
     open();
 });
 
-client.on("message", (message) => {
+client.on("messageCreate", (message) => {
     if (message.content.startsWith(prefix) && !message.author.bot) {
         member = message.guild.members.cache.find(
             (member) => member.user === message.client.user
