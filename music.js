@@ -50,6 +50,18 @@ module.exports = {
                 "You do not have permission to use this command!"
             );
         }
+        const voiceChannel = message.member.voice.channel;
+        if (!voiceChannel)
+            return message.channel.send(
+                "You need to be in a voice channel to use music commands!"
+            );
+        const permissions = voiceChannel.permissionsFor(message.client.user);
+        if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
+            return message.channel.send(
+                "I need the permissions to join and speak in your voice channel!"
+            );
+        }
+
         let guildQueue = client.player.getQueue(message.guild.id);
         switch (command) {
             case "play":
