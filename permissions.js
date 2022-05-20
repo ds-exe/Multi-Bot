@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const Embeds = require("./embeds.js");
+
 const {
     allowRole,
     denyRole,

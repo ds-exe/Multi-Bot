@@ -108,7 +108,7 @@ async function next(message) {
             }
             break;
         case "help":
-            targetChannel.send(Embeds.helpEmbed);
+            targetChannel.send({ embeds: [Embeds.helpEmbed] });
             break;
         default:
             targetChannel.send("Syntax Error");

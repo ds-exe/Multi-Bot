@@ -38,7 +38,7 @@ module.exports = {
             name: `Copy Link:`,
             value: `\\<t:${unixTime}:F>`,
         });
-        message.channel.send(Embeds.timestampEmbed);
+        message.channel.send({ embeds: [Embeds.timestampEmbed] });
     },
 };
 
