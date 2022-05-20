@@ -23,6 +23,7 @@ client.on("ready", () => {
     //Setting activity: "Now listening to !help"
     client.user.setActivity("!help", { type: "LISTENING" });
     open();
+    Music.init(client);
 });
 
 client.on("messageCreate", (message) => {
@@ -83,16 +84,16 @@ async function next(message) {
             Reddit.loadPage(words, message);
             break;
         case "play":
-            Music.run(command, message, client);
+            Music.run(command, message);
             break;
         case "skip":
-            Music.run(command, message, client);
+            Music.run(command, message);
             break;
         case "stop":
-            Music.run(command, message, client);
+            Music.run(command, message);
             break;
         case "leave":
-            Music.run(command, message, client);
+            Music.run(command, message);
             break;
         case "perms":
             Permissions.run(message, words);
