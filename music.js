@@ -6,7 +6,9 @@ let client = null;
 module.exports = {
     init: (mainClient) => {
         client = mainClient;
-        const player = new Player(client, { leaveOnEnd: false });
+        const player = new Player(client, {
+            timeout: 900000, // 15 mins
+        });
         client.player = player;
         client.player
             // Emitted when channel was empty.
@@ -106,6 +108,7 @@ function skip(message, guildQueue) {
         return;
     }
     guildQueue.skip();
+    message.react("👍");
 }
 
 function stop(message, guildQueue) {
@@ -114,4 +117,5 @@ function stop(message, guildQueue) {
         return;
     }
     guildQueue.stop();
+    message.react("👍");
 }
