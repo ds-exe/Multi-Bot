@@ -75,6 +75,9 @@ module.exports = {
             case "stop":
                 stop(message, guildQueue);
                 break;
+            case "leave":
+                leave(message, guildQueue);
+                break;
             default:
                 message.channel.send("You need to enter a valid command!");
                 break;
@@ -104,7 +107,7 @@ async function play(message, guildQueue) {
 
 function skip(message, guildQueue) {
     if (guildQueue === undefined) {
-        message.channel.send("Nothing to skip");
+        message.channel.send("Not connected to voice");
         return;
     }
     guildQueue.skip();
@@ -113,10 +116,19 @@ function skip(message, guildQueue) {
 
 function stop(message, guildQueue) {
     if (guildQueue === undefined) {
-        message.channel.send("Nothing to stop");
+        message.channel.send("Not connected to voice");
         return;
     }
     guildQueue.clearQueue();
     guildQueue.skip();
+    message.react("👍");
+}
+
+function leave(message, guildQueue) {
+    if (guildQueue === undefined) {
+        message.channel.send("Not connected to voice");
+        return;
+    }
+    guildQueue.leave();
     message.react("👍");
 }
