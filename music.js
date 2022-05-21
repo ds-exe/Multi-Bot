@@ -110,6 +110,10 @@ function skip(message, guildQueue) {
         message.channel.send("Not connected to voice");
         return;
     }
+    if (!guildQueue.isPlaying) {
+        message.channel.send("Nothing to skip");
+        return;
+    }
     guildQueue.skip();
     message.react("👍");
 }
@@ -117,6 +121,10 @@ function skip(message, guildQueue) {
 function stop(message, guildQueue) {
     if (guildQueue === undefined) {
         message.channel.send("Not connected to voice");
+        return;
+    }
+    if (!guildQueue.isPlaying) {
+        message.channel.send("Nothing to stop");
         return;
     }
     guildQueue.clearQueue();
