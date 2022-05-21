@@ -107,7 +107,7 @@ async function play(message, guildQueue) {
 
 function skip(message, guildQueue) {
     if (guildQueue === undefined) {
-        message.channel.send("Not connected to voice");
+        message.channel.send("I need to be in a voice channel to skip");
         return;
     }
     if (!guildQueue.isPlaying) {
@@ -120,7 +120,7 @@ function skip(message, guildQueue) {
 
 function stop(message, guildQueue) {
     if (guildQueue === undefined) {
-        message.channel.send("Not connected to voice");
+        message.channel.send("I need to be in a voice channel to stop");
         return;
     }
     if (!guildQueue.isPlaying) {
@@ -134,7 +134,7 @@ function stop(message, guildQueue) {
 
 function leave(message, guildQueue) {
     if (guildQueue === undefined) {
-        message.channel.send("Not connected to voice");
+        message.channel.send("I need to be in a voice channel to leave");
         return;
     }
     guildQueue.leave();
