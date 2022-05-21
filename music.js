@@ -100,9 +100,7 @@ async function play(message, guildQueue) {
         data: { channel: message.channel },
     });
     await queue.join(message.member.voice.channel);
-    let song = await queue.play(matches[2]).catch((_) => {
-        if (!guildQueue) queue.stop();
-    });
+    let song = await queue.play(matches[2]).catch((_) => {});
 }
 
 function skip(message, guildQueue) {
