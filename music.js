@@ -116,6 +116,7 @@ function stop(message, guildQueue) {
         message.channel.send("Nothing to stop");
         return;
     }
-    guildQueue.stop();
+    guildQueue.clearQueue();
+    guildQueue.skip();
     message.react("👍");
 }
