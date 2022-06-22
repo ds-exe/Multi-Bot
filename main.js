@@ -6,7 +6,7 @@ const Reddit = require("./reddit.js");
 const Music = require("./music");
 const Permissions = require("./permissions.js");
 const Embeds = require("./embeds.js");
-const { isDM } = require("./utility.js");
+const { isDM, sendMessage } = require("./utility.js");
 const client = new Client({
     intents: [
         Intents.FLAGS.GUILDS,
@@ -80,7 +80,7 @@ async function next(message) {
     const commands = /^([a-z]+)$/;
     const matches = commands.exec(words[0]);
     if (matches === null) {
-        return await message.channel.send("Invalid command");
+        return sendMessage(message, "Invalid command");
     }
     words.shift();
     const command = matches[1];
@@ -91,12 +91,12 @@ async function next(message) {
             break;
         case "timezone":
             if (words[0] === undefined) {
-                await message.channel.send(
-                    "Your timezone is: " +
-                        (await getTimezone(message.author.id))
+                sendMessage(
+                    message,
+                    "Your timezone is: " + getTimezone(message.author.id)
                 );
             } else {
-                await setTimezone(message, words[0]);
+                setTimezone(message, words[0]);
             }
             break;
         case "reddit":
@@ -115,11 +115,11 @@ async function next(message) {
             await Music.run(command, message);
             break;
         case "perms":
-            await Permissions.run(message, words);
+            Permissions.run(message, words);
             break;
         case "quit":
             if (isBotOwner) {
-                await message.channel.send("Shutting down").then((m) => {
+                sendMessage(message, "Shutting down").then((m) => {
                     close();
                     client.destroy();
                     process.exit(1);
@@ -127,10 +127,10 @@ async function next(message) {
             }
             break;
         case "help":
-            await targetChannel.send({ embeds: [Embeds.helpEmbed] });
+            sendMessage(message, { embeds: [Embeds.helpEmbed] });
             break;
         default:
-            await targetChannel.send("Syntax Error");
+            sendMessage(message, "Syntax Error");
             break;
     }
 }

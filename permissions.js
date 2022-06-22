@@ -7,12 +7,12 @@ const {
     allowUser,
     denyUser,
 } = require("./SQLDatabase.js");
-const { isDM } = require("./utility.js");
+const { isDM, sendMessage } = require("./utility.js");
 
 module.exports = {
-    run: async (message, words) => {
+    run: (message, words) => {
         if (isDM(message)) {
-            await message.channel.send("Can't use this command in DM's");
+            sendMessage(message, "Can't use this command in DM's");
             return;
         }
         if (
@@ -20,14 +20,15 @@ module.exports = {
                 Discord.Permissions.FLAGS.ADMINISTRATOR
             )
         ) {
-            return await message.channel.send(
+            return sendMessage(
+                message,
                 "This command requires administrator permissions"
             );
         }
         const commands = /^([a-z]+)$/;
         const matches = commands.exec(words[0]);
         if (matches === null) {
-            return await message.channel.send("Invalid command");
+            return sendMessage(message, "Invalid command");
         }
         const command = matches[1];
         words.shift();
@@ -35,19 +36,20 @@ module.exports = {
             case "help":
                 break;
             case "allowrole":
-                await roleAllow(message, words);
+                roleAllow(message, words);
                 break;
             case "denyrole":
-                await roleDeny(message, words);
+                roleDeny(message, words);
                 break;
             case "allowuser":
-                await userAllow(message, words);
+                userAllow(message, words);
                 break;
             case "denyuser":
-                await userDeny(message, words);
+                userDeny(message, words);
                 break;
             default:
-                await message.channel.send(
+                sendMessage(
+                    message,
                     `${prefix}perms allowRole/denyRole {role id/role name}\n${prefix}perms allowUser/denyUser {user id}`
                 );
                 break;
@@ -55,59 +57,43 @@ module.exports = {
     },
 };
 
-async function roleAllow(message, words) {
+function roleAllow(message, words) {
     words = words.join(" ");
     role = getRole(message, words);
     if (role === undefined) {
-        return await message.channel.send("Invalid role");
+        return sendMessage(message, "Invalid role");
     } else {
-        await allowRole(
-            message,
-            role.id.toLowerCase(),
-            role.guild.id.toLowerCase()
-        );
+        allowRole(message, role.id.toLowerCase(), role.guild.id.toLowerCase());
     }
 }
 
-async function roleDeny(message, words) {
+function roleDeny(message, words) {
     words = words.join(" ");
     role = getRole(message, words);
     if (role === undefined) {
-        return await message.channel.send("Invalid role");
+        return sendMessage(message, "Invalid role");
     } else {
-        await denyRole(
-            message,
-            role.id.toLowerCase(),
-            role.guild.id.toLowerCase()
-        );
+        denyRole(message, role.id.toLowerCase(), role.guild.id.toLowerCase());
     }
 }
 
-async function userAllow(message, words) {
+function userAllow(message, words) {
     words = words.join(" ");
     user = getUser(message, words);
     if (user === undefined) {
-        return await message.channel.send("Invalid user");
+        return sendMessage(message, "Invalid user");
     } else {
-        await allowUser(
-            message,
-            user.id.toLowerCase(),
-            user.guild.id.toLowerCase()
-        );
+        allowUser(message, user.id.toLowerCase(), user.guild.id.toLowerCase());
     }
 }
 
-async function userDeny(message, words) {
+function userDeny(message, words) {
     words = words.join(" ");
     user = getUser(message, words);
     if (user === undefined) {
-        return await message.channel.send("Invalid user");
+        return sendMessage(message, "Invalid user");
     } else {
-        await denyUser(
-            message,
-            user.id.toLowerCase(),
-            user.guild.id.toLowerCase()
-        );
+        denyUser(message, user.id.toLowerCase(), user.guild.id.toLowerCase());
     }
 }
 
