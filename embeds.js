@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const { prefix } = require("./config.json");
 
 exports.helpEmbed = new Discord.MessageEmbed()
     .setColor("#0099ff")
@@ -7,7 +8,7 @@ exports.helpEmbed = new Discord.MessageEmbed()
     .setThumbnail("https://i.imgur.com/twtmzmr.png")
     .addFields({
         name: "UwU Commands Available Here 🔎",
-        value: "```📌!time or !date\n📌!timezone\n📌!reddit\n📌!play\n📌!skip\n📌!stop\n📌!leave\n📌!perms```",
+        value: `\`\`\`📌${prefix}time or ${prefix}date\n📌${prefix}timezone\n📌${prefix}reddit\n📌${prefix}play\n📌${prefix}skip\n📌${prefix}stop\n📌${prefix}leave\n📌${prefix}perms\`\`\``,
     })
     .setFooter(
         "BOT made by @ds#8460",

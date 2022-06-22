@@ -1,9 +1,11 @@
 const axios = require("axios");
 const { hasPermissionRole, hasPermissionUser } = require("./SQLDatabase.js");
+const { isDM } = require("./utility.js");
 
 module.exports = {
     loadPage: async (sub, message) => {
         if (
+            !isDM(message) &&
             !(await hasPermissionRole(message, message.member.roles.cache)) &&
             !(await hasPermissionUser(message, message.author.id))
         ) {

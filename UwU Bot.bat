@@ -1,2 +1,2 @@
-node main.js
+npx nodemon main.js
 pause

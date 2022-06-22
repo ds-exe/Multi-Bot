@@ -6,11 +6,16 @@ const Reddit = require("./reddit.js");
 const Music = require("./music");
 const Permissions = require("./permissions.js");
 const Embeds = require("./embeds.js");
+const { isDM } = require("./utility.js");
 const client = new Client({
     intents: [
         Intents.FLAGS.GUILDS,
         Intents.FLAGS.GUILD_MESSAGES,
         Intents.FLAGS.GUILD_VOICE_STATES,
+        Intents.FLAGS.DIRECT_MESSAGES,
+    ],
+    partials: [
+        "CHANNEL", // Required to receive DMs
     ],
 });
 
@@ -21,21 +26,22 @@ const botOwner = config.owner;
 client.on("ready", () => {
     console.log("Connected as " + client.user.tag);
     //Setting activity: "Now listening to !help"
-    client.user.setActivity("!help", { type: "LISTENING" });
+    client.user.setActivity(`${config.prefix}help`, { type: "LISTENING" });
     open();
     Music.init(client);
 });
 
 client.on("messageCreate", (message) => {
+    if (message.partial) {
+        console.log("received partial");
+        return;
+    }
+    if (isCommunicationDisabled(message)) {
+        return;
+    }
     if (message.content.startsWith(prefix) && !message.author.bot) {
-        member = message.guild.members.cache.find(
-            (member) => member.user === message.client.user
-        );
-
-        if (member.isCommunicationDisabled()) {
-            return;
-        }
         if (
+            message.channel.permissionsFor &&
             !message.channel
                 .permissionsFor(message.client.user)
                 .has("SEND_MESSAGES")
@@ -45,6 +51,17 @@ client.on("messageCreate", (message) => {
         next(message);
     }
 });
+
+function isCommunicationDisabled(message) {
+    if (isDM(message)) {
+        return false;
+    }
+    member = message.guild.members.cache.find(
+        (member) => member.user === message.client.user
+    );
+
+    return member.isCommunicationDisabled();
+}
 
 async function next(message) {
     const isBotOwner = message.author.id === botOwner;

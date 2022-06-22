@@ -1,4 +1,5 @@
 const { Player } = require("discord-music-player");
+const { isDM } = require("./utility.js");
 const { hasPermissionRole, hasPermissionUser } = require("./SQLDatabase.js");
 
 let client = null;
@@ -44,6 +45,9 @@ module.exports = {
     },
 
     run: async (command, message) => {
+        if (isDM(message)) {
+            return;
+        }
         if (
             !(await hasPermissionRole(message, message.member.roles.cache)) &&
             !(await hasPermissionUser(message, message.author.id))
