@@ -10,7 +10,7 @@ const instructions =
 module.exports = {
     generateTimestamp: async (message, words) => {
         if (words[0] === undefined || words[0] === "help") {
-            message.channel.send("Valid inputs:" + instructions);
+            await message.channel.send("Valid inputs:" + instructions);
             return;
         }
         let date = DateTime.utc();
@@ -25,7 +25,7 @@ module.exports = {
                 success = vals[1];
             });
             if (!success) {
-                message.channel.send(
+                await message.channel.send(
                     "Not following valid formats:" + instructions
                 );
                 return;
@@ -38,7 +38,7 @@ module.exports = {
             name: `Copy Link:`,
             value: `\\<t:${unixTime}:F>`,
         });
-        message.channel.send({ embeds: [Embeds.timestampEmbed] });
+        await message.channel.send({ embeds: [Embeds.timestampEmbed] });
     },
 };
 

@@ -10,9 +10,9 @@ const {
 const { isDM } = require("./utility.js");
 
 module.exports = {
-    run: (message, words) => {
+    run: async (message, words) => {
         if (isDM(message)) {
-            message.channel.send("Can't use this command in DM's");
+            await message.channel.send("Can't use this command in DM's");
             return;
         }
         if (
@@ -20,14 +20,14 @@ module.exports = {
                 Discord.Permissions.FLAGS.ADMINISTRATOR
             )
         ) {
-            return message.channel.send(
+            return await message.channel.send(
                 "This command requires administrator permissions"
             );
         }
         const commands = /^([a-z]+)$/;
         const matches = commands.exec(words[0]);
         if (matches === null) {
-            return message.channel.send("Invalid command");
+            return await message.channel.send("Invalid command");
         }
         const command = matches[1];
         words.shift();
@@ -35,19 +35,19 @@ module.exports = {
             case "help":
                 break;
             case "allowrole":
-                roleAllow(message, words);
+                await roleAllow(message, words);
                 break;
             case "denyrole":
-                roleDeny(message, words);
+                await roleDeny(message, words);
                 break;
             case "allowuser":
-                userAllow(message, words);
+                await userAllow(message, words);
                 break;
             case "denyuser":
-                userDeny(message, words);
+                await userDeny(message, words);
                 break;
             default:
-                message.channel.send(
+                await message.channel.send(
                     `${prefix}perms allowRole/denyRole {role id/role name}\n${prefix}perms allowUser/denyUser {user id}`
                 );
                 break;
@@ -55,43 +55,59 @@ module.exports = {
     },
 };
 
-function roleAllow(message, words) {
+async function roleAllow(message, words) {
     words = words.join(" ");
     role = getRole(message, words);
     if (role === undefined) {
-        return message.channel.send("Invalid role");
+        return await message.channel.send("Invalid role");
     } else {
-        allowRole(message, role.id.toLowerCase(), role.guild.id.toLowerCase());
+        await allowRole(
+            message,
+            role.id.toLowerCase(),
+            role.guild.id.toLowerCase()
+        );
     }
 }
 
-function roleDeny(message, words) {
+async function roleDeny(message, words) {
     words = words.join(" ");
     role = getRole(message, words);
     if (role === undefined) {
-        return message.channel.send("Invalid role");
+        return await message.channel.send("Invalid role");
     } else {
-        denyRole(message, role.id.toLowerCase(), role.guild.id.toLowerCase());
+        await denyRole(
+            message,
+            role.id.toLowerCase(),
+            role.guild.id.toLowerCase()
+        );
     }
 }
 
-function userAllow(message, words) {
+async function userAllow(message, words) {
     words = words.join(" ");
     user = getUser(message, words);
     if (user === undefined) {
-        return message.channel.send("Invalid user");
+        return await message.channel.send("Invalid user");
     } else {
-        allowUser(message, user.id.toLowerCase(), user.guild.id.toLowerCase());
+        await allowUser(
+            message,
+            user.id.toLowerCase(),
+            user.guild.id.toLowerCase()
+        );
     }
 }
 
-function userDeny(message, words) {
+async function userDeny(message, words) {
     words = words.join(" ");
     user = getUser(message, words);
     if (user === undefined) {
-        return message.channel.send("Invalid user");
+        return await message.channel.send("Invalid user");
     } else {
-        denyUser(message, user.id.toLowerCase(), user.guild.id.toLowerCase());
+        await denyUser(
+            message,
+            user.id.toLowerCase(),
+            user.guild.id.toLowerCase()
+        );
     }
 }
 

@@ -35,7 +35,7 @@ module.exports = {
         };
     },
 
-    setTimezone: (message, timezone) => {
+    setTimezone: async (message, timezone) => {
         zonesRegex = /^([a-z]+)$/;
         const userID = message.author.id;
         const zoneMatches = zonesRegex.exec(timezone);
@@ -45,7 +45,7 @@ module.exports = {
                 db.run(
                     `REPLACE INTO timezones (userID, timezone) VALUES ('${userID}', '${zone}')`
                 );
-                message.channel.send("Successfully set timezone");
+                await message.channel.send("Successfully set timezone");
                 return;
             }
         }
@@ -53,13 +53,13 @@ module.exports = {
         timezoneRegex = /^(utc[+-]{1}[0-9]{1,2})$/;
         const matches = timezoneRegex.exec(timezone);
         if (matches === null) {
-            message.channel.send("Invalid timezone syntax");
+            await message.channel.send("Invalid timezone syntax");
             return; // error does not match
         }
         db.run(
             `REPLACE INTO timezones (userID, timezone) VALUES ('${userID}', '${matches[1].toUpperCase()}')`
         );
-        message.channel.send("Successfully set timezone");
+        await message.channel.send("Successfully set timezone");
     },
 
     getTimezone: (userID) => {
@@ -78,17 +78,17 @@ module.exports = {
         });
     },
 
-    allowRole: (message, roleId, guildId) => {
+    allowRole: async (message, roleId, guildId) => {
         db.run(
             `REPLACE INTO permissions (roleID, guildID) VALUES ('${roleId}', '${guildId}')`
         );
-        message.channel.send("Successfully added permissions");
+        await message.channel.send("Successfully added permissions");
         return;
     },
 
-    denyRole: (message, roleId, guildId) => {
+    denyRole: async (message, roleId, guildId) => {
         db.run(`DELETE FROM permissions WHERE roleID = '${roleId}'`);
-        message.channel.send("Successfully removed permissions");
+        await message.channel.send("Successfully removed permissions");
         return;
     },
 
@@ -111,17 +111,17 @@ module.exports = {
         });
     },
 
-    allowUser: (message, userId, guildId) => {
+    allowUser: async (message, userId, guildId) => {
         db.run(
             `REPLACE INTO permissionsUser (userID, guildID) VALUES ('${userId}', '${guildId}')`
         );
-        message.channel.send("Successfully added permissions");
+        await message.channel.send("Successfully added permissions");
         return;
     },
 
-    denyUser: (message, userId, guildId) => {
+    denyUser: async (message, userId, guildId) => {
         db.run(`DELETE FROM permissionsUser WHERE userID = '${userId}'`);
-        message.channel.send("Successfully removed permissions");
+        await message.channel.send("Successfully removed permissions");
         return;
     },
 

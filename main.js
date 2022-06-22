@@ -31,7 +31,7 @@ client.on("ready", () => {
     Music.init(client);
 });
 
-client.on("messageCreate", (message) => {
+client.on("messageCreate", async (message) => {
     if (message.partial) {
         console.log("received partial");
         return;
@@ -48,7 +48,9 @@ client.on("messageCreate", (message) => {
         ) {
             return;
         }
-        next(message);
+        try {
+            await next(message);
+        } catch (e) {}
     }
 });
 
@@ -78,46 +80,46 @@ async function next(message) {
     const commands = /^([a-z]+)$/;
     const matches = commands.exec(words[0]);
     if (matches === null) {
-        return message.channel.send("Invalid command");
+        return await message.channel.send("Invalid command");
     }
     words.shift();
     const command = matches[1];
     switch (command) {
         case "time":
         case "date":
-            Timestamp.generateTimestamp(message, words);
+            await Timestamp.generateTimestamp(message, words);
             break;
         case "timezone":
             if (words[0] === undefined) {
-                message.channel.send(
+                await message.channel.send(
                     "Your timezone is: " +
                         (await getTimezone(message.author.id))
                 );
             } else {
-                setTimezone(message, words[0]);
+                await setTimezone(message, words[0]);
             }
             break;
         case "reddit":
-            Reddit.loadPage(words, message);
+            await Reddit.loadPage(words, message);
             break;
         case "play":
-            Music.run(command, message);
+            await Music.run(command, message);
             break;
         case "skip":
-            Music.run(command, message);
+            await Music.run(command, message);
             break;
         case "stop":
-            Music.run(command, message);
+            await Music.run(command, message);
             break;
         case "leave":
-            Music.run(command, message);
+            await Music.run(command, message);
             break;
         case "perms":
-            Permissions.run(message, words);
+            await Permissions.run(message, words);
             break;
         case "quit":
             if (isBotOwner) {
-                message.channel.send("Shutting down").then((m) => {
+                await message.channel.send("Shutting down").then((m) => {
                     close();
                     client.destroy();
                     process.exit(1);
@@ -125,10 +127,10 @@ async function next(message) {
             }
             break;
         case "help":
-            targetChannel.send({ embeds: [Embeds.helpEmbed] });
+            await targetChannel.send({ embeds: [Embeds.helpEmbed] });
             break;
         default:
-            targetChannel.send("Syntax Error");
+            await targetChannel.send("Syntax Error");
             break;
     }
 }
