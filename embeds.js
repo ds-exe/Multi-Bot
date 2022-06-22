@@ -1,13 +1,12 @@
 const Discord = require("discord.js");
-const { prefix } = require("./config.json");
+const { prefix, botTitle, embedThumbnail } = require("./config.json");
 
 exports.helpEmbed = new Discord.MessageEmbed()
     .setColor("#0099ff")
-    .setTitle("🍑 UwU Bot")
-    .setDescription("Use Me Senpai")
-    .setThumbnail("https://i.imgur.com/twtmzmr.png")
+    .setTitle(`${botTitle}`)
+    .setThumbnail(`${embedThumbnail}`)
     .addFields({
-        name: "UwU Commands Available Here 🔎",
+        name: "Commands Available Here 🔎",
         value: `\`\`\`📌${prefix}time or ${prefix}date\n📌${prefix}timezone\n📌${prefix}reddit\n📌${prefix}play\n📌${prefix}skip\n📌${prefix}stop\n📌${prefix}leave\n📌${prefix}perms\`\`\``,
     })
     .setFooter(
