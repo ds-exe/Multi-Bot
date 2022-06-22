@@ -46,6 +46,7 @@ module.exports = {
 
     run: async (command, message) => {
         if (isDM(message)) {
+            message.channel.send("Can't use this command in DM's");
             return;
         }
         if (

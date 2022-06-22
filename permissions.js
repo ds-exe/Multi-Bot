@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const { prefix } = require("./config.json");
 
 const {
     allowRole,
@@ -6,9 +7,14 @@ const {
     allowUser,
     denyUser,
 } = require("./SQLDatabase.js");
+const { isDM } = require("./utility.js");
 
 module.exports = {
     run: (message, words) => {
+        if (isDM(message)) {
+            message.channel.send("Can't use this command in DM's");
+            return;
+        }
         if (
             !message.member.permissions.has(
                 Discord.Permissions.FLAGS.ADMINISTRATOR
@@ -42,7 +48,7 @@ module.exports = {
                 break;
             default:
                 message.channel.send(
-                    "!perms allowRole/denyRole {role id/role name}\n!perms allowUser/denyUser {user id}"
+                    `${prefix}perms allowRole/denyRole {role id/role name}\n${prefix}perms allowUser/denyUser {user id}`
                 );
                 break;
         }

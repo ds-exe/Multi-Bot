@@ -1,6 +1,7 @@
 const axios = require("axios");
 const { hasPermissionRole, hasPermissionUser } = require("./SQLDatabase.js");
 const { isDM } = require("./utility.js");
+const { prefix } = require("./config.json");
 
 module.exports = {
     loadPage: async (sub, message) => {
@@ -15,7 +16,9 @@ module.exports = {
         }
         const subs = /^([a-z1-9_]+)$/;
         if (sub[0] === undefined || sub[0] === "help") {
-            message.channel.send("Valid inputs: \n!reddit {desired subreddit}");
+            message.channel.send(
+                `Valid inputs: \n${prefix}reddit {desired subreddit}`
+            );
             return;
         }
         const matches = subs.exec(sub[0]);
