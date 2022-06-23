@@ -93,7 +93,8 @@ async function next(message) {
             if (words[0] === undefined) {
                 sendMessage(
                     message,
-                    "Your timezone is: " + getTimezone(message.author.id)
+                    "Your timezone is: " +
+                        (await getTimezone(message.author.id))
                 );
             } else {
                 setTimezone(message, words[0]);

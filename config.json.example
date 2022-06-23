@@ -2,7 +2,7 @@
     "prefix": "replace prefix here",
     "logFileName": "log.txt",
     "botName": "replace botname",
-    "version": "1.1.0",
+    "version": "3.1.0",
     "token": "replace token here",
     "owner": "replace owner here",
     "embedThumbnail": "replace help thumbnail",

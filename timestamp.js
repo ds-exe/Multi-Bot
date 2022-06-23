@@ -4,9 +4,9 @@ const Embeds = require("./embeds.js");
 const { getTimezone } = require("./SQLDatabase.js");
 const { sendMessage } = require("./utility");
 
-const monthLengths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
+const monthLengths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; // Leap year check performed on usage
 const instructions =
-    "\nTime in form: `hh:mm`\nDate in form: `dd/mm` or `dd/mm/yyyy`\nOptional timezone specifier: `UTC{+/-}hh` or abbreviation";
+    "\nTime in form: `hh:mm`\nOptional date in form: `dd/mm` or `dd/mm/yyyy`\nOptional timezone specifier: `UTC{+/-}hh` or abbreviation";
 
 module.exports = {
     generateTimestamp: async (message, words) => {
@@ -14,10 +14,13 @@ module.exports = {
             sendMessage(message, "Valid inputs:" + instructions);
             return;
         }
+        if (words.join().indexOf(":") <= -1) {
+            sendMessage(message, "Not following valid formats:" + instructions);
+            return;
+        }
         let date = DateTime.utc();
         tz = await getTimezone(message.author.id);
         date = date.setZone(tz, { keepLocalTime: true });
-        date = date.set({ hour: 0, minute: 0, second: 0 });
         for (let word of words) {
             let success = false;
             dateModifiers.forEach((mod) => {
@@ -69,7 +72,7 @@ function setTimezone(word, date, success) {
 }
 
 function parseTime(word, date, success) {
-    timeRegex = /^([0-9]{1,2}):([0-9]{2})$/;
+    timeRegex = /^([0-9]{1,2}):([0-9]{1,2})$/;
     const matches = timeRegex.exec(word);
     if (matches === null) {
         return [date, success]; // error does not match
