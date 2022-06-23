@@ -33,8 +33,6 @@ module.exports = {
         const command = matches[1];
         words.shift();
         switch (command) {
-            case "help":
-                break;
             case "allowrole":
                 roleAllow(message, words);
                 break;
@@ -47,10 +45,13 @@ module.exports = {
             case "denyuser":
                 userDeny(message, words);
                 break;
+            case "list":
+                sendMessage(message, "To be implemented soon!");
+                break;
             default:
                 sendMessage(
                     message,
-                    `${prefix}perms allowRole/denyRole {role id/role name}\n${prefix}perms allowUser/denyUser {user id}`
+                    `${prefix}perms allowRole/denyRole {role id/role name}\n${prefix}perms allowUser/denyUser {user id}\n${prefix}perms list`
                 );
                 break;
         }

@@ -1,7 +1,12 @@
 const config = require("./config.json");
 const { Client, Intents } = require("discord.js");
 const Timestamp = require("./timestamp.js");
-const { setTimezone, getTimezone, open, close } = require("./SQLDatabase.js");
+const {
+    setTimezone,
+    getUserTimezone,
+    open,
+    close,
+} = require("./SQLDatabase.js");
 const Reddit = require("./reddit.js");
 const Music = require("./music");
 const Permissions = require("./permissions.js");
@@ -50,7 +55,9 @@ client.on("messageCreate", async (message) => {
         }
         try {
             await next(message);
-        } catch (e) {}
+        } catch (e) {
+            console.log("crash");
+        }
     }
 });
 
@@ -94,7 +101,7 @@ async function next(message) {
                 sendMessage(
                     message,
                     "Your timezone is: " +
-                        (await getTimezone(message.author.id))
+                        (await getUserTimezone(message.author.id))
                 );
             } else {
                 setTimezone(message, words[0]);

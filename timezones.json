@@ -6,12 +6,12 @@
     "cest": "UTC+2",
     "cst": "UTC-6",
     "cdt": "UTC-5",
-    "ct": "UTC-5",
+    "ct": "Canada/Central",
     "est": "UTC-5",
     "edt": "UTC-4",
-    "et": "UTC-4",
+    "et": "Canada/Eastern",
     "jst": "UTC+9",
     "pst": "UTC-8",
     "pdt": "UTC-7",
-    "pt": "UTC-7"
+    "pt": "Canada/Pacific"
 }

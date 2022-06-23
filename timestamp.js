@@ -1,8 +1,8 @@
 const timezones = require("./timezones.json");
 const { DateTime } = require("luxon");
 const Embeds = require("./embeds.js");
-const { getTimezone } = require("./SQLDatabase.js");
-const { sendMessage } = require("./utility");
+const { getUserTimezone } = require("./SQLDatabase.js");
+const { sendMessage, getTimezone } = require("./utility");
 
 const monthLengths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; // Leap year check performed on usage
 const instructions =
@@ -19,7 +19,7 @@ module.exports = {
             return;
         }
         let date = DateTime.utc();
-        tz = await getTimezone(message.author.id);
+        tz = await getUserTimezone(message.author.id);
         date = date.setZone(tz, { keepLocalTime: true });
         for (let word of words) {
             let success = false;
@@ -50,24 +50,11 @@ module.exports = {
 const dateModifiers = [parseDate, parseTime, setTimezone];
 
 function setTimezone(word, date, success) {
-    zonesRegex = /^([a-z]+)$/;
-    const zoneMatches = zonesRegex.exec(word);
-    if (zoneMatches !== null) {
-        const zone = zoneMatch(zoneMatches[1]);
-        if (zone !== null) {
-            success = true;
-            date = date.setZone(zone, { keepLocalTime: true });
-            return [date, success];
-        }
+    const timezone = getTimezone(word);
+    if (timezone !== null) {
+        success = true;
+        date = date.setZone(timezone, { keepLocalTime: true });
     }
-    timezoneRegex = /^(utc[+-]{1}[0-9]{1,2})$/;
-    const matches = timezoneRegex.exec(word);
-    if (matches === null) {
-        return [date, success]; // error does not match
-    }
-    const zone = matches[1].toUpperCase();
-    success = true;
-    date = date.setZone(zone, { keepLocalTime: true });
     return [date, success];
 }
 

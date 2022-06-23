@@ -1,7 +1,7 @@
 const sqlite3 = require("sqlite3").verbose();
 const timezones = require("./timezones.json");
 const { owner } = require("./config.json");
-const { sendMessage } = require("./utility");
+const { sendMessage, getTimezone } = require("./utility");
 let db = null;
 
 module.exports = {
@@ -36,34 +36,20 @@ module.exports = {
         };
     },
 
-    setTimezone: (message, timezone) => {
-        zonesRegex = /^([a-z]+)$/;
+    setTimezone: (message, word) => {
         const userID = message.author.id;
-        const zoneMatches = zonesRegex.exec(timezone);
-        if (zoneMatches !== null) {
-            if (zoneMatches[1] in timezones) {
-                const zone = timezones[zoneMatches[1]];
-                db.run(
-                    `REPLACE INTO timezones (userID, timezone) VALUES ('${userID}', '${zone}')`
-                );
-                sendMessage(message, "Successfully set timezone");
-                return;
-            }
-        }
-
-        timezoneRegex = /^(utc[+-]{1}[0-9]{1,2})$/;
-        const matches = timezoneRegex.exec(timezone);
-        if (matches === null) {
-            sendMessage(message, "Invalid timezone syntax");
-            return; // error does not match
+        const timezone = getTimezone(word);
+        if (timezone === null) {
+            return sendMessage(message, "Invalid timezone syntax");
         }
         db.run(
-            `REPLACE INTO timezones (userID, timezone) VALUES ('${userID}', '${matches[1].toUpperCase()}')`
+            `REPLACE INTO timezones (userID, timezone) VALUES ('${userID}', '${timezone}')`
         );
         sendMessage(message, "Successfully set timezone");
+        return;
     },
 
-    getTimezone: (userID) => {
+    getUserTimezone: (userID) => {
         const query = `SELECT timezone FROM timezones WHERE userID = '${userID}'`;
         return new Promise((resolve, reject) => {
             db.all(query, function (err, rows) {
