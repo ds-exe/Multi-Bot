@@ -126,13 +126,12 @@ async function next(message) {
         case "perms":
             Permissions.run(message, words);
             break;
-        case "quit":
+        case "shutdown":
             if (isBotOwner) {
-                sendMessage(message, "Shutting down").then((m) => {
-                    close();
-                    client.destroy();
-                    process.exit(1);
-                });
+                sendMessage(message, "Shutting down");
+                close();
+                client.destroy();
+                process.exit(1);
             }
             break;
         case "help":
