@@ -56,6 +56,7 @@ client.on("messageCreate", async (message) => {
         try {
             await next(message);
         } catch (e) {
+            sendMessage(message, "An unknown error occured");
             console.log("crash");
         }
     }

@@ -38,6 +38,9 @@ module.exports = {
             )
             .then((urls) => {
                 postPage(urls, message);
+            })
+            .catch((err) => {
+                sendMessage(message, "Error subreddit not found");
             });
     },
 };
