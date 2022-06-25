@@ -9,10 +9,10 @@ exports.helpEmbed = new Discord.MessageEmbed()
         name: "Commands Available Here 🔎",
         value: `\`\`\`📌${prefix}time or ${prefix}date\n📌${prefix}timezone\n📌${prefix}reddit\n📌${prefix}play\n📌${prefix}skip\n📌${prefix}stop\n📌${prefix}leave\n📌${prefix}perms\`\`\``,
     })
-    .setFooter(
-        "BOT made by @ds#8460",
-        "https://cdn.discordapp.com/avatars/74968333413257216/3bf0047dd6175e5b623ce6d5ade1a76e.webp"
-    );
+    .setFooter({
+        text: "BOT made by @ds#8460",
+        iconURL: "https://i.imgur.com/5BzUoNx.png",
+    });
 
 exports.timestampEmbed = new Discord.MessageEmbed()
     .setColor("#00FFFF")
