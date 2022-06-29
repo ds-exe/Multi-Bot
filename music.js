@@ -40,10 +40,17 @@ module.exports = {
             )
             // Emitted when there was an error in runtime
             .on("error", (error, queue) => {
-                sendMessage(
-                    queue.data,
-                    `Error: ${error} in ${queue.guild.name}`
-                );
+                if (error === "Status code: 410") {
+                    sendMessage(
+                        queue.data,
+                        `Unable to play age restricted videos`
+                    );
+                } else {
+                    sendMessage(
+                        queue.data,
+                        `Error: ${error} in ${queue.guild.name}`
+                    );
+                }
             });
     },
 
