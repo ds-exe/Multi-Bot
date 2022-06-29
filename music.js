@@ -15,26 +15,29 @@ module.exports = {
             // Emitted when channel was empty.
             .on("channelEmpty", (queue) =>
                 sendMessage(
-                    queue.data,
+                    queue.data.message,
                     `Everyone left the Voice Channel, queue ended.`
                 )
             )
             // Emitted when a song was added to the queue.
-            .on("songAdd", (queue, song) =>
-                sendMessage(queue.data, `Song ${song} was added to the queue.`)
-            )
+            .on("songAdd", (queue, song) => {
+                sendMessage(
+                    queue.data.message,
+                    `Song ${song} was added to the queue.`
+                );
+            })
             // Emitted when a song changed.
             .on("songChanged", (queue, newSong, oldSong) =>
-                sendMessage(queue.data, `${newSong} is now playing.`)
+                sendMessage(queue.data.message, `${newSong} is now playing.`)
             )
             // Emitted when a first song in the queue started playing.
             .on("songFirst", (queue, song) =>
-                sendMessage(queue.data, `Started playing ${song}.`)
+                sendMessage(queue.data.message, `Started playing ${song}.`)
             )
             // Emitted when someone disconnected the bot from the channel.
             .on("clientDisconnect", (queue) =>
                 sendMessage(
-                    queue.data,
+                    queue.data.message,
                     `I was kicked from the Voice Channel, queue ended.`
                 )
             )
@@ -42,12 +45,12 @@ module.exports = {
             .on("error", (error, queue) => {
                 if (error === "Status code: 410") {
                     sendMessage(
-                        queue.data,
-                        `Unable to play age restricted videos`
+                        queue.data.message,
+                        `<@${queue.nowPlaying.requestedBy}> Unable to play age restricted videos`
                     );
                 } else {
                     sendMessage(
-                        queue.data,
+                        queue.data.message,
                         `Error: ${error} in ${queue.guild.name}`
                     );
                 }
@@ -115,10 +118,12 @@ async function play(message, guildQueue) {
     }
 
     let queue = client.player.createQueue(message.guild.id, {
-        data: { channel: message.channel },
+        data: { message: message },
     });
     await queue.join(message.member.voice.channel);
-    let song = await queue.play(matches[2]).catch((_) => {});
+    let song = await queue
+        .play(matches[2], { requestedBy: message.author.id })
+        .catch((_) => {});
 }
 
 function skip(message, guildQueue) {
