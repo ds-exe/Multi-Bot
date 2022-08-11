@@ -97,6 +97,9 @@ async function next(message) {
         case "date":
             await Timestamp.generateTimestamp(message, words);
             break;
+        case "until":
+            await Timestamp.generateTimestampUntil(message, words);
+            break;
         case "timezone":
             if (words[0] === undefined) {
                 sendMessage(

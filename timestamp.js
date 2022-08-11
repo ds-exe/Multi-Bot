@@ -10,33 +10,10 @@ const instructions =
 
 module.exports = {
     generateTimestamp: async (message, words) => {
-        if (words[0] === undefined || words[0] === "help") {
-            sendMessage(message, "Valid inputs:" + instructions);
+        const unixTime = await generateTimestampHelper(message, words);
+        if (!unixTime) {
             return;
         }
-        if (words.join().indexOf(":") <= -1) {
-            sendMessage(message, "Not following valid formats:" + instructions);
-            return;
-        }
-        let date = DateTime.utc();
-        tz = await getUserTimezone(message.author.id);
-        date = date.setZone(tz, { keepLocalTime: true });
-        for (let word of words) {
-            let success = false;
-            dateModifiers.forEach((mod) => {
-                vals = mod(word, date, success);
-                date = vals[0];
-                success = vals[1];
-            });
-            if (!success) {
-                sendMessage(
-                    message,
-                    "Not following valid formats:" + instructions
-                );
-                return;
-            }
-        }
-        const unixTime = parseInt(date.toSeconds());
         Embeds.timestampEmbed.setDescription(`<t:${unixTime}:F>`);
         Embeds.timestampEmbed.fields = [];
         Embeds.timestampEmbed.addFields({
@@ -45,7 +22,48 @@ module.exports = {
         });
         sendMessage(message, { embeds: [Embeds.timestampEmbed] });
     },
+
+    generateTimestampUntil: async (message, words) => {
+        const unixTime = await generateTimestampHelper(message, words);
+        if (!unixTime) {
+            return;
+        }
+        Embeds.timestampEmbed.setDescription(`<t:${unixTime}:R>`);
+        Embeds.timestampEmbed.fields = [];
+        Embeds.timestampEmbed.addFields({
+            name: `Copy Link:`,
+            value: `\\<t:${unixTime}:R>`,
+        });
+        sendMessage(message, { embeds: [Embeds.timestampEmbed] });
+    },
 };
+
+async function generateTimestampHelper(message, words) {
+    if (words[0] === undefined || words[0] === "help") {
+        sendMessage(message, "Valid inputs:" + instructions);
+        return;
+    }
+    if (words.join().indexOf(":") <= -1) {
+        sendMessage(message, "Not following valid formats:" + instructions);
+        return;
+    }
+    let date = DateTime.utc();
+    tz = await getUserTimezone(message.author.id);
+    date = date.setZone(tz, { keepLocalTime: true });
+    for (let word of words) {
+        let success = false;
+        dateModifiers.forEach((mod) => {
+            vals = mod(word, date, success);
+            date = vals[0];
+            success = vals[1];
+        });
+        if (!success) {
+            sendMessage(message, "Not following valid formats:" + instructions);
+            return;
+        }
+    }
+    return parseInt(date.toSeconds());
+}
 
 const dateModifiers = [parseDate, parseTime, setTimezone];
 
