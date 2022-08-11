@@ -6,7 +6,7 @@ const { sendMessage, getTimezone } = require("./utility");
 
 const monthLengths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; // Leap year check performed on usage
 const instructions =
-    "\nTime in form: `hh:mm`\nOptional date in form: `dd/mm` or `dd/mm/yyyy`\nOptional timezone specifier: `UTC{+/-}hh` or abbreviation";
+    "\nTime in form: `hh:mm`\nOptional date in form: `dd/mm` or `dd/mm/yyyy` or `yyyy-mm-dd`\nOptional timezone specifier: `UTC{+/-}hh` or abbreviation";
 
 module.exports = {
     generateTimestamp: async (message, words) => {
