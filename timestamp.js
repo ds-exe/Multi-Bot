@@ -94,12 +94,24 @@ function parseTime(word, date, success) {
 function parseDate(word, date, success) {
     dateRegex = /^([0-9]{1,2})\/([0-9]{1,2})\/?([0-9]{4})?$/;
     const matches = dateRegex.exec(word);
+    day = 0;
+    month = 0;
+    year = 0;
     if (matches === null) {
-        return [date, success]; // error does not match
+        isoDateRegex = /^([0-9]{4})\-([0-9]{2})\-([0-9]{2})$/;
+        const isoMatches = isoDateRegex.exec(word);
+        if (isoMatches === null) {
+            return [date, success]; // error does not match
+        }
+        day = isoMatches[3];
+        month = isoMatches[2];
+        year = isoMatches[1];
+    } else {
+        day = matches[1];
+        month = matches[2];
+        year = matches[3];
     }
-    const day = matches[1];
-    const month = matches[2];
-    const year = matches[3];
+
     if (
         day >= 1 &&
         day <= monthLength(month, year) &&
@@ -113,13 +125,6 @@ function parseDate(word, date, success) {
         date = date.set({ day: day, month: month });
     }
     return [date, success];
-}
-
-function zoneMatch(zone) {
-    if (zone in timezones) {
-        return timezones[zone];
-    }
-    return null;
 }
 
 function monthLength(month, year) {
