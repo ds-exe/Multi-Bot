@@ -36,6 +36,27 @@ module.exports = {
         });
         sendMessage(message, { embeds: [Embeds.timestampEmbed] });
     },
+
+    generateNow: async (message, words) => {
+        let date = DateTime.utc();
+        tz = await getUserTimezone(message.author.id);
+        date = date.setZone(tz, { keepLocalTime: false });
+        if (words[0] !== undefined) {
+            let success = false;
+            ({ date, success } = setTimezoneChangeLocal(
+                words[0],
+                date,
+                success
+            ));
+            if (!success) {
+                sendMessage(message, "Not valid timezone");
+            }
+        }
+        sendMessage(
+            message,
+            `\`${date.toLocaleString(DateTime.DATETIME_MED)}\``
+        );
+    },
 };
 
 async function generateTimestampHelper(message, words) {
@@ -53,9 +74,7 @@ async function generateTimestampHelper(message, words) {
     for (let word of words) {
         let success = false;
         dateModifiers.forEach((mod) => {
-            vals = mod(word, date, success);
-            date = vals[0];
-            success = vals[1];
+            ({ date, success } = mod(word, date, success));
         });
         if (!success) {
             sendMessage(message, "Not following valid formats:" + instructions);
@@ -65,22 +84,30 @@ async function generateTimestampHelper(message, words) {
     return parseInt(date.toSeconds());
 }
 
-const dateModifiers = [parseDate, parseTime, setTimezone];
+const dateModifiers = [parseDate, parseTime, setTimezoneKeepLocal];
 
-function setTimezone(word, date, success) {
+function setTimezoneKeepLocal(word, date, success) {
+    return setTimezone(word, date, success, true);
+}
+
+function setTimezoneChangeLocal(word, date, success) {
+    return setTimezone(word, date, success, false);
+}
+
+function setTimezone(word, date, success, keepLocal) {
     const timezone = getTimezone(word);
     if (timezone !== null) {
         success = true;
-        date = date.setZone(timezone, { keepLocalTime: true });
+        date = date.setZone(timezone, { keepLocalTime: keepLocal });
     }
-    return [date, success];
+    return { date, success };
 }
 
 function parseTime(word, date, success) {
     timeRegex = /^([0-9]{1,2}):([0-9]{1,2})$/;
     const matches = timeRegex.exec(word);
     if (matches === null) {
-        return [date, success]; // error does not match
+        return { date, success }; // error does not match
     }
     const hours = matches[1];
     const minutes = matches[2];
@@ -88,7 +115,7 @@ function parseTime(word, date, success) {
         success = true;
         date = date.set({ hour: hours, minute: minutes });
     }
-    return [date, success];
+    return { date, success };
 }
 
 function parseDate(word, date, success) {
@@ -101,7 +128,7 @@ function parseDate(word, date, success) {
         isoDateRegex = /^([0-9]{4})\-([0-9]{2})\-([0-9]{2})$/;
         const isoMatches = isoDateRegex.exec(word);
         if (isoMatches === null) {
-            return [date, success]; // error does not match
+            return { date, success }; // error does not match
         }
         day = isoMatches[3];
         month = isoMatches[2];
@@ -124,7 +151,7 @@ function parseDate(word, date, success) {
         success = true;
         date = date.set({ day: day, month: month });
     }
-    return [date, success];
+    return { date, success };
 }
 
 function monthLength(month, year) {
