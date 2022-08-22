@@ -117,6 +117,9 @@ async function next(message) {
         case "play":
             await Music.run(command, message);
             break;
+        case "playlist":
+            await Music.run(command, message);
+            break;
         case "skip":
             await Music.run(command, message);
             break;

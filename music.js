@@ -90,6 +90,9 @@ module.exports = {
             case "play":
                 play(message, guildQueue);
                 break;
+            case "playlist":
+                playlist(message, guildQueue);
+                break;
             case "skip":
                 skip(message, guildQueue);
                 break;
@@ -110,20 +113,70 @@ async function play(message, guildQueue) {
     const args = message.content.split(" ");
     message.suppressEmbeds(/^-$/.exec(args[2]));
 
-    const youtube =
-        /^(<)?(https:\/\/(www.)?youtu.be\/[0-9a-zA-Z_-]+|https:\/\/(www.)?youtube.com\/watch\?v=[0-9a-zA-Z_-]+)(>)?/;
-    const matches = youtube.exec(args[1]);
-    if (matches === null) {
-        return sendMessage(message, "Invalid url");
+    match = validatePlayUrl(args[1], message);
+    if (match === null) {
+        return;
     }
-
     let queue = client.player.createQueue(message.guild.id, {
         data: { message: message },
     });
     await queue.join(message.member.voice.channel);
     let song = await queue
-        .play(matches[2], { requestedBy: message.author.id })
+        .play(match, { requestedBy: message.author.id })
         .catch((_) => {});
+}
+
+async function playlist(message, guildQueue) {
+    const args = message.content.split(" ");
+    message.suppressEmbeds(/^-$/.exec(args[2]));
+
+    match = validatePlaylistUrl(args[1], message);
+    if (match === null) {
+        return;
+    }
+    let queue = client.player.createQueue(message.guild.id, {
+        data: { message: message },
+    });
+    await queue.join(message.member.voice.channel);
+    let song = await queue
+        .playlist(match, { requestedBy: message.author.id })
+        .catch((_) => {});
+}
+
+function validatePlayUrl(url, message) {
+    const youtube =
+        /^(<)?(https:\/\/(www.)?youtu.be\/[0-9a-zA-Z_-]+|https:\/\/(www.)?youtube.com\/watch\?v=[0-9a-zA-Z_-]+)(>)?/;
+    let matches = youtube.exec(url);
+    if (matches !== null) {
+        return matches[2];
+    }
+
+    const spotify =
+        /^(https:\/\/open.spotify.com\/track\/[a-zA-Z0-9-_()]+\?si=[a-zA-Z0-9-_()]+)/;
+    matches = spotify.exec(url);
+    if (matches !== null) {
+        return matches[1];
+    }
+    sendMessage(message, "Invalid url");
+    return null;
+}
+
+function validatePlaylistUrl(url, message) {
+    const youtube =
+        /^(<)?(https:\/\/(www.)?youtu.be\/[0-9a-zA-Z_-]+|https:\/\/(www.)?youtube.com\/playlist\?v=[0-9a-zA-Z_-]+)(>)?/;
+    let matches = youtube.exec(url);
+    if (matches !== null) {
+        return matches[2];
+    }
+
+    const spotify =
+        /^(https:\/\/open.spotify.com\/playlist\/[a-zA-Z0-9-_()]+\?si=[a-zA-Z0-9-_()]+)/;
+    matches = spotify.exec(url);
+    if (matches !== null) {
+        return matches[1];
+    }
+    sendMessage(message, "Invalid url");
+    return null;
 }
 
 function skip(message, guildQueue) {
