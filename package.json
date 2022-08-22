@@ -9,9 +9,8 @@
   "author": "DS",
   "license": "MIT",
   "dependencies": {
-    "@discordjs/opus": "^0.5.3",
     "axios": "0.26.0",
-    "discord-music-player": "^8.3.2",
+    "discord-music-player": "^9.0.2",
     "discord.js": "^13.7.0",
     "js-levenshtein": "^1.1.6",
     "jsonfile": "^4.0.0",
