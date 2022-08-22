@@ -6,8 +6,7 @@ module.exports = {
         message.channel.type === "DM" || message.channel.type === "GROUP",
 
     sendMessage: async (message, msg) => {
-        sentMsg = await message.channel.send(msg).catch((err) => {});
-        return sentMsg;
+        return await message.channel.send(msg).catch((err) => {});
     },
 
     getTimezone: (timezone) => {
