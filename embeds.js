@@ -7,7 +7,7 @@ exports.helpEmbed = new Discord.MessageEmbed()
     .setThumbnail(`${embedThumbnail}`)
     .addFields({
         name: "Commands Available Here 🔎",
-        value: `\`\`\`📌${prefix}time or ${prefix}until\n📌${prefix}timezone\n📌${prefix}reddit\n📌${prefix}play\n📌${prefix}skip\n📌${prefix}stop\n📌${prefix}leave\n📌${prefix}perms\`\`\``,
+        value: `\`\`\`📌${prefix}time or ${prefix}until\n📌${prefix}timezone\n📌${prefix}reddit\n📌${prefix}play\n📌${prefix}playlist\n📌${prefix}skip\n📌${prefix}stop\n📌${prefix}leave\n📌${prefix}perms\`\`\``,
     })
     .setFooter({
         text: "BOT made by @ds#8460",

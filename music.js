@@ -152,10 +152,10 @@ function validatePlayUrl(url, message) {
     }
 
     const spotify =
-        /^(https:\/\/open.spotify.com\/track\/[a-zA-Z0-9-_()]+\?si=[a-zA-Z0-9-_()]+)/;
+        /^(<)?(https:\/\/open.spotify.com\/track\/[a-zA-Z0-9-_()]+\?si=[a-zA-Z0-9-_()]+)(>)?/;
     matches = spotify.exec(url);
     if (matches !== null) {
-        return matches[1];
+        return matches[2];
     }
     sendMessage(message, "Invalid url");
     return null;
@@ -163,17 +163,17 @@ function validatePlayUrl(url, message) {
 
 function validatePlaylistUrl(url, message) {
     const youtube =
-        /^(<)?(https:\/\/(www.)?youtu.be\/[0-9a-zA-Z_-]+|https:\/\/(www.)?youtube.com\/playlist\?v=[0-9a-zA-Z_-]+)(>)?/;
+        /^(<)?(https:\/\/(www.)?youtube.com\/playlist\?list=[0-9a-zA-Z_-]+)(>)?/;
     let matches = youtube.exec(url);
     if (matches !== null) {
         return matches[2];
     }
 
     const spotify =
-        /^(https:\/\/open.spotify.com\/playlist\/[a-zA-Z0-9-_()]+\?si=[a-zA-Z0-9-_()]+)/;
+        /^(<)?(https:\/\/open.spotify.com\/playlist\/[a-zA-Z0-9-_()]+\?si=[a-zA-Z0-9-_()]+)(>)?/;
     matches = spotify.exec(url);
     if (matches !== null) {
-        return matches[1];
+        return matches[2];
     }
     sendMessage(message, "Invalid url");
     return null;
