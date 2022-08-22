@@ -27,9 +27,18 @@ module.exports = {
                 );
             })
             // Emitted when a song changed.
-            .on("songChanged", (queue, newSong, oldSong) =>
-                sendMessage(queue.data.message, `${newSong} is now playing.`)
-            )
+            .on("songChanged", async (queue, newSong, oldSong) => {
+                if (
+                    queue.data.previousMessage !== undefined &&
+                    queue.data.previousMessage !== null
+                ) {
+                    queue.data.previousMessage.delete();
+                }
+                queue.data.previousMessage = await sendMessage(
+                    queue.data.message,
+                    `${newSong} is now playing.`
+                );
+            })
             // Emitted when a first song in the queue started playing.
             .on("songFirst", (queue, song) =>
                 sendMessage(queue.data.message, `Started playing ${song}.`)
