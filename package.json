@@ -13,13 +13,13 @@
     "axios": "0.26.0",
     "discord-music-player": "^8.3.2",
     "discord.js": "^13.7.0",
-    "ffmpeg": "^0.0.4",
-    "ffmpeg-static": "^4.4.1",
-    "fluent-ffmpeg": "^2.1.2",
     "js-levenshtein": "^1.1.6",
     "jsonfile": "^4.0.0",
     "luxon": "^2.3.1",
     "sqlite3": "^5.0.8",
-    "ytdl-core": "^4.10.1"
+    "ytdl-core": "4.10.0"
+  },
+  "resolutions": {
+    "discord-music-player/ytdl-core": "4.10.0"
   }
 }
