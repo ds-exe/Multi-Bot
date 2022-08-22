@@ -40,9 +40,12 @@ module.exports = {
                 );
             })
             // Emitted when a first song in the queue started playing.
-            .on("songFirst", (queue, song) =>
-                sendMessage(queue.data.message, `Started playing ${song}.`)
-            )
+            .on("songFirst", async (queue, song) => {
+                queue.data.previousMessage = await sendMessage(
+                    queue.data.message,
+                    `${song} is now playing.`
+                );
+            })
             // Emitted when someone disconnected the bot from the channel.
             .on("clientDisconnect", (queue) =>
                 sendMessage(
