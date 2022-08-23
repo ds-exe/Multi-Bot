@@ -146,7 +146,7 @@ function validateUrl(url, message) {
         /^(<)?(https:\/\/(www.)?youtu.be\/[0-9a-zA-Z_-]+|https:\/\/(www.)?youtube.com\/watch\?v=[0-9a-zA-Z_-]+)(>)?/;
     let matches = youtube.exec(url);
     if (matches !== null) {
-        return { match: matches[2], isPlaylist };
+        return { match: matches[2], isPlaylist: false };
     }
 
     const spotify =
@@ -163,7 +163,7 @@ function validatePlaylistUrl(url, message) {
         /^(<)?(https:\/\/(www.)?youtube.com\/playlist\?list=[0-9a-zA-Z_-]+)(>)?/;
     let matches = youtube.exec(url);
     if (matches !== null) {
-        return { match: matches[2], isPlaylist };
+        return { match: matches[2], isPlaylist: true };
     }
 
     const spotify =
