@@ -122,8 +122,8 @@ async function play(message, guildQueue) {
     const args = message.content.split(" ");
     message.suppressEmbeds(/^-$/.exec(args[2]));
 
-    let { matches, isPlaylist } = validateUrl(args[1], message);
-    if (matches === null) {
+    let { match, isPlaylist } = validateUrl(args[1], message);
+    if (match === null) {
         return;
     }
     let queue = client.player.createQueue(message.guild.id, {
@@ -132,11 +132,11 @@ async function play(message, guildQueue) {
     await queue.join(message.member.voice.channel);
     if (isPlaylist) {
         let song = await queue
-            .playlist(matches[2], { requestedBy: message.author.id })
+            .playlist(match, { requestedBy: message.author.id })
             .catch((_) => {});
     } else {
         let song = await queue
-            .play(matches[2], { requestedBy: message.author.id })
+            .play(match, { requestedBy: message.author.id })
             .catch((_) => {});
     }
 }
@@ -147,14 +147,14 @@ function validateUrl(url, message) {
         /^(<)?(https:\/\/(www.)?youtu.be\/[0-9a-zA-Z_-]+|https:\/\/(www.)?youtube.com\/watch\?v=[0-9a-zA-Z_-]+)(>)?/;
     let matches = youtube.exec(url);
     if (matches !== null) {
-        return { matches, isPlaylist };
+        return { match: matches[2], isPlaylist };
     }
 
     const spotify =
         /^(<)?(https:\/\/open.spotify.com\/track\/[a-zA-Z0-9-_()]+\?si=[a-zA-Z0-9-_()]+)(>)?/;
     matches = spotify.exec(url);
     if (matches !== null) {
-        return { matches, isPlaylist };
+        return { match: matches[2], isPlaylist };
     }
     return validatePlaylistUrl(url, message);
 }
@@ -165,14 +165,14 @@ function validatePlaylistUrl(url, message) {
         /^(<)?(https:\/\/(www.)?youtube.com\/playlist\?list=[0-9a-zA-Z_-]+)(>)?/;
     let matches = youtube.exec(url);
     if (matches !== null) {
-        return { matches, isPlaylist };
+        return { match: matches[2], isPlaylist };
     }
 
     const spotify =
         /^(<)?(https:\/\/open.spotify.com\/playlist\/[a-zA-Z0-9-_()]+\?si=[a-zA-Z0-9-_()]+)(>)?/;
     matches = spotify.exec(url);
     if (matches !== null) {
-        return { matches, isPlaylist };
+        return { match: matches[2], isPlaylist };
     }
     sendMessage(message, "Invalid url");
     return null;
