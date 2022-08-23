@@ -50,6 +50,7 @@ module.exports = {
             ));
             if (!success) {
                 sendMessage(message, "Not valid timezone");
+                return;
             }
         }
         sendMessage(
