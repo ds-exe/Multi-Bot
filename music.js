@@ -120,9 +120,9 @@ module.exports = {
 
 async function play(message) {
     const args = message.content.split(" ");
-    message.suppressEmbeds(/^-$/.exec(args[2]));
+    args.shift();
 
-    let { match, isPlaylist } = validateUrl(args[1], message);
+    let { match, isPlaylist } = validateUrl(args.join(" "), message);
     if (match === null) {
         return;
     }
@@ -176,7 +176,7 @@ function validatePlaylistUrl(url, message) {
 }
 
 function validateSearch(query, message) {
-    const search = /^([a-zA-Z0-9-_()]+)$/;
+    const search = /^([a-zA-Z0-9-_() ]+)$/;
     let matches = search.exec(query);
     if (matches !== null) {
         return { match: matches[1], isPlaylist: false };
