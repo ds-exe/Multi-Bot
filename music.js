@@ -100,7 +100,7 @@ module.exports = {
         let guildQueue = client.player.getQueue(message.guild.id);
         switch (command) {
             case "play":
-                play(message, guildQueue);
+                await play(message);
                 break;
             case "skip":
                 skip(message, guildQueue);
@@ -118,7 +118,7 @@ module.exports = {
     },
 };
 
-async function play(message, guildQueue) {
+async function play(message) {
     const args = message.content.split(" ");
     message.suppressEmbeds(/^-$/.exec(args[2]));
 
@@ -174,8 +174,18 @@ function validatePlaylistUrl(url, message) {
     if (matches !== null) {
         return { match: matches[2], isPlaylist };
     }
-    sendMessage(message, "Invalid url");
-    return null;
+    return validateSearch(url, message);
+}
+
+function validateSearch(query, message) {
+    isPlaylist = false;
+    const search = /^([a-zA-Z0-9-_()]+)$/;
+    let matches = search.exec(query);
+    if (matches !== null) {
+        return { match: matches[1], isPlaylist };
+    }
+    sendMessage(message, "Invalid url/query");
+    return { match: null };
 }
 
 function skip(message, guildQueue) {
