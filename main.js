@@ -129,6 +129,9 @@ async function next(message) {
         case "leave":
             await Music.run(command, message);
             break;
+        case "shuffle":
+            await Music.run(command, message);
+            break;
         case "perms":
             Permissions.run(message, words);
             break;

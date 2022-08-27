@@ -111,6 +111,9 @@ module.exports = {
             case "leave":
                 leave(message, guildQueue);
                 break;
+            case "shuffle":
+                shuffle(message, guildQueue);
+                break;
             default:
                 sendMessage(message, "You need to enter a valid command!");
                 break;
@@ -219,4 +222,16 @@ function leave(message, guildQueue) {
     }
     guildQueue.leave();
     message.react("👍");
+}
+
+function shuffle(message, guildQueue) {
+    if (guildQueue === undefined) {
+        sendMessage(message, "I need to be in a voice channel to shuffle");
+        return;
+    }
+    if (!guildQueue.isPlaying) {
+        sendMessage(message, "Nothing to shuffle");
+        return;
+    }
+    guildQueue.shuffle();
 }
