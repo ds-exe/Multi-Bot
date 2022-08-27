@@ -21,6 +21,9 @@ module.exports = {
             )
             // Emitted when a song was added to the queue.
             .on("songAdd", (queue, song) => {
+                if (song.data && song.data.errored) {
+                    return;
+                }
                 sendMessage(
                     queue.data.message,
                     `Song ${song} was added to the queue.`
@@ -28,10 +31,7 @@ module.exports = {
             })
             // Emitted when a song changed.
             .on("songChanged", async (queue, newSong, oldSong) => {
-                if (
-                    queue.data.previousMessage !== undefined &&
-                    queue.data.previousMessage !== null
-                ) {
+                if (queue.data.previousMessage) {
                     queue.data.previousMessage.delete();
                 }
                 queue.data.previousMessage = await sendMessage(
@@ -60,10 +60,27 @@ module.exports = {
                         queue.data.message,
                         `<@${queue.nowPlaying.requestedBy}> Unable to play age restricted videos`
                     );
+                } else if (error === "Status code: 403") {
+                    if (
+                        queue.nowPlaying.data &&
+                        queue.nowPlaying.data.errored
+                    ) {
+                        sendMessage(
+                            queue.data.message,
+                            `Playback of \`${queue.nowPlaying.name}\` failed`
+                        );
+                        return;
+                    }
+                    queue
+                        .play(queue.nowPlaying.url, {
+                            requestedBy: null,
+                            data: { errored: true },
+                        })
+                        .catch((_) => {});
                 } else {
                     sendMessage(
                         queue.data.message,
-                        `Error: ${error} in ${queue.guild.name}`
+                        `Error: ${error}\nPlayback of \`${queue.nowPlaying.name}\` failed`
                     );
                 }
             });
