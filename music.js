@@ -131,6 +131,9 @@ module.exports = {
             case "shuffle":
                 shuffle(message, guildQueue);
                 break;
+            case "loop":
+                loop(message, guildQueue);
+                break;
             default:
                 sendMessage(message, "You need to enter a valid command!");
                 break;
@@ -251,4 +254,16 @@ function shuffle(message, guildQueue) {
         return;
     }
     guildQueue.shuffle();
+}
+
+function loop(message, guildQueue) {
+    if (guildQueue === undefined) {
+        sendMessage(message, "I need to be in a voice channel to loop");
+        return;
+    }
+    if (!guildQueue.isPlaying) {
+        sendMessage(message, "Nothing to loop");
+        return;
+    }
+    guildQueue.setRepeatMode(1 - guildQueue.repeatMode);
 }
