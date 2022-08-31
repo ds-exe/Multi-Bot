@@ -24,6 +24,9 @@ module.exports = {
                 if (song.data && song.data.errored) {
                     return;
                 }
+                if (queue.repeatMode !== 0) {
+                    return;
+                }
                 sendMessage(
                     queue.data.message,
                     `Song ${song} was added to the queue.`
@@ -254,6 +257,7 @@ function shuffle(message, guildQueue) {
         return;
     }
     guildQueue.shuffle();
+    message.react("👍");
 }
 
 function loop(message, guildQueue) {
@@ -261,9 +265,9 @@ function loop(message, guildQueue) {
         sendMessage(message, "I need to be in a voice channel to loop");
         return;
     }
-    if (!guildQueue.isPlaying) {
-        sendMessage(message, "Nothing to loop");
-        return;
-    }
     guildQueue.setRepeatMode(1 - guildQueue.repeatMode);
+    sendMessage(
+        message,
+        "Looping " + (guildQueue.repeatMode !== 0 ? "enabled" : "disabled")
+    );
 }
