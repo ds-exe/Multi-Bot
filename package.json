@@ -16,9 +16,12 @@
     "jsonfile": "^4.0.0",
     "luxon": "^2.3.1",
     "sqlite3": "^5.0.8",
-    "ytdl-core": "4.10.0"
+    "ytdl-core": "4.10.0",
+    "cross-fetch": "latest",
+    "spotify-url-info": "3.1.7"
   },
   "resolutions": {
-    "discord-music-player/ytdl-core": "4.10.0"
+    "discord-music-player/ytdl-core": "4.10.0",
+    "discord-music-player/spotify-url-info": "3.1.7"
   }
 }
