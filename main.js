@@ -146,6 +146,9 @@ async function next(message) {
                 process.exit(1);
             }
             break;
+        case "music":
+            sendMessage(message, { embeds: [Embeds.musicEmbed] });
+            break;
         case "help":
             sendMessage(message, { embeds: [Embeds.helpEmbed] });
             break;

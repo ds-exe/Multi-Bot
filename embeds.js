@@ -7,7 +7,20 @@ exports.helpEmbed = new Discord.MessageEmbed()
     .setThumbnail(`${embedThumbnail}`)
     .addFields({
         name: "Commands Available Here 🔎",
-        value: `\`\`\`📌${prefix}time or ${prefix}until\n📌${prefix}now\n📌${prefix}timezone\n📌${prefix}reddit\n📌${prefix}play\n📌${prefix}skip\n📌${prefix}stop\n📌${prefix}leave\n📌${prefix}shuffle\n📌${prefix}perms\`\`\``,
+        value: `\`\`\`📌${prefix}music\n📌${prefix}time or ${prefix}until\n📌${prefix}now\n📌${prefix}timezone\n📌${prefix}reddit\n📌${prefix}perms\`\`\``,
+    })
+    .setFooter({
+        text: "BOT made by @ds#8460",
+        iconURL: "https://i.imgur.com/5BzUoNx.png",
+    });
+
+exports.musicEmbed = new Discord.MessageEmbed()
+    .setColor("#0099ff")
+    .setTitle(`${botTitle}`)
+    .setThumbnail(`${embedThumbnail}`)
+    .addFields({
+        name: "Commands Available Here 🔎",
+        value: `\`\`\`📌${prefix}play\n📌${prefix}skip\n📌${prefix}stop\n📌${prefix}leave\n📌${prefix}shuffle\n📌${prefix}loop\`\`\``,
     })
     .setFooter({
         text: "BOT made by @ds#8460",
