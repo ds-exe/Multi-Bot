@@ -148,7 +148,7 @@ async function play(message) {
     const args = message.content.split(" ");
     args.shift();
 
-    let { match, isPlaylist } = validateUrl(args.join(" "), message);
+    let { match, isPlaylist } = validateUrl(args.join(" ").trim(), message);
     if (match === null) {
         return;
     }
