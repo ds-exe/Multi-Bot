@@ -135,6 +135,9 @@ async function next(message) {
         case "loop":
             await Music.run(command, message);
             break;
+        case "setvolume":
+            await Music.run(command, message);
+            break;
         case "perms":
             Permissions.run(message, words);
             break;

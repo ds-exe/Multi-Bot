@@ -20,7 +20,7 @@ exports.musicEmbed = new Discord.MessageEmbed()
     .setThumbnail(`${embedThumbnail}`)
     .addFields({
         name: "Commands Available Here 🔎",
-        value: `\`\`\`📌${prefix}play\n📌${prefix}skip\n📌${prefix}stop\n📌${prefix}leave\n📌${prefix}shuffle\n📌${prefix}loop\`\`\``,
+        value: `\`\`\`📌${prefix}play\n📌${prefix}skip\n📌${prefix}stop\n📌${prefix}leave\n📌${prefix}shuffle\n📌${prefix}loop\n📌${prefix}setvolume\`\`\``,
     })
     .setFooter({
         text: "BOT made by @ds#8460",

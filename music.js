@@ -137,6 +137,9 @@ module.exports = {
             case "loop":
                 loop(message, guildQueue);
                 break;
+            case "setvolume":
+                setVolume(message, guildQueue);
+                break;
             default:
                 sendMessage(message, "You need to enter a valid command!");
                 break;
@@ -276,4 +279,29 @@ function loop(message, guildQueue) {
         message,
         "Looping " + (guildQueue.repeatMode !== 0 ? "enabled" : "disabled")
     );
+}
+
+function setVolume(message, guildQueue) {
+    let args = message.content.split(" ");
+    args.shift();
+    if (guildQueue === undefined) {
+        return sendMessage(
+            message,
+            "I need to be in a voice channel to set volume"
+        );
+    }
+    const volume = /^([0-9]+)$/;
+    matches = volume.exec(args.join(" "));
+    if (matches === null) {
+        return sendMessage(
+            message,
+            "Invalid option specified, please use 1-100"
+        );
+    }
+    console.log(matches);
+    if (matches[1] > 100 || matches[1] < 1) {
+        return sendMessage(message, "Invalid volume, please use 1-100");
+    }
+    guildQueue.setVolume(matches[1]);
+    sendMessage(message, `Volume set to ${matches[1]}`);
 }
