@@ -281,11 +281,14 @@ function setVolume(message, guildQueue) {
 
 function handleError(error, queue) {
     if (error === "Status code: 410") {
-        sendMessage(queue.data.message, `Searching for non explicit version`);
+        sendMessage(
+            queue.data.message,
+            `Searching for non age restricted version`
+        );
         if (queue.nowPlaying.data && queue.nowPlaying.data.errored) {
             sendMessage(
                 queue.data.message,
-                `Failed to find non explicit version of \`${queue.nowPlaying.name}\``
+                `Failed to find non age restricted version of \`${queue.nowPlaying.name}\``
             );
             return;
         }
