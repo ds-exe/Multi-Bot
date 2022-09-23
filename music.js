@@ -61,8 +61,14 @@ module.exports = {
                 if (error === "Status code: 410") {
                     sendMessage(
                         queue.data.message,
-                        `<@${queue.nowPlaying.requestedBy}> Unable to play age restricted videos`
+                        `Searching for non explicit version`
                     );
+                    queue
+                        .play(queue.nowPlaying.name, {
+                            requestedBy: null,
+                            data: { errored: true },
+                        })
+                        .catch((_) => {});
                 } else if (error === "Status code: 403") {
                     if (
                         queue.nowPlaying.data &&
