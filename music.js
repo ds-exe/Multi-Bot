@@ -58,40 +58,7 @@ module.exports = {
             )
             // Emitted when there was an error in runtime
             .on("error", (error, queue) => {
-                if (error === "Status code: 410") {
-                    sendMessage(
-                        queue.data.message,
-                        `Searching for non explicit version`
-                    );
-                    queue
-                        .play(queue.nowPlaying.name, {
-                            requestedBy: null,
-                            data: { errored: true },
-                        })
-                        .catch((_) => {});
-                } else if (error === "Status code: 403") {
-                    if (
-                        queue.nowPlaying.data &&
-                        queue.nowPlaying.data.errored
-                    ) {
-                        sendMessage(
-                            queue.data.message,
-                            `Playback of \`${queue.nowPlaying.name}\` failed`
-                        );
-                        return;
-                    }
-                    queue
-                        .play(queue.nowPlaying.url, {
-                            requestedBy: null,
-                            data: { errored: true },
-                        })
-                        .catch((_) => {});
-                } else {
-                    sendMessage(
-                        queue.data.message,
-                        `Error: ${error}\nPlayback of \`${queue.nowPlaying.name}\` failed`
-                    );
-                }
+                handleError(error, queue);
             });
     },
 
@@ -310,4 +277,42 @@ function setVolume(message, guildQueue) {
     }
     guildQueue.setVolume(matches[1]);
     sendMessage(message, `Volume set to ${matches[1]}`);
+}
+
+function handleError() {
+    if (error === "Status code: 410") {
+        sendMessage(queue.data.message, `Searching for non explicit version`);
+        if (queue.nowPlaying.data && queue.nowPlaying.data.errored) {
+            sendMessage(
+                queue.data.message,
+                `Failed to find non explicit version of \`${queue.nowPlaying.name}\``
+            );
+            return;
+        }
+        queue
+            .play(queue.nowPlaying.name, {
+                requestedBy: null,
+                data: { errored: true },
+            })
+            .catch((_) => {});
+    } else if (error === "Status code: 403") {
+        if (queue.nowPlaying.data && queue.nowPlaying.data.errored) {
+            sendMessage(
+                queue.data.message,
+                `Playback of \`${queue.nowPlaying.name}\` failed`
+            );
+            return;
+        }
+        queue
+            .play(queue.nowPlaying.url, {
+                requestedBy: null,
+                data: { errored: true },
+            })
+            .catch((_) => {});
+    } else {
+        sendMessage(
+            queue.data.message,
+            `Error: ${error}\nPlayback of \`${queue.nowPlaying.name}\` failed`
+        );
+    }
 }
