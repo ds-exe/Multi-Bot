@@ -284,13 +284,13 @@ function handleError(error, queue) {
         if (queue.nowPlaying.data && queue.nowPlaying.data.errored) {
             sendMessage(
                 queue.data.message,
-                `Failed to find non age restricted version of \`${queue.nowPlaying.name}\``
+                `Failed to find non age-restricted version of \`${queue.nowPlaying.name}\``
             );
             return;
         }
         sendMessage(
             queue.data.message,
-            `Searching for non age restricted version`
+            `Searching for non age-restricted version`
         );
         queue
             .play(queue.nowPlaying.name, {
