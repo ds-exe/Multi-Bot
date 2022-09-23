@@ -279,7 +279,7 @@ function setVolume(message, guildQueue) {
     sendMessage(message, `Volume set to ${matches[1]}`);
 }
 
-function handleError() {
+function handleError(error, queue) {
     if (error === "Status code: 410") {
         sendMessage(queue.data.message, `Searching for non explicit version`);
         if (queue.nowPlaying.data && queue.nowPlaying.data.errored) {
