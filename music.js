@@ -281,10 +281,6 @@ function setVolume(message, guildQueue) {
 
 function handleError(error, queue) {
     if (error === "Status code: 410") {
-        sendMessage(
-            queue.data.message,
-            `Searching for non age restricted version`
-        );
         if (queue.nowPlaying.data && queue.nowPlaying.data.errored) {
             sendMessage(
                 queue.data.message,
@@ -292,6 +288,10 @@ function handleError(error, queue) {
             );
             return;
         }
+        sendMessage(
+            queue.data.message,
+            `Searching for non age restricted version`
+        );
         queue
             .play(queue.nowPlaying.name, {
                 requestedBy: null,
