@@ -114,7 +114,7 @@ function parseTime(word, date, success) {
     const minutes = matches[2];
     if (hours >= 0 && hours < 24 && minutes >= 0 && minutes < 60) {
         success = true;
-        date = date.set({ hour: hours, minute: minutes });
+        date = date.set({ hour: hours, minute: minutes, second: 0 });
     }
     return { date, success };
 }
