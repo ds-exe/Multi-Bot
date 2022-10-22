@@ -23,13 +23,13 @@ module.exports = {
             if (err) return console.error(err.message);
         };
         db.run(
-            "CREATE TABLE IF NOT EXISTS permissions(roleID PRIMARY KEY, guildID)"
+            "CREATE TABLE IF NOT EXISTS permissions(roleID, guildID, PRIMARY KEY (roleID, guildID))"
         );
         (err) => {
             if (err) return console.error(err.message);
         };
         db.run(
-            "CREATE TABLE IF NOT EXISTS permissionsUser(userID PRIMARY KEY, guildID)"
+            "CREATE TABLE IF NOT EXISTS permissionsUser(userID, guildID, PRIMARY KEY (userID, guildID))"
         );
         (err) => {
             if (err) return console.error(err.message);
