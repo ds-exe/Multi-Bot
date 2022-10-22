@@ -74,15 +74,17 @@ module.exports = {
     },
 
     denyRole: (message, roleId, guildId) => {
-        db.run(`DELETE FROM permissions WHERE roleID = '${roleId}'`);
+        db.run(
+            `DELETE FROM permissions WHERE roleID = '${roleId}' AND guildID = '${guildId}'`
+        );
         sendMessage(message, "Successfully removed permissions");
         return;
     },
 
-    hasPermissionRole: (message, roles) => {
+    hasPermissionRole: (message, roles, guildId) => {
         return new Promise((resolve, reject) => {
             const roleQuery = roles.map((role) => role.id);
-            const query = `SELECT * FROM permissions WHERE roleID in (${roleQuery
+            const query = `SELECT * FROM permissions WHERE guildID = '${guildId}' AND roleID in (${roleQuery
                 .map(() => "?")
                 .join(",")})`;
             db.all(query, roleQuery, function (err, rows) {
@@ -107,14 +109,16 @@ module.exports = {
     },
 
     denyUser: (message, userId, guildId) => {
-        db.run(`DELETE FROM permissionsUser WHERE userID = '${userId}'`);
+        db.run(
+            `DELETE FROM permissionsUser WHERE userID = '${userId}' AND guildID = '${guildId}'`
+        );
         sendMessage(message, "Successfully removed permissions");
         return;
     },
 
-    hasPermissionUser: (message, userId) => {
+    hasPermissionUser: (message, userId, guildId) => {
         return new Promise((resolve, reject) => {
-            const query = `SELECT * FROM permissionsUser WHERE userID = '${userId}'`;
+            const query = `SELECT * FROM permissionsUser WHERE userID = '${userId}' AND guildID = '${guildId}'`;
             db.all(query, function (err, rows) {
                 if (err) {
                     reject(err);

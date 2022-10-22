@@ -68,8 +68,16 @@ module.exports = {
             return;
         }
         if (
-            !(await hasPermissionRole(message, message.member.roles.cache)) &&
-            !(await hasPermissionUser(message, message.author.id))
+            !(await hasPermissionRole(
+                message,
+                message.member.roles.cache,
+                message.guild.id
+            )) &&
+            !(await hasPermissionUser(
+                message,
+                message.author.id,
+                message.guild.id
+            ))
         ) {
             return sendMessage(
                 message,

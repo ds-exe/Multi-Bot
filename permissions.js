@@ -9,8 +9,14 @@ const {
 } = require("./SQLDatabase.js");
 const { isDM, sendMessage } = require("./utility.js");
 
+let client = null;
+
 module.exports = {
-    run: (message, words) => {
+    init: (mainClient) => {
+        client = mainClient;
+    },
+
+    run: async (message, words) => {
         if (isDM(message)) {
             sendMessage(message, "Can't use this command in DM's");
             return;
@@ -40,10 +46,10 @@ module.exports = {
                 roleDeny(message, words);
                 break;
             case "allowuser":
-                userAllow(message, words);
+                await userAllow(message, words);
                 break;
             case "denyuser":
-                userDeny(message, words);
+                await userDeny(message, words);
                 break;
             case "list":
                 sendMessage(message, "To be implemented soon!");
@@ -78,9 +84,9 @@ function roleDeny(message, words) {
     }
 }
 
-function userAllow(message, words) {
+async function userAllow(message, words) {
     words = words.join(" ");
-    user = getUser(message, words);
+    user = await getUser(message, words);
     if (user === undefined) {
         return sendMessage(message, "Invalid user");
     } else {
@@ -88,9 +94,9 @@ function userAllow(message, words) {
     }
 }
 
-function userDeny(message, words) {
+async function userDeny(message, words) {
     words = words.join(" ");
-    user = getUser(message, words);
+    user = await getUser(message, words);
     if (user === undefined) {
         return sendMessage(message, "Invalid user");
     } else {
@@ -118,14 +124,11 @@ function getRole(message, words) {
     return undefined;
 }
 
-function getUser(message, words) {
+async function getUser(message, words) {
     const userId = /^([0-9]+)$/;
     const matches2 = userId.exec(words);
     if (matches2 !== null) {
-        user = message.channel.guild.members.cache.find(
-            (user) => user.id.toLowerCase() === words
-        );
-        return user;
+        return await message.guild.members.fetch(words);
     }
     return undefined;
 }

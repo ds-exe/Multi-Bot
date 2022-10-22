@@ -7,8 +7,16 @@ module.exports = {
     loadPage: async (sub, message) => {
         if (
             !isDM(message) &&
-            !(await hasPermissionRole(message, message.member.roles.cache)) &&
-            !(await hasPermissionUser(message, message.author.id))
+            !(await hasPermissionRole(
+                message,
+                message.member.roles.cache,
+                message.guild.id
+            )) &&
+            !(await hasPermissionUser(
+                message,
+                message.author.id,
+                message.guild.id
+            ))
         ) {
             return sendMessage(
                 message,

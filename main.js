@@ -34,6 +34,7 @@ client.on("ready", () => {
     client.user.setActivity(`${config.prefix}help`, { type: "LISTENING" });
     open();
     Music.init(client);
+    Permissions.init(client);
 });
 
 client.on("messageCreate", async (message) => {
@@ -139,7 +140,7 @@ async function next(message) {
             await Music.run(command, message);
             break;
         case "perms":
-            Permissions.run(message, words);
+            await Permissions.run(message, words);
             break;
         case "shutdown":
             if (isBotOwner) {
