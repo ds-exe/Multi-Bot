@@ -6,6 +6,8 @@ const {
     denyRole,
     allowUser,
     denyUser,
+    getUserPermissionData,
+    getRolePermissionData,
 } = require("./SQLDatabase.js");
 const { isDM, sendMessage } = require("./utility.js");
 
@@ -51,13 +53,16 @@ module.exports = {
             case "denyuser":
                 await userDeny(message, words);
                 break;
-            case "list":
-                sendMessage(message, "To be implemented soon!");
+            case "listusers":
+                getUserData(message);
+                break;
+            case "listroles":
+                getRoleData(message);
                 break;
             default:
                 sendMessage(
                     message,
-                    `${prefix}perms allowRole/denyRole {role id/role name}\n${prefix}perms allowUser/denyUser {user id}\n${prefix}perms list`
+                    `${prefix}perms allowRole/denyRole {role id/role name}\n${prefix}perms allowUser/denyUser {user id}\n${prefix}perms listUsers/listRoles`
                 );
                 break;
         }
@@ -131,4 +136,32 @@ async function getUser(message, words) {
         return await message.guild.members.fetch(words);
     }
     return undefined;
+}
+
+async function getUserData(message) {
+    let rows = await getUserPermissionData(message.guild.id);
+    let out = "```";
+    for (const row of rows) {
+        tmp = await getUser(message, row.userID);
+        out += tmp.user.username + "#" + tmp.user.discriminator + "\n";
+    }
+    out += "```";
+    if (out === "``````") {
+        out = "```No user permissions found```";
+    }
+    sendMessage(message, out);
+}
+
+async function getRoleData(message) {
+    let rows = await getRolePermissionData(message.guild.id);
+    let out = "```";
+    for (const row of rows) {
+        tmp = await getRole(message, row.roleID);
+        out += tmp.name + "\n";
+    }
+    out += "```";
+    if (out === "``````") {
+        out = "```No role permissions found```";
+    }
+    sendMessage(message, out);
 }

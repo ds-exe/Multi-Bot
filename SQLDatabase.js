@@ -149,14 +149,28 @@ module.exports = {
         });
     },
 
-    printPermissionDataBase: () => {
-        const sqlRead = "SELECT * FROM permissions";
+    getUserPermissionData: (guildId) => {
+        return new Promise((resolve, reject) => {
+            const sqlRead = `SELECT userID FROM permissionsUser WHERE guildID = '${guildId}'`;
 
-        db.all(sqlRead, [], (err, rows) => {
-            if (err) return console.error(err.message);
+            db.all(sqlRead, [], (err, rows) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(rows);
+            });
+        });
+    },
 
-            rows.forEach((row) => {
-                console.log(row);
+    getRolePermissionData: (guildId) => {
+        return new Promise((resolve, reject) => {
+            const sqlRead = `SELECT roleID FROM permissions WHERE guildID = '${guildId}'`;
+
+            db.all(sqlRead, [], (err, rows) => {
+                if (err) {
+                    reject(err);
+                }
+                resolve(rows);
             });
         });
     },
