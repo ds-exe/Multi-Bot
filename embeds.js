@@ -2,18 +2,16 @@ const Discord = require("discord.js");
 const { prefix, botTitle, embedThumbnail } = require("./config.json");
 
 exports.init = async (client) => {
-    const owner = "74968333413257216";
-    const creator = await client.users.fetch(owner);
+    const creatorID = "74968333413257216";
+    const creator = await client.users.fetch(creatorID);
     const userString = creator.username + "#" + creator.discriminator;
-    console.log(creator.iconURL);
-    console.log(creator);
     this.helpEmbed.setFooter({
         text: `BOT made by @${userString}`,
-        iconURL: `https://cdn.discordapp.com/avatars/${owner}/${creator.avatar}`,
+        iconURL: `https://cdn.discordapp.com/avatars/${creatorID}/${creator.avatar}`,
     });
     this.musicEmbed.setFooter({
         text: `BOT made by @${userString}`,
-        iconURL: `https://cdn.discordapp.com/avatars/${owner}/${creator.avatar}`,
+        iconURL: `https://cdn.discordapp.com/avatars/${creatorID}/${creator.avatar}`,
     });
 };
 
