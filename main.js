@@ -35,6 +35,7 @@ client.on("ready", () => {
     open();
     Music.init(client);
     Permissions.init(client);
+    Embeds.init(client);
 });
 
 client.on("messageCreate", async (message) => {
