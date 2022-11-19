@@ -41,6 +41,12 @@ exports.trackAdded = (name, link, thumbnail, length) => {
         );
 };
 
+exports.trackPlaying = (name, link) => {
+    return new Discord.MessageEmbed()
+        .setColor("#0099ff")
+        .setDescription(`Started playing [${name}](${link})`);
+};
+
 async function generateEmbed(commands) {
     const creatorID = "74968333413257216";
     const creator = await client.users.fetch(creatorID);

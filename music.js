@@ -1,7 +1,7 @@
 const { Player } = require("discord-music-player");
 const { isDM, sendMessage } = require("./utility.js");
 const { hasPermissionRole, hasPermissionUser } = require("./SQLDatabase.js");
-const { trackAdded } = require("./embeds.js");
+const { trackAdded, trackPlaying } = require("./embeds.js");
 
 let client = null;
 
@@ -46,14 +46,18 @@ module.exports = {
                 }
                 queue.data.previousMessage = await sendMessage(
                     queue.data.message,
-                    `${newSong} is now playing.`
+                    {
+                        embeds: [trackPlaying(newSong.name, newSong.url)],
+                    }
                 );
             })
             // Emitted when a first song in the queue started playing.
             .on("songFirst", async (queue, song) => {
                 queue.data.previousMessage = await sendMessage(
                     queue.data.message,
-                    `${song} is now playing.`
+                    {
+                        embeds: [trackPlaying(song.name, song.url)],
+                    }
                 );
             })
             // Emitted when someone disconnected the bot from the channel.
