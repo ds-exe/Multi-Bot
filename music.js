@@ -156,14 +156,12 @@ async function play(message) {
             .playlist(match, { requestedBy: message.author.id })
             .catch((err) => {
                 sendMessage(message, "Unknown error occured");
-                // console.log(err);
             });
     } else {
         let song = await queue
             .play(match, { requestedBy: message.author.id })
             .catch((err) => {
                 sendMessage(message, "Unknown error occured");
-                // console.log(err);
             });
     }
 }
