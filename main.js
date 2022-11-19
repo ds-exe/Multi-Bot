@@ -40,7 +40,6 @@ client.on("ready", () => {
 
 client.on("messageCreate", async (message) => {
     if (message.partial) {
-        console.log("received partial");
         return;
     }
     if (isCommunicationDisabled(message)) {
@@ -59,7 +58,7 @@ client.on("messageCreate", async (message) => {
             await next(message);
         } catch (e) {
             sendMessage(message, "An unknown error occured");
-            console.log("crash");
+            //console.log("crash");
         }
     }
 });
@@ -81,11 +80,11 @@ async function next(message) {
     msg = message.content;
     msg = msg.replace(`${prefix}`, "").toLowerCase();
     words = msg.split(" ");
-    console.log(
-        message.author.username,
-        message.author.id,
-        message.content.split(" ")
-    );
+    // console.log(
+    //     message.author.username,
+    //     message.author.id,
+    //     message.content.split(" ")
+    // );
 
     const commands = /^([a-z]+)$/;
     const matches = commands.exec(words[0]);

@@ -1,6 +1,7 @@
 const { Player } = require("discord-music-player");
 const { isDM, sendMessage } = require("./utility.js");
 const { hasPermissionRole, hasPermissionUser } = require("./SQLDatabase.js");
+const { trackAdded } = require("./embeds.js");
 
 let client = null;
 
@@ -27,10 +28,17 @@ module.exports = {
                 if (queue.repeatMode !== 0) {
                     return;
                 }
-                sendMessage(
-                    queue.data.message,
-                    `Song ${song} was added to the queue.`
-                );
+                console.log(song);
+                sendMessage(queue.data.message, {
+                    embeds: [
+                        trackAdded(
+                            song.name,
+                            song.url,
+                            song.thumbnail,
+                            song.duration
+                        ),
+                    ],
+                });
             })
             // Emitted when a song changed.
             .on("songChanged", async (queue, newSong, oldSong) => {
@@ -145,14 +153,14 @@ async function play(message) {
             .playlist(match, { requestedBy: message.author.id })
             .catch((err) => {
                 sendMessage(message, "Unknown error occured");
-                console.log(err);
+                // console.log(err);
             });
     } else {
         let song = await queue
             .play(match, { requestedBy: message.author.id })
             .catch((err) => {
                 sendMessage(message, "Unknown error occured");
-                console.log(err);
+                // console.log(err);
             });
     }
 }
@@ -279,7 +287,6 @@ function setVolume(message, guildQueue) {
             "Invalid option specified, please use 1-100"
         );
     }
-    console.log(matches);
     if (matches[1] > 100 || matches[1] < 1) {
         return sendMessage(message, "Invalid volume, please use 1-100");
     }
