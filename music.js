@@ -28,7 +28,6 @@ module.exports = {
                 if (queue.repeatMode !== 0) {
                     return;
                 }
-                console.log(song);
                 sendMessage(queue.data.message, {
                     embeds: [
                         trackAdded(
