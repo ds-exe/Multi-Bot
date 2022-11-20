@@ -27,18 +27,8 @@ exports.trackAdded = (name, link, thumbnail, length) => {
         .setColor("#0099ff")
         .setTitle(`Added Track`)
         .setThumbnail(`${thumbnail}`)
-        .addFields(
-            {
-                name: "Track",
-                value: `[${name}](${link})`,
-            },
-            // { name: "Estimated time until played", value: time, inline: true, },
-            { name: "Track Length", value: length, inline: true }
-            // { name: "\u200B", value: "\u200B", inline: true },
-            // { name: "tmp name", value: "tmp val", inline: true },
-            // { name: "tmp name", value: "tmp val", inline: true },
-            // { name: "\u200B", value: "\u200B", inline: true }
-        );
+        .setDescription(`[${name}](${link})`)
+        .addFields({ name: "Track Length", value: length, inline: true });
 };
 
 exports.trackPlaying = (name, link) => {
