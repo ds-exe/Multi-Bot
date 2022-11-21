@@ -22,13 +22,36 @@ exports.timestampEmbed = new Discord.MessageEmbed()
     .setTitle("Local time:")
     .setDescription(`<t:0:F>`);
 
-exports.trackAdded = (name, link, thumbnail, length) => {
+exports.trackAdded = (song) => {
     return new Discord.MessageEmbed()
         .setColor("#0099ff")
         .setTitle(`Added Track`)
-        .setThumbnail(`${thumbnail}`)
-        .setDescription(`[${name}](${link})`)
-        .addFields({ name: "Track Length", value: length, inline: true });
+        .setThumbnail(`${song.thumbnail}`)
+        .setDescription(`[${song.name}](${song.url})`)
+        .addFields(
+            { name: "Track Length", value: song.duration, inline: true },
+            { name: "Added by", value: `<@${song.requestedBy}>`, inline: true }
+        );
+};
+
+exports.playlistAdded = (playlist) => {
+    return new Discord.MessageEmbed()
+        .setColor("#0099ff")
+        .setTitle(`Added Playlist`)
+        .setDescription(`[${playlist}](${playlist.url})`)
+        .addFields(
+            {
+                name: "Playlist Length",
+                value: `${playlist.songs.length}`,
+                inline: true,
+            },
+            { name: "\u200b", value: `\u200b`, inline: true },
+            {
+                name: "Added by",
+                value: `<@${playlist.songs[0].requestedBy}>`,
+                inline: true,
+            }
+        );
 };
 
 exports.trackPlaying = (name, link) => {

@@ -1,7 +1,7 @@
 const { Player } = require("discord-music-player");
 const { isDM, sendMessage } = require("./utility.js");
 const { hasPermissionRole, hasPermissionUser } = require("./SQLDatabase.js");
-const { trackAdded, trackPlaying } = require("./embeds.js");
+const { trackAdded, trackPlaying, playlistAdded } = require("./embeds.js");
 
 let client = null;
 
@@ -29,14 +29,12 @@ module.exports = {
                     return;
                 }
                 sendMessage(queue.data.message, {
-                    embeds: [
-                        trackAdded(
-                            song.name,
-                            song.url,
-                            song.thumbnail,
-                            song.duration
-                        ),
-                    ],
+                    embeds: [trackAdded(song)],
+                });
+            })
+            .on("playlistAdd", (queue, playlist) => {
+                sendMessage(queue.data.message, {
+                    embeds: [playlistAdded(playlist)],
                 });
             })
             // Emitted when a song changed.
