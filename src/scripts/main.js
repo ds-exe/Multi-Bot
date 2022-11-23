@@ -1,4 +1,5 @@
-const config = require("./..\\..\\config.json");
+const path = require("node:path");
+const config = require(path.normalize("./../../config.json"));
 const { Client, Intents } = require("discord.js");
 const Timestamp = require("./timestamp.js");
 const {

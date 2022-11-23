@@ -1,4 +1,3 @@
-const timezones = require("./..\\..\\timezones.json");
 const { DateTime } = require("luxon");
 const Embeds = require("./embeds.js");
 const { getUserTimezone } = require("./SQLDatabase.js");
