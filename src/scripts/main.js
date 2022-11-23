@@ -1,4 +1,4 @@
-const config = require("./config.json");
+const config = require("./..\\..\\config.json");
 const { Client, Intents } = require("discord.js");
 const Timestamp = require("./timestamp.js");
 const {

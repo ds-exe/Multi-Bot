@@ -1,5 +1,5 @@
 const Discord = require("discord.js");
-const { prefix, botTitle, embedThumbnail } = require("./config.json");
+const { prefix, botTitle, embedThumbnail } = require("./..\\..\\config.json");
 
 let client = null;
 

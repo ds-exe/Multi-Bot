@@ -1,4 +1,4 @@
-const timezones = require("./timezones.json");
+const timezones = require("./..\\..\\timezones.json");
 const { DateTime } = require("luxon");
 
 module.exports = {

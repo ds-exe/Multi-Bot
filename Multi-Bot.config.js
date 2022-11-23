@@ -1,5 +1,5 @@
 module.exports = {
-    script: "main.js",
+    script: "src/scripts/main.js",
     // Specify which folder to watch
     watch: true,
     // Specify delay between watch interval
