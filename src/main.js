@@ -116,23 +116,11 @@ async function next(message) {
             await Reddit.loadPage(words, message);
             break;
         case "play":
-            await Music.run(command, message);
-            break;
         case "skip":
-            await Music.run(command, message);
-            break;
         case "stop":
-            await Music.run(command, message);
-            break;
         case "leave":
-            await Music.run(command, message);
-            break;
         case "shuffle":
-            await Music.run(command, message);
-            break;
         case "loop":
-            await Music.run(command, message);
-            break;
         case "setvolume":
             await Music.run(command, message);
             break;
