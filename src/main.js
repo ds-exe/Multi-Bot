@@ -78,7 +78,6 @@ function isCommunicationDisabled(message) {
 async function next(message) {
     message.suppressEmbeds(true);
     const isBotOwner = message.author.id === botOwner;
-    const targetChannel = client.channels.cache.get(message.channel.id);
     msg = message.content;
     msg = msg.replace(`${prefix}`, "").toLowerCase();
     words = msg.split(" ");
