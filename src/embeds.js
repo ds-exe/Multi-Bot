@@ -1,7 +1,7 @@
 const path = require("node:path");
 const Discord = require("discord.js");
 const { prefix, botTitle, embedThumbnail } = require(path.normalize(
-    "./../../config.json"
+    "./../config.json"
 ));
 
 let client = null;

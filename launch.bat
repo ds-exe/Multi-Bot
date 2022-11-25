@@ -1,2 +1,2 @@
-npx nodemon src/scripts/main.js
+npx nodemon src/main.js
 pause

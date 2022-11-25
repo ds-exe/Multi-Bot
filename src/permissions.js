@@ -1,6 +1,6 @@
 const path = require("node:path");
 const Discord = require("discord.js");
-const { prefix } = require(path.normalize("./../../config.json"));
+const { prefix } = require(path.normalize("./../config.json"));
 
 const {
     allowRole,
