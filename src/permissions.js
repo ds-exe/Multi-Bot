@@ -1,4 +1,5 @@
 const Discord = require("discord.js");
+const Embeds = require("./embeds.js");
 
 const {
     allowRole,
@@ -59,10 +60,7 @@ module.exports = {
                 getRoleData(message);
                 break;
             default:
-                sendMessage(
-                    message,
-                    `allowRole/denyRole {role id/role name}\nallowUser/denyUser {user id}\nperms listUsers/listRoles`
-                );
+                sendMessage(message, { embeds: [Embeds.permsEmbed] });
                 break;
         }
     },
@@ -139,28 +137,26 @@ async function getUser(message, words) {
 
 async function getUserData(message) {
     let rows = await getUserPermissionData(message.guild.id);
-    let out = "```";
+    let out = "";
     for (const row of rows) {
         tmp = await getUser(message, row.userID);
         out += tmp.user.username + "#" + tmp.user.discriminator + "\n";
     }
-    out += "```";
-    if (out === "``````") {
-        out = "```No user permissions found```";
+    if (out === "") {
+        out = "No user permissions found";
     }
-    sendMessage(message, out);
+    sendMessage(message, "```" + out + "```");
 }
 
 async function getRoleData(message) {
     let rows = await getRolePermissionData(message.guild.id);
-    let out = "```";
+    let out = "";
     for (const row of rows) {
         tmp = await getRole(message, row.roleID);
         out += tmp.name + "\n";
     }
-    out += "```";
-    if (out === "``````") {
-        out = "```No role permissions found```";
+    if (out === "") {
+        out = "No role permissions found";
     }
-    sendMessage(message, out);
+    sendMessage(message, "```" + out + "```");
 }

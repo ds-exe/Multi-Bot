@@ -14,11 +14,16 @@ exports.init = async (mainClient) => {
     this.musicEmbed = await generateEmbed(
         `\`\`\`📌${prefix}play\n📌${prefix}skip\n📌${prefix}stop\n📌${prefix}leave\n📌${prefix}shuffle\n📌${prefix}loop\n📌${prefix}setvolume\`\`\``
     );
+    this.permsEmbed = await generateEmbed(
+        `\`\`\`📌${prefix}perms allowRole/denyRole {role id/role name}\n📌${prefix}perms allowUser/denyUser {user id}\n📌${prefix}perms listUsers/listRoles\`\`\``
+    );
 };
 
 exports.helpEmbed = null;
 
 exports.musicEmbed = null;
+
+exports.permsEmbed = null;
 
 exports.timestampEmbed = new Discord.MessageEmbed()
     .setColor("#00FFFF")
