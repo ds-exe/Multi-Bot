@@ -1,6 +1,4 @@
-const path = require("node:path");
 const Discord = require("discord.js");
-const { prefix } = require(path.normalize("./../config.json"));
 
 const {
     allowRole,
@@ -63,7 +61,7 @@ module.exports = {
             default:
                 sendMessage(
                     message,
-                    `${prefix}perms allowRole/denyRole {role id/role name}\n${prefix}perms allowUser/denyUser {user id}\n${prefix}perms listUsers/listRoles`
+                    `allowRole/denyRole {role id/role name}\nallowUser/denyUser {user id}\nperms listUsers/listRoles`
                 );
                 break;
         }

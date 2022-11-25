@@ -1,7 +1,4 @@
-const path = require("node:path");
 const sqlite3 = require("sqlite3").verbose();
-const timezones = require(path.normalize("./../timezones.json"));
-const { owner } = require(path.normalize("./../config.json"));
 const { sendMessage, getTimezone } = require("./utility");
 let db = null;
 
