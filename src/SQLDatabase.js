@@ -32,6 +32,12 @@ module.exports = {
         (err) => {
             if (err) return console.error(err.message);
         };
+        db.run(
+            "CREATE TABLE IF NOT EXISTS notifications(userID int, timestamp int, message, PRIMARY KEY (userID, timestamp))"
+        );
+        (err) => {
+            if (err) return console.error(err.message);
+        };
     },
 
     setTimezone: (message, word) => {
@@ -130,13 +136,26 @@ module.exports = {
         });
     },
 
-    createDataBase: (name) => {
-        new sqlite3.Database(`${name}.db`);
-        console.log(`Successfully created new database called ${name}`);
+    addNotification: (userID, timestamp, message) => {
+        db.run(
+            `REPLACE INTO notifications(userID, timestamp, message) VALUES (${userID}, ${timestamp}, '${message}')`
+        );
     },
 
     printTimezoneDataBase: () => {
         const sqlRead = "SELECT * FROM timezones";
+
+        db.all(sqlRead, [], (err, rows) => {
+            if (err) return console.error(err.message);
+
+            rows.forEach((row) => {
+                console.log(row);
+            });
+        });
+    },
+
+    printNotifications: () => {
+        const sqlRead = "SELECT * FROM notifications";
 
         db.all(sqlRead, [], (err, rows) => {
             if (err) return console.error(err.message);

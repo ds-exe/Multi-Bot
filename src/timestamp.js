@@ -57,6 +57,13 @@ module.exports = {
             `\`${date.toLocaleString(DateTime.DATETIME_MED)}\``
         );
     },
+
+    generateUnixTime: async (message, words) => {
+        return await generateTimestampHelper(
+            message,
+            words.slice(0, words.indexOf("-"))
+        );
+    },
 };
 
 async function generateTimestampHelper(message, words) {

@@ -7,6 +7,7 @@ const {
     getUserTimezone,
     open,
     close,
+    addNotification,
 } = require("./SQLDatabase.js");
 const Reddit = require("./reddit.js");
 const Music = require("./music");
@@ -60,6 +61,7 @@ client.on("messageCreate", async (message) => {
         } catch (e) {
             sendMessage(message, "An unknown error occured");
             //console.log("crash");
+            //console.log(e);
         }
     }
 });
@@ -99,6 +101,17 @@ async function next(message) {
             break;
         case "now":
             await Timestamp.generateNow(message, words);
+            break;
+        case "notify":
+            const time = await Timestamp.generateUnixTime(message, words);
+            if (!time) {
+                break;
+            }
+            addNotification(
+                message.author.id,
+                time,
+                words.slice(words.indexOf("-") + 1).join(" ")
+            );
             break;
         case "timezone":
             if (words[0] === undefined) {
