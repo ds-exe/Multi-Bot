@@ -64,6 +64,11 @@ module.exports = {
             words.slice(0, words.indexOf("-"))
         );
     },
+
+    generateUnixTimeNow: async () => {
+        const date = DateTime.utc();
+        return parseInt(date.toSeconds());
+    },
 };
 
 async function generateTimestampHelper(message, words) {

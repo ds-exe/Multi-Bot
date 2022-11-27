@@ -33,7 +33,7 @@ module.exports = {
             if (err) return console.error(err.message);
         };
         db.run(
-            "CREATE TABLE IF NOT EXISTS notifications(userID int, timestamp int, message, PRIMARY KEY (userID, timestamp))"
+            "CREATE TABLE IF NOT EXISTS notifications(userID, timestamp int, message, PRIMARY KEY (userID, timestamp))"
         );
         (err) => {
             if (err) return console.error(err.message);
@@ -138,8 +138,23 @@ module.exports = {
 
     addNotification: (userID, timestamp, message) => {
         db.run(
-            `REPLACE INTO notifications(userID, timestamp, message) VALUES (${userID}, ${timestamp}, '${message}')`
+            `REPLACE INTO notifications(userID, timestamp, message) VALUES ('${userID}', ${timestamp}, '${message}')`
         );
+    },
+
+    sendNotifications: (client, currentTime) => {
+        const sqlRead = `SELECT * FROM notifications WHERE timestamp <= ${currentTime}`;
+
+        db.all(sqlRead, [], (err, rows) => {
+            if (err) return console.error(err.message);
+
+            rows.forEach(async (row) => {
+                (await client.users.fetch(row.userID))
+                    .send(row.message)
+                    .catch((err) => {});
+            });
+        });
+        db.run(`DELETE FROM notifications WHERE timestamp <= ${currentTime}`);
     },
 
     printTimezoneDataBase: () => {

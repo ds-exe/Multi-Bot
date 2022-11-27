@@ -8,6 +8,7 @@ const {
     open,
     close,
     addNotification,
+    sendNotifications,
 } = require("./SQLDatabase.js");
 const Reddit = require("./reddit.js");
 const Music = require("./music");
@@ -38,6 +39,9 @@ client.on("ready", () => {
     Music.init(client);
     Permissions.init(client);
     Embeds.init(client);
+    setInterval(async () => {
+        sendNotifications(client, await Timestamp.generateUnixTimeNow());
+    }, 1000 * 30);
 });
 
 client.on("messageCreate", async (message) => {
