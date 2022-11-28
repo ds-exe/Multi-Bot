@@ -114,7 +114,8 @@ async function next(message) {
             addNotification(
                 message.author.id,
                 time,
-                words.slice(words.indexOf("-") + 1).join(" ")
+                words.slice(words.indexOf("-") + 1).join(" "),
+                message
             );
             break;
         case "timezone":

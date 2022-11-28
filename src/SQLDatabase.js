@@ -136,10 +136,16 @@ module.exports = {
         });
     },
 
-    addNotification: (userID, timestamp, message) => {
+    addNotification: (userID, timestamp, text, message) => {
+        const notifyRegex = /^([A-Za-z0-9]+)$/;
+        const matches = notifyRegex.exec(text);
+        if (matches === null) {
+            return sendMessage(message, "Invalid text for notification"); // error does not match
+        }
         db.run(
-            `REPLACE INTO notifications(userID, timestamp, message) VALUES ('${userID}', ${timestamp}, '${message}')`
+            `REPLACE INTO notifications(userID, timestamp, message) VALUES ('${userID}', ${timestamp}, '${text}')`
         );
+        message.react("👍");
     },
 
     sendNotifications: (client, currentTime) => {

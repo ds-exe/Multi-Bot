@@ -59,6 +59,13 @@ module.exports = {
     },
 
     generateUnixTime: async (message, words) => {
+        if (words.indexOf("-") === -1) {
+            sendMessage(
+                message,
+                "Invalid syntax, please use:\n`time - message`"
+            );
+            return;
+        }
         return await generateTimestampHelper(
             message,
             words.slice(0, words.indexOf("-"))
