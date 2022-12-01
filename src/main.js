@@ -144,9 +144,9 @@ async function next(message) {
         case "perms":
             await Permissions.run(message, words);
             break;
-        case "shutdown":
+        case "restart":
             if (isBotOwner) {
-                sendMessage(message, "Shutting down");
+                await sendMessage(message, "Restarting");
                 close();
                 client.destroy();
                 process.exit(1);
