@@ -150,17 +150,11 @@ async function play(message) {
     });
     await queue.join(message.member.voice.channel);
     if (isPlaylist) {
-        let song = await queue
-            .playlist(match, { requestedBy: message.author.id })
-            .catch((err) => {
-                sendMessage(message, "Unknown error occured");
-            });
+        let song = await queue.playlist(match, {
+            requestedBy: message.author.id,
+        });
     } else {
-        let song = await queue
-            .play(match, { requestedBy: message.author.id })
-            .catch((err) => {
-                sendMessage(message, "Unknown error occured");
-            });
+        let song = await queue.play(match, { requestedBy: message.author.id });
     }
 }
 

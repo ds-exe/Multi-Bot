@@ -30,6 +30,7 @@ const client = new Client({
 const token = config.token;
 const prefix = config.prefix;
 const botOwner = config.owner;
+const errorChannelID = config.errorChannelID;
 
 client.on("ready", () => {
     console.log("Connected as " + client.user.tag);
@@ -64,8 +65,18 @@ client.on("messageCreate", async (message) => {
             await next(message);
         } catch (e) {
             sendMessage(message, "An unknown error occured");
-            //console.log("crash");
-            //console.log(e);
+            const errorChannel = await client.channels
+                .fetch(errorChannelID)
+                .catch((err) => {});
+            if (!errorChannel) {
+                return;
+            }
+            sendMessage(
+                {
+                    channel: errorChannel,
+                },
+                `\`\`\`${e.stack}\`\`\``
+            );
         }
     }
 });
