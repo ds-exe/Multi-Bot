@@ -137,7 +137,8 @@ module.exports = {
     },
 
     addNotification: (userID, timestamp, text, message) => {
-        const notifyRegex = /^([A-Za-z0-9]+)$/;
+        console.log(text);
+        const notifyRegex = /^([A-Za-z0-9 ]+)$/;
         const matches = notifyRegex.exec(text);
         if (matches === null) {
             return sendMessage(message, "Invalid text for notification"); // error does not match
