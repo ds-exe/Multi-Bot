@@ -137,7 +137,6 @@ module.exports = {
     },
 
     addNotification: (userID, timestamp, text, message) => {
-        console.log(text);
         const notifyRegex = /^([A-Za-z0-9 ]+)$/;
         const matches = notifyRegex.exec(text);
         if (matches === null) {
