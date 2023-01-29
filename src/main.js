@@ -93,7 +93,9 @@ function isCommunicationDisabled(message) {
 }
 
 async function next(message) {
-    message.suppressEmbeds(true);
+    if (!isDM(message)) {
+        message.suppressEmbeds(true);
+    }
     const isBotOwner = message.author.id === botOwner;
     msg = message.content;
     msg = msg.replace(`${prefix}`, "").toLowerCase();

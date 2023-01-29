@@ -145,11 +145,11 @@ module.exports = {
         db.run(
             `REPLACE INTO notifications(userID, timestamp, message) VALUES ('${userID}', ${timestamp}, '${text}')`
         );
-        message.react("👍");
+        message.react("👍").catch((err) => {});
     },
 
-    sendNotifications: (client, currentTime) => {
-        const sqlRead = `SELECT * FROM notifications WHERE timestamp <= ${currentTime}`;
+    sendNotifications: (client, currentTimeSeconds) => {
+        const sqlRead = `SELECT * FROM notifications WHERE timestamp <= ${currentTimeSeconds}`;
 
         db.all(sqlRead, [], (err, rows) => {
             if (err) return console.error(err.message);
@@ -157,10 +157,19 @@ module.exports = {
             rows.forEach(async (row) => {
                 (await client.users.fetch(row.userID))
                     .send(row.message)
+                    .then(() => {
+                        db.run(
+                            `DELETE FROM notifications WHERE timestamp = ${row.timestamp} AND userID = '${row.userID}'`
+                        );
+                    })
                     .catch((err) => {});
             });
         });
-        db.run(`DELETE FROM notifications WHERE timestamp <= ${currentTime}`);
+        db.run(
+            `DELETE FROM notifications WHERE timestamp <= ${
+                currentTimeSeconds - 86400
+            }`
+        );
     },
 
     printTimezoneDataBase: () => {
