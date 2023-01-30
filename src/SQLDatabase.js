@@ -1,5 +1,5 @@
 const sqlite3 = require("sqlite3").verbose();
-const { sendMessage, getTimezone } = require("./utility");
+const { sendMessage, getTimezone, react } = require("./utility");
 let db = null;
 
 module.exports = {
@@ -145,7 +145,7 @@ module.exports = {
         db.run(
             `REPLACE INTO notifications(userID, timestamp, message) VALUES ('${userID}', ${timestamp}, '${text}')`
         );
-        message.react("👍").catch((err) => {});
+        react(message, "👍");
     },
 
     sendNotifications: (client, currentTimeSeconds) => {

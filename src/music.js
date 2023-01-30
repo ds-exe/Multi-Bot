@@ -1,5 +1,5 @@
 const { Player } = require("discord-music-player");
-const { isDM, sendMessage } = require("./utility.js");
+const { isDM, sendMessage, react } = require("./utility.js");
 const { hasPermissionRole, hasPermissionUser } = require("./SQLDatabase.js");
 const { trackAdded, trackPlaying, playlistAdded } = require("./embeds.js");
 
@@ -212,7 +212,7 @@ function skip(message, guildQueue) {
         return;
     }
     guildQueue.skip();
-    message.react("👍");
+    react(message, "👍");
 }
 
 function stop(message, guildQueue) {
@@ -226,7 +226,7 @@ function stop(message, guildQueue) {
     }
     guildQueue.clearQueue();
     guildQueue.skip();
-    message.react("👍");
+    react(message, "👍");
 }
 
 function leave(message, guildQueue) {
@@ -235,7 +235,7 @@ function leave(message, guildQueue) {
         return;
     }
     guildQueue.leave();
-    message.react("👍");
+    react(message, "👍");
 }
 
 function shuffle(message, guildQueue) {
@@ -248,7 +248,7 @@ function shuffle(message, guildQueue) {
         return;
     }
     guildQueue.shuffle();
-    message.react("👍");
+    react(message, "👍");
 }
 
 function loop(message, guildQueue) {

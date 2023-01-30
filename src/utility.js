@@ -10,6 +10,10 @@ module.exports = {
         return await message.channel.send(msg).catch((err) => {});
     },
 
+    react: async (message, reaction) => {
+        return await message.react(reaction).catch((err) => {});
+    },
+
     getTimezone: (timezone) => {
         zonesRegex = /^([a-z]+)$/;
         const zoneMatch = zonesRegex.exec(timezone);
