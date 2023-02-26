@@ -1,0 +1,24 @@
+{
+  "name": "multibot",
+  "version": "4.8.94",
+  "description": "Development Bot",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "DS",
+  "license": "MIT",
+  "dependencies": {
+    "@discordjs/opus": "^0.5.3",
+    "discord.js": "https://github.com/ds902022/discord.js/tree/12840784e94b0191294b9b95626b610843d1ea79",
+    "js-levenshtein": "^1.1.6",
+    "jsonfile": "^4.0.0",
+    "axios": "0.26.0",
+    "ffmpeg": "^0.0.4",
+    "ffmpeg-static": "^4.4.1",
+    "fluent-ffmpeg": "^2.1.2",
+    "ytdl-core": "^4.10.1",
+    "luxon": "^2.3.1",
+    "sqlite3": "^5.0.8"
+  }
+}
