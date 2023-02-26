@@ -10,7 +10,7 @@
   "license": "MIT",
   "dependencies": {
     "@discordjs/opus": "^0.5.3",
-    "discord.js": "https://github.com/ds902022/discord.js/tree/12840784e94b0191294b9b95626b610843d1ea79",
+    "discord.js": "12.5.3",
     "js-levenshtein": "^1.1.6",
     "jsonfile": "^4.0.0",
     "axios": "0.26.0",
