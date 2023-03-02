@@ -5,6 +5,7 @@ const {
     GatewayIntentBits,
     Partials,
     PermissionsBitField,
+    ActivityType,
 } = require("discord.js");
 const Timestamp = require("./timestamp.js");
 const {
@@ -41,7 +42,15 @@ const errorChannelID = config.errorChannelID;
 client.on("ready", () => {
     console.log("Connected as " + client.user.tag);
     //Setting activity: "Now listening to !help"
-    client.user.setActivity(`${config.prefix}help`, { type: "LISTENING" });
+    client.user.setPresence({
+        status: "online",
+        activities: [
+            {
+                name: `${config.prefix}help`,
+                type: ActivityType.Listening,
+            },
+        ],
+    });
     open();
     Music.init(client);
     Permissions.init(client);
