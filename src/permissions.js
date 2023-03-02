@@ -145,7 +145,7 @@ async function getUserData(message) {
     if (out === "") {
         out = "No user permissions found";
     }
-    sendMessage(message, "```" + out + "```");
+    sendMessage(message, "```\n" + out + "```");
 }
 
 async function getRoleData(message) {
@@ -158,5 +158,5 @@ async function getRoleData(message) {
     if (out === "") {
         out = "No role permissions found";
     }
-    sendMessage(message, "```" + out + "```");
+    sendMessage(message, "```\n" + out + "```");
 }
