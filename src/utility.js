@@ -1,10 +1,12 @@
 const path = require("node:path");
 const timezones = require(path.normalize("./../timezones.json"));
 const { DateTime } = require("luxon");
+const { ChannelType } = require("discord.js");
 
 module.exports = {
     isDM: (message) =>
-        message.channel.type === "DM" || message.channel.type === "GROUP",
+        message.channel.type === ChannelType.DM ||
+        message.channel.type === ChannelType.GroupDM,
 
     sendMessage: async (message, msg) => {
         return await message.channel.send(msg).catch((err) => {});
