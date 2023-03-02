@@ -1,5 +1,5 @@
 const { DateTime } = require("luxon");
-const Embeds = require("./embeds.js");
+const { timestampEmbed } = require("./embeds.js");
 const { getUserTimezone } = require("./SQLDatabase.js");
 const { sendMessage, getTimezone } = require("./utility");
 
@@ -13,13 +13,7 @@ module.exports = {
         if (!unixTime) {
             return;
         }
-        Embeds.timestampEmbed.setDescription(`<t:${unixTime}:F>`);
-        Embeds.timestampEmbed.fields = [];
-        Embeds.timestampEmbed.addFields({
-            name: `Copy Link:`,
-            value: `\\<t:${unixTime}:F>`,
-        });
-        sendMessage(message, { embeds: [Embeds.timestampEmbed] });
+        sendMessage(message, { embeds: [timestampEmbed(`<t:${unixTime}:F>`)] });
     },
 
     generateTimestampUntil: async (message, words) => {
@@ -27,13 +21,7 @@ module.exports = {
         if (!unixTime) {
             return;
         }
-        Embeds.timestampEmbed.setDescription(`<t:${unixTime}:R>`);
-        Embeds.timestampEmbed.fields = [];
-        Embeds.timestampEmbed.addFields({
-            name: `Copy Link:`,
-            value: `\\<t:${unixTime}:R>`,
-        });
-        sendMessage(message, { embeds: [Embeds.timestampEmbed] });
+        sendMessage(message, { embeds: [timestampEmbed(`<t:${unixTime}:R>`)] });
     },
 
     generateNow: async (message, words) => {

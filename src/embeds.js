@@ -25,10 +25,16 @@ exports.musicEmbed = null;
 
 exports.permsEmbed = null;
 
-exports.timestampEmbed = new Discord.EmbedBuilder()
-    .setColor("#00FFFF")
-    .setTitle("Local time:")
-    .setDescription(`<t:0:F>`);
+exports.timestampEmbed = (time) => {
+    return new Discord.EmbedBuilder()
+        .setColor("#00FFFF")
+        .setTitle("Local time:")
+        .setDescription(time)
+        .addFields({
+            name: `Copy Link:`,
+            value: `\\${time}`,
+        });
+};
 
 exports.trackAdded = (song) => {
     return new Discord.EmbedBuilder()
