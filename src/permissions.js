@@ -25,7 +25,7 @@ module.exports = {
         }
         if (
             !message.member.permissions.has(
-                Discord.Permissions.FLAGS.ADMINISTRATOR
+                Discord.PermissionsBitField.Flags.Administrator
             )
         ) {
             return sendMessage(
