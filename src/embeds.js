@@ -25,13 +25,13 @@ exports.musicEmbed = null;
 
 exports.permsEmbed = null;
 
-exports.timestampEmbed = new Discord.MessageEmbed()
+exports.timestampEmbed = new Discord.EmbedBuilder()
     .setColor("#00FFFF")
     .setTitle("Local time:")
     .setDescription(`<t:0:F>`);
 
 exports.trackAdded = (song) => {
-    return new Discord.MessageEmbed()
+    return new Discord.EmbedBuilder()
         .setColor("#0099ff")
         .setTitle(`Added Track`)
         .setThumbnail(`${song.thumbnail}`)
@@ -43,7 +43,7 @@ exports.trackAdded = (song) => {
 };
 
 exports.playlistAdded = (playlist) => {
-    return new Discord.MessageEmbed()
+    return new Discord.EmbedBuilder()
         .setColor("#0099ff")
         .setTitle(`Added Playlist`)
         .setDescription(`[${playlist}](${playlist.url})`)
@@ -63,7 +63,7 @@ exports.playlistAdded = (playlist) => {
 };
 
 exports.trackPlaying = (name, link) => {
-    return new Discord.MessageEmbed()
+    return new Discord.EmbedBuilder()
         .setColor("#0099ff")
         .setDescription(`Started playing [${name}](${link})`);
 };
@@ -72,7 +72,7 @@ async function generateEmbed(commands) {
     const creatorID = "74968333413257216";
     const creator = await client.users.fetch(creatorID);
     const userString = creator.username + "#" + creator.discriminator;
-    return new Discord.MessageEmbed()
+    return new Discord.EmbedBuilder()
         .setColor("#0099ff")
         .setTitle(`${botTitle}`)
         .setThumbnail(`${embedThumbnail}`)

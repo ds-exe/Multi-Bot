@@ -2,6 +2,7 @@ const { Player } = require("discord-music-player");
 const { isDM, sendMessage, react } = require("./utility.js");
 const { hasPermissionRole, hasPermissionUser } = require("./SQLDatabase.js");
 const { trackAdded, trackPlaying, playlistAdded } = require("./embeds.js");
+const { PermissionsBitField } = require("discord.js");
 
 let client = null;
 
@@ -100,7 +101,10 @@ module.exports = {
                 "You need to be in a voice channel to use music commands!"
             );
         const permissions = voiceChannel.permissionsFor(message.client.user);
-        if (!permissions.has("CONNECT") || !permissions.has("SPEAK")) {
+        if (
+            !permissions.has(PermissionsBitField.Flags.Connect) ||
+            !permissions.has(PermissionsBitField.Flags.Speak)
+        ) {
             return sendMessage(
                 message,
                 "I need the permissions to join and speak in your voice channel!"
