@@ -1,6 +1,11 @@
 const path = require("node:path");
 const config = require(path.normalize("./../config.json"));
-const { Client, Intents } = require("discord.js");
+const {
+    Client,
+    GatewayIntentBits,
+    Partials,
+    PermissionsBitField,
+} = require("discord.js");
 const Timestamp = require("./timestamp.js");
 const {
     setTimezone,
@@ -17,13 +22,14 @@ const Embeds = require("./embeds.js");
 const { isDM, sendMessage } = require("./utility.js");
 const client = new Client({
     intents: [
-        Intents.FLAGS.GUILDS,
-        Intents.FLAGS.GUILD_MESSAGES,
-        Intents.FLAGS.GUILD_VOICE_STATES,
-        Intents.FLAGS.DIRECT_MESSAGES,
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent,
+        GatewayIntentBits.GuildVoiceStates,
+        GatewayIntentBits.DirectMessages,
     ],
     partials: [
-        "CHANNEL", // Required to receive DMs
+        Partials.Channel, // Required to receive DMs
     ],
 });
 
@@ -57,7 +63,7 @@ client.on("messageCreate", async (message) => {
             message.channel.permissionsFor &&
             !message.channel
                 .permissionsFor(message.client.user)
-                .has("SEND_MESSAGES")
+                .has(PermissionsBitField.Flags.SendMessages)
         ) {
             return;
         }
