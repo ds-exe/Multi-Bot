@@ -1,13 +1,20 @@
 # Installation and Setup
 
-Download and extract the ZIP from github
+Prerequisites:
 
-Install yarn via node `npm install -g yarn`
+-   Node.js 16.9 or higher (latest LTS works)
+-   git
 
-Run `yarn` inside the folder to install all dependencies
+1. `git clone https://github.com/ds-exe/Multi-Bot.git && cd Multi-Bot`
+2. `npm install -g yarn`
+3. `yarn`
+4. Remove `.example` from both `MultiDatabase.db.example` and `config.json.example`
+5. Edit `config.json` to populate all fields as required
 
-Remove `.example` from both `MultiDatabase.db.example` and `config.json.example`
+Run the bot via your chosen script (launch.bat included for windows, launch.sh for linux via pm2)
 
-Edit `config.json` to populate all fields as required
+# Updating existing bot
 
-Run the bot via your chosen script
+1. Navigate to Multi-Bot directory
+2. Pull repo changes: `git pull`
+3. Update packages: `yarn`
