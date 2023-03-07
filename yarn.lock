@@ -1640,9 +1640,10 @@ yaml@^1.10.2:
   resolved "https://registry.yarnpkg.com/yaml/-/yaml-1.10.2.tgz#2301c5ffbf12b467de8da2333a459e29e7920e4b"
   integrity sha512-r3vXyErRCYJ7wg28yvBY5VSoAF8ZvlcW9/BwUzEtUsjvX/DKs24dIkuwjtuprwJJHsbyUbLApepYTR1BN4uHrg==
 
-youtubei@^0.0.1-rc.34, "youtubei@https://github.com/ds-exe/youtubei.git#dist":
+youtubei@^0.0.1-rc.34:
   version "0.0.1-rc.36"
-  resolved "https://github.com/ds-exe/youtubei.git#3a899c5abcdec92a17e0a88ae0b132f4a82cbdae"
+  resolved "https://registry.yarnpkg.com/youtubei/-/youtubei-0.0.1-rc.36.tgz#d6bbc2df8c07746c951c06b73055f92477170d17"
+  integrity sha512-ea3/92geNbDPoFHQYxhIUT9OP1TdaJro9vh7908GT+aH/Qsk6Z9FfYo2zr4WiL2ubXK1pFfIzYgLFnk3jKcj5A==
 
 ytdl-core@^4.11.2:
   version "4.11.2"

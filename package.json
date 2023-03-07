@@ -21,7 +21,6 @@
     "patch-package": "^6.5.1"
   },
   "resolutions": {
-    "discord-music-player/ytsr": "https://github.com/ds-exe/node-ytsr.git#dist",
-    "discord-music-player/youtubei": "https://github.com/ds-exe/youtubei.git#dist"
+    "discord-music-player/ytsr": "https://github.com/ds-exe/node-ytsr.git#dist"
   }
 }
