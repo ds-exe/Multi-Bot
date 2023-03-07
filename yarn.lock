@@ -491,9 +491,10 @@ discord-api-types@^0.37.20, discord-api-types@^0.37.23:
   resolved "https://registry.yarnpkg.com/discord-api-types/-/discord-api-types-0.37.35.tgz#d0dad0bce7ce5bffc633030f17464e45148d9f28"
   integrity sha512-iyKZ/82k7FX3lcmHiAvvWu5TmyfVo78RtghBV/YsehK6CID83k5SI03DKKopBcln+TiEIYw5MGgq7SJXSpNzMg==
 
-"discord-music-player@https://github.com/ds-exe/discord-music-player.git#dist":
+discord-music-player@^9.1.1:
   version "9.1.1"
-  resolved "https://github.com/ds-exe/discord-music-player.git#9c75ad7b69b1989ecb2340168121f7215d628e08"
+  resolved "https://registry.yarnpkg.com/discord-music-player/-/discord-music-player-9.1.1.tgz#aa990517cc0671d6b93baf72ce9ab7bb713b05c8"
+  integrity sha512-pTSD58Ea4kwlpUlPpGZXvogMEwwZQsbgfIlPNflRDdaeZfY37VOQhnQ3YU18ClCIint8o0LL1jHlqJKN3oP2PQ==
   dependencies:
     "@discordjs/opus" "^0.8.0"
     "@discordjs/voice" "^0.11.0"

@@ -1,0 +1,26 @@
+diff --git a/node_modules/discord-music-player/dist/utils/Utils.js b/node_modules/discord-music-player/dist/utils/Utils.js
+index 2b28de6..85950bb 100644
+--- a/node_modules/discord-music-player/dist/utils/Utils.js
++++ b/node_modules/discord-music-player/dist/utils/Utils.js
+@@ -229,17 +229,17 @@ class Utils {
+                 throw __1.DMPErrors.INVALID_PLAYLIST;
+             let SpotifyResult = {
+                 name: SpotifyResultData.name,
+-                author: SpotifyResultData.type === 'playlist' ? SpotifyResultData.owner.display_name : SpotifyResultData.artists[0].name,
++                author: SpotifyResultData.title,
+                 url: Search,
+                 songs: [],
+                 type: SpotifyResultData.type
+             };
+-            SpotifyResult.songs = (await Promise.all((SpotifyResultData.tracks?.items ?? []).map(async (track, index) => {
++            SpotifyResult.songs = (await Promise.all((SpotifyResultData.trackList ?? []).map(async (track, index) => {
+                 if (Limit !== -1 && index >= Limit)
+                     return null;
+                 if (SpotifyResult.type === 'playlist')
+-                    track = track.track;
+-                const Result = await this.search(`${track.artists[0].name} - ${track.name}`, SOptions, Queue).catch(() => null);
++                    track = track
++                const Result = await this.search(`${track.title} - ${track.subtitle}`, SOptions, Queue).catch(() => null);
+                 if (Result && Result[0]) {
+                     Result[0].data = SOptions.data;
+                     return Result[0];
