@@ -1,8 +1,8 @@
 diff --git a/node_modules/discord-music-player/dist/utils/Utils.js b/node_modules/discord-music-player/dist/utils/Utils.js
-index 2b28de6..796f285 100644
+index 2b28de6..4ccd756 100644
 --- a/node_modules/discord-music-player/dist/utils/Utils.js
 +++ b/node_modules/discord-music-player/dist/utils/Utils.js
-@@ -225,21 +225,49 @@ class Utils {
+@@ -225,29 +225,60 @@ class Utils {
          }
          else if (SpotifyPlaylistLink) {
              let SpotifyResultData = await getData(Search).catch(() => null);
@@ -45,14 +45,36 @@ index 2b28de6..796f285 100644
                  type: SpotifyResultData.type
              };
 -            SpotifyResult.songs = (await Promise.all((SpotifyResultData.tracks?.items ?? []).map(async (track, index) => {
-+            SpotifyResult.songs = (await Promise.all((spotifyTracks ?? []).map(async (track, index) => {
-                 if (Limit !== -1 && index >= Limit)
-                     return null;
-                 if (SpotifyResult.type === 'playlist')
+-                if (Limit !== -1 && index >= Limit)
+-                    return null;
+-                if (SpotifyResult.type === 'playlist')
 -                    track = track.track;
 -                const Result = await this.search(`${track.artists[0].name} - ${track.name}`, SOptions, Queue).catch(() => null);
-+                    track = track
-+                const Result = await this.search(`${track.title??track.track.artists[0].name} - ${track.subtitle??track.track.name}`, SOptions, Queue).catch(() => null);
-                 if (Result && Result[0]) {
-                     Result[0].data = SOptions.data;
-                     return Result[0];
+-                if (Result && Result[0]) {
+-                    Result[0].data = SOptions.data;
+-                    return Result[0];
+-                }
+-                else
+-                    return null;
+-            })))
+-                .filter((V) => V !== null);
++            SpotifyResult.songs = [];
++            for (let i = 0; i < spotifyTracks.length; i += 50) {
++                SpotifyResult.songs = SpotifyResult.songs.concat((await Promise.all((spotifyTracks.slice(i, i+50) ?? []).map(async (track, index) => {
++                    if (Limit !== -1 && index >= Limit)
++                        return null;
++                    if (SpotifyResult.type === 'playlist')
++                        track = track
++                    const Result = await this.search(`${track.title??track.track.artists[0].name} - ${track.subtitle??track.track.name}`, SOptions, Queue).catch(() => null);
++                    if (Result && Result[0]) {
++                        Result[0].data = SOptions.data;
++                        return Result[0];
++                    }
++                    else
++                        return null;
++                })))
++                    .filter((V) => V !== null));
++            }
+             if (SpotifyResult.songs.length === 0)
+                 throw __1.DMPErrors.INVALID_PLAYLIST;
+             if (SOptions.shuffle)
