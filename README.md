@@ -16,7 +16,5 @@ Run the bot via your chosen script (launch.bat included for windows, launch.sh f
 # Updating existing bot
 
 1. Navigate to Multi-Bot directory
-2. `npx patch-package --reverse` (Not required if patches haven't changed)
-3. `git pull`
-4. `yarn`
-5. Restart bot to run new version
+2. `yarn update`
+3. Restart bot to run new version
