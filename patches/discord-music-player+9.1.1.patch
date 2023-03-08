@@ -1,8 +1,40 @@
 diff --git a/node_modules/discord-music-player/dist/utils/Utils.js b/node_modules/discord-music-player/dist/utils/Utils.js
-index 2b28de6..85950bb 100644
+index 2b28de6..796f285 100644
 --- a/node_modules/discord-music-player/dist/utils/Utils.js
 +++ b/node_modules/discord-music-player/dist/utils/Utils.js
-@@ -229,17 +229,17 @@ class Utils {
+@@ -225,21 +225,49 @@ class Utils {
+         }
+         else if (SpotifyPlaylistLink) {
+             let SpotifyResultData = await getData(Search).catch(() => null);
++            let spotifyTracks = SpotifyResultData.trackList;
++            if (spotifyTracks.length === 100) {
++                const tracksNextEndpoint = `https://api.spotify.com/v1/playlists/${SpotifyResultData.id}/tracks?offset=100`;
++                // Create Guest Token
++                const tokenResponse = await fetch(
++                    'https://open.spotify.com/get_access_token?reason=transport&productType=web_player',
++                {
++                    headers: {
++                    'Content-Type': 'application/json',
++                    },
++                }
++                );
++                const { accessToken } = await tokenResponse.json();
++
++                let fetchNext = tracksNextEndpoint;
++                // Fetch playlist tracks through pagination until there is nothing left to fetch
++                do {
++                    const tracksResponse = await fetch(fetchNext, {
++                        headers: {
++                        'Content-Type': 'application/json',
++                        'Authorization': `Bearer ${accessToken}`,
++                        },
++                    });
++                    const { items, next } = await tracksResponse.json();
++                    spotifyTracks = spotifyTracks.concat(items);
++                    fetchNext = next;
++                } while (fetchNext);
++            }
+             if (!SpotifyResultData || !['playlist', 'album'].includes(SpotifyResultData.type))
                  throw __1.DMPErrors.INVALID_PLAYLIST;
              let SpotifyResult = {
                  name: SpotifyResultData.name,
@@ -13,14 +45,14 @@ index 2b28de6..85950bb 100644
                  type: SpotifyResultData.type
              };
 -            SpotifyResult.songs = (await Promise.all((SpotifyResultData.tracks?.items ?? []).map(async (track, index) => {
-+            SpotifyResult.songs = (await Promise.all((SpotifyResultData.trackList ?? []).map(async (track, index) => {
++            SpotifyResult.songs = (await Promise.all((spotifyTracks ?? []).map(async (track, index) => {
                  if (Limit !== -1 && index >= Limit)
                      return null;
                  if (SpotifyResult.type === 'playlist')
 -                    track = track.track;
 -                const Result = await this.search(`${track.artists[0].name} - ${track.name}`, SOptions, Queue).catch(() => null);
 +                    track = track
-+                const Result = await this.search(`${track.title} - ${track.subtitle}`, SOptions, Queue).catch(() => null);
++                const Result = await this.search(`${track.title??track.track.artists[0].name} - ${track.subtitle??track.track.name}`, SOptions, Queue).catch(() => null);
                  if (Result && Result[0]) {
                      Result[0].data = SOptions.data;
                      return Result[0];
