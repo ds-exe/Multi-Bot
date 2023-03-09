@@ -1,145 +1,133 @@
-const { Player } = require("discord-music-player");
-const { isDM, sendMessage, react } = require("./utility.js");
-const { hasPermissionRole, hasPermissionUser } = require("./SQLDatabase.js");
-const { trackAdded, trackPlaying, playlistAdded } = require("./embeds.js");
-const { PermissionsBitField } = require("discord.js");
+import { Player } from "discord-music-player";
+import { isDM, sendMessage, react } from "./utility.js";
+import { hasPermissionRole, hasPermissionUser } from "./SQLDatabase.js";
+import { trackAdded, trackPlaying, playlistAdded } from "./embeds.js";
+import { PermissionsBitField } from "discord.js";
 
 let client = null;
 
-module.exports = {
-    init: (mainClient) => {
-        client = mainClient;
-        const player = new Player(client, {
-            timeout: 900000, // 15 mins
-        });
-        client.player = player;
-        client.player
-            // Emitted when channel was empty.
-            .on("channelEmpty", (queue) =>
-                sendMessage(
-                    queue.data.message,
-                    `Everyone left the Voice Channel, queue ended.`
-                )
+export function init(mainClient) {
+    client = mainClient;
+    const player = new Player(client, {
+        timeout: 900000, // 15 mins
+    });
+    client.player = player;
+    client.player
+        // Emitted when channel was empty.
+        .on("channelEmpty", (queue) =>
+            sendMessage(
+                queue.data.message,
+                `Everyone left the Voice Channel, queue ended.`
             )
-            // Emitted when a song was added to the queue.
-            .on("songAdd", (queue, song) => {
-                if (song.data && song.data.errored) {
-                    return;
-                }
-                if (queue.repeatMode !== 0) {
-                    return;
-                }
-                sendMessage(queue.data.message, {
-                    embeds: [trackAdded(song)],
-                });
-            })
-            .on("playlistAdd", (queue, playlist) => {
-                sendMessage(queue.data.message, {
-                    embeds: [playlistAdded(playlist)],
-                });
-            })
-            // Emitted when a song changed.
-            .on("songChanged", async (queue, newSong, oldSong) => {
-                if (queue.data.previousMessage) {
-                    queue.data.previousMessage.delete();
-                }
-                queue.data.previousMessage = await sendMessage(
-                    queue.data.message,
-                    {
-                        embeds: [trackPlaying(newSong.name, newSong.url)],
-                    }
-                );
-            })
-            // Emitted when a first song in the queue started playing.
-            .on("songFirst", async (queue, song) => {
-                queue.data.previousMessage = await sendMessage(
-                    queue.data.message,
-                    {
-                        embeds: [trackPlaying(song.name, song.url)],
-                    }
-                );
-            })
-            // Emitted when someone disconnected the bot from the channel.
-            .on("clientDisconnect", (queue) =>
-                sendMessage(
-                    queue.data.message,
-                    `I was kicked from the Voice Channel, queue ended.`
-                )
-            )
-            // Emitted when there was an error in runtime
-            .on("error", (error, queue) => {
-                handleError(error, queue);
+        )
+        // Emitted when a song was added to the queue.
+        .on("songAdd", (queue, song) => {
+            if (song.data && song.data.errored) {
+                return;
+            }
+            if (queue.repeatMode !== 0) {
+                return;
+            }
+            sendMessage(queue.data.message, {
+                embeds: [trackAdded(song)],
             });
-    },
+        })
+        .on("playlistAdd", (queue, playlist) => {
+            sendMessage(queue.data.message, {
+                embeds: [playlistAdded(playlist)],
+            });
+        })
+        // Emitted when a song changed.
+        .on("songChanged", async (queue, newSong, oldSong) => {
+            if (queue.data.previousMessage) {
+                queue.data.previousMessage.delete();
+            }
+            queue.data.previousMessage = await sendMessage(queue.data.message, {
+                embeds: [trackPlaying(newSong.name, newSong.url)],
+            });
+        })
+        // Emitted when a first song in the queue started playing.
+        .on("songFirst", async (queue, song) => {
+            queue.data.previousMessage = await sendMessage(queue.data.message, {
+                embeds: [trackPlaying(song.name, song.url)],
+            });
+        })
+        // Emitted when someone disconnected the bot from the channel.
+        .on("clientDisconnect", (queue) =>
+            sendMessage(
+                queue.data.message,
+                `I was kicked from the Voice Channel, queue ended.`
+            )
+        )
+        // Emitted when there was an error in runtime
+        .on("error", (error, queue) => {
+            handleError(error, queue);
+        });
+}
 
-    run: async (command, message) => {
-        if (isDM(message)) {
-            sendMessage(message, "Can't use this command in DM's");
-            return;
-        }
-        if (
-            !(await hasPermissionRole(
-                message,
-                message.member.roles.cache,
-                message.guild.id
-            )) &&
-            !(await hasPermissionUser(
-                message,
-                message.author.id,
-                message.guild.id
-            ))
-        ) {
-            return sendMessage(
-                message,
-                "You do not have permission to use this command!"
-            );
-        }
-        const voiceChannel = message.member.voice.channel;
-        if (!voiceChannel)
-            return sendMessage(
-                message,
-                "You need to be in a voice channel to use music commands!"
-            );
-        const permissions = voiceChannel.permissionsFor(message.client.user);
-        if (
-            !permissions.has(PermissionsBitField.Flags.Connect) ||
-            !permissions.has(PermissionsBitField.Flags.Speak)
-        ) {
-            return sendMessage(
-                message,
-                "I need the permissions to join and speak in your voice channel!"
-            );
-        }
+export async function run(command, message) {
+    if (isDM(message)) {
+        sendMessage(message, "Can't use this command in DM's");
+        return;
+    }
+    if (
+        !(await hasPermissionRole(
+            message,
+            message.member.roles.cache,
+            message.guild.id
+        )) &&
+        !(await hasPermissionUser(message, message.author.id, message.guild.id))
+    ) {
+        return sendMessage(
+            message,
+            "You do not have permission to use this command!"
+        );
+    }
+    const voiceChannel = message.member.voice.channel;
+    if (!voiceChannel)
+        return sendMessage(
+            message,
+            "You need to be in a voice channel to use music commands!"
+        );
+    const permissions = voiceChannel.permissionsFor(message.client.user);
+    if (
+        !permissions.has(PermissionsBitField.Flags.Connect) ||
+        !permissions.has(PermissionsBitField.Flags.Speak)
+    ) {
+        return sendMessage(
+            message,
+            "I need the permissions to join and speak in your voice channel!"
+        );
+    }
 
-        let guildQueue = client.player.getQueue(message.guild.id);
-        switch (command) {
-            case "play":
-                await play(message);
-                break;
-            case "skip":
-                skip(message, guildQueue);
-                break;
-            case "stop":
-                stop(message, guildQueue);
-                break;
-            case "leave":
-                leave(message, guildQueue);
-                break;
-            case "shuffle":
-                shuffle(message, guildQueue);
-                break;
-            case "loop":
-                loop(message, guildQueue);
-                break;
-            case "setvolume":
-                setVolume(message, guildQueue);
-                break;
-            default:
-                sendMessage(message, "You need to enter a valid command!");
-                break;
-        }
-    },
-};
+    let guildQueue = client.player.getQueue(message.guild.id);
+    switch (command) {
+        case "play":
+            await play(message);
+            break;
+        case "skip":
+            skip(message, guildQueue);
+            break;
+        case "stop":
+            stop(message, guildQueue);
+            break;
+        case "leave":
+            leave(message, guildQueue);
+            break;
+        case "shuffle":
+            shuffle(message, guildQueue);
+            break;
+        case "loop":
+            loop(message, guildQueue);
+            break;
+        case "setvolume":
+            setVolume(message, guildQueue);
+            break;
+        default:
+            sendMessage(message, "You need to enter a valid command!");
+            break;
+    }
+}
 
 async function play(message) {
     const args = message.content.split(" ");
@@ -277,7 +265,7 @@ function setVolume(message, guildQueue) {
         );
     }
     const volume = /^([0-9]+)$/;
-    matches = volume.exec(args.join(" "));
+    let matches = volume.exec(args.join(" "));
     if (matches === null) {
         return sendMessage(
             message,

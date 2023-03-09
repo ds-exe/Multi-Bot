@@ -1,6 +1,7 @@
 {
   "name": "multibot",
   "version": "4.8.94",
+  "type": "module",
   "description": "Development Bot",
   "main": "main.js",
   "scripts": {

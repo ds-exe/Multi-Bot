@@ -1,70 +1,58 @@
-const { DateTime } = require("luxon");
-const { timestampEmbed } = require("./embeds.js");
-const { getUserTimezone } = require("./SQLDatabase.js");
-const { sendMessage, getTimezone } = require("./utility");
+import { DateTime } from "luxon";
+import { timestampEmbed } from "./embeds.js";
+import { getUserTimezone } from "./SQLDatabase.js";
+import { sendMessage, getTimezone } from "./utility.js";
 
 const monthLengths = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]; // Leap year check performed on usage
 const instructions =
     "\nTime in form: `hh:mm`\nOptional date in form: `dd/mm` or `dd/mm/yyyy` or `yyyy-mm-dd`\nOptional timezone specifier: `UTC{+/-}hh` or abbreviation";
 
-module.exports = {
-    generateTimestamp: async (message, words) => {
-        const unixTime = await generateTimestampHelper(message, words);
-        if (!unixTime) {
+export async function generateTimestamp(message, words) {
+    const unixTime = await generateTimestampHelper(message, words);
+    if (!unixTime) {
+        return;
+    }
+    sendMessage(message, { embeds: [timestampEmbed(`<t:${unixTime}:F>`)] });
+}
+
+export async function generateTimestampUntil(message, words) {
+    const unixTime = await generateTimestampHelper(message, words);
+    if (!unixTime) {
+        return;
+    }
+    sendMessage(message, { embeds: [timestampEmbed(`<t:${unixTime}:R>`)] });
+}
+
+export async function generateNow(message, words) {
+    let date = DateTime.utc();
+    const tz = await getUserTimezone(message.author.id);
+    date = date.setZone(tz, { keepLocalTime: false });
+    if (words[0] !== undefined) {
+        let success = false;
+        ({ date, success } = setTimezoneChangeLocal(words[0], date, success));
+        if (!success) {
+            sendMessage(message, "Not valid timezone");
             return;
         }
-        sendMessage(message, { embeds: [timestampEmbed(`<t:${unixTime}:F>`)] });
-    },
+    }
+    sendMessage(message, `\`${date.toLocaleString(DateTime.DATETIME_MED)}\``);
+}
 
-    generateTimestampUntil: async (message, words) => {
-        const unixTime = await generateTimestampHelper(message, words);
-        if (!unixTime) {
-            return;
-        }
-        sendMessage(message, { embeds: [timestampEmbed(`<t:${unixTime}:R>`)] });
-    },
+export async function generateUnixTime(message, words) {
+    if (words.indexOf("-") === -1) {
+        sendMessage(message, "Invalid syntax, please use:\n`time - message`");
+        return;
+    }
+    return await generateTimestampHelper(
+        message,
+        words.slice(0, words.indexOf("-"))
+    );
+}
 
-    generateNow: async (message, words) => {
-        let date = DateTime.utc();
-        tz = await getUserTimezone(message.author.id);
-        date = date.setZone(tz, { keepLocalTime: false });
-        if (words[0] !== undefined) {
-            let success = false;
-            ({ date, success } = setTimezoneChangeLocal(
-                words[0],
-                date,
-                success
-            ));
-            if (!success) {
-                sendMessage(message, "Not valid timezone");
-                return;
-            }
-        }
-        sendMessage(
-            message,
-            `\`${date.toLocaleString(DateTime.DATETIME_MED)}\``
-        );
-    },
-
-    generateUnixTime: async (message, words) => {
-        if (words.indexOf("-") === -1) {
-            sendMessage(
-                message,
-                "Invalid syntax, please use:\n`time - message`"
-            );
-            return;
-        }
-        return await generateTimestampHelper(
-            message,
-            words.slice(0, words.indexOf("-"))
-        );
-    },
-
-    generateUnixTimeNow: async () => {
-        const date = DateTime.utc();
-        return parseInt(date.toSeconds());
-    },
-};
+export async function generateUnixTimeNow() {
+    const date = DateTime.utc();
+    return parseInt(date.toSeconds());
+}
 
 async function generateTimestampHelper(message, words) {
     if (words[0] === undefined || words[0] === "help") {
@@ -76,7 +64,7 @@ async function generateTimestampHelper(message, words) {
         return;
     }
     let date = DateTime.utc();
-    tz = await getUserTimezone(message.author.id);
+    const tz = await getUserTimezone(message.author.id);
     date = date.setZone(tz, { keepLocalTime: true });
     for (let word of words) {
         let success = false;
@@ -111,7 +99,7 @@ function setTimezone(word, date, success, keepLocal) {
 }
 
 function parseTime(word, date, success) {
-    timeRegex = /^([0-9]{1,2}):([0-9]{1,2})$/;
+    const timeRegex = /^([0-9]{1,2}):([0-9]{1,2})$/;
     const matches = timeRegex.exec(word);
     if (matches === null) {
         return { date, success }; // error does not match
@@ -126,13 +114,13 @@ function parseTime(word, date, success) {
 }
 
 function parseDate(word, date, success) {
-    dateRegex = /^([0-9]{1,2})\/([0-9]{1,2})\/?([0-9]{4})?$/;
+    const dateRegex = /^([0-9]{1,2})\/([0-9]{1,2})\/?([0-9]{4})?$/;
     const matches = dateRegex.exec(word);
-    day = 0;
-    month = 0;
-    year = 0;
+    let day = 0;
+    let month = 0;
+    let year = 0;
     if (matches === null) {
-        isoDateRegex = /^([0-9]{4})\-([0-9]{2})\-([0-9]{2})$/;
+        const isoDateRegex = /^([0-9]{4})\-([0-9]{2})\-([0-9]{2})$/;
         const isoMatches = isoDateRegex.exec(word);
         if (isoMatches === null) {
             return { date, success }; // error does not match
