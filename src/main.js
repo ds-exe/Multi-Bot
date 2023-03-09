@@ -1,8 +1,5 @@
 import { normalize } from "node:path";
 import { readFile } from "fs/promises";
-const config = JSON.parse(
-    await readFile(new URL(normalize("./../config.json"), import.meta.url))
-);
 import {
     Client,
     GatewayIntentBits,
@@ -30,6 +27,10 @@ import { init, run } from "./music.js";
 import { init as _init, run as _run } from "./permissions.js";
 import { init as __init, musicEmbed, helpEmbed } from "./embeds.js";
 import { isDM, sendMessage } from "./utility.js";
+
+const config = JSON.parse(
+    await readFile(new URL(normalize("./../config.json"), import.meta.url))
+);
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -70,7 +71,6 @@ client.on("ready", () => {
 });
 
 client.on("messageCreate", async (message) => {
-    console.log("hi2");
     if (message.partial) {
         return;
     }
@@ -110,8 +110,7 @@ function isCommunicationDisabled(message) {
     if (isDM(message)) {
         return false;
     }
-    console.log(message);
-    member = message.guild.members.cache.find(
+    let member = message.guild.members.cache.find(
         (member) => member.user === message.client.user
     );
 
@@ -119,14 +118,13 @@ function isCommunicationDisabled(message) {
 }
 
 async function next(message) {
-    console.log("hi1");
     if (!isDM(message)) {
         message.suppressEmbeds(true);
     }
     const isBotOwner = message.author.id === botOwner;
-    msg = message.content;
+    let msg = message.content;
     msg = msg.replace(`${prefix}`, "").toLowerCase();
-    words = msg.split(" ");
+    let words = msg.split(" ");
 
     const commands = /^([a-z]+)$/;
     const matches = commands.exec(words[0]);
@@ -147,7 +145,6 @@ async function next(message) {
             await generateNow(message, words);
             break;
         case "notify":
-            console.log("hi");
             const time = await generateUnixTime(message, words);
             if (!time) {
                 break;

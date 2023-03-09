@@ -64,6 +64,7 @@ export function init(mainClient) {
             handleError(error, queue);
         });
 }
+
 export async function run(command, message) {
     if (isDM(message)) {
         sendMessage(message, "Can't use this command in DM's");
@@ -264,7 +265,7 @@ function setVolume(message, guildQueue) {
         );
     }
     const volume = /^([0-9]+)$/;
-    matches = volume.exec(args.join(" "));
+    let matches = volume.exec(args.join(" "));
     if (matches === null) {
         return sendMessage(
             message,

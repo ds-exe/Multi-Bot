@@ -14,6 +14,7 @@ export async function generateTimestamp(message, words) {
     }
     sendMessage(message, { embeds: [timestampEmbed(`<t:${unixTime}:F>`)] });
 }
+
 export async function generateTimestampUntil(message, words) {
     const unixTime = await generateTimestampHelper(message, words);
     if (!unixTime) {
@@ -21,9 +22,10 @@ export async function generateTimestampUntil(message, words) {
     }
     sendMessage(message, { embeds: [timestampEmbed(`<t:${unixTime}:R>`)] });
 }
+
 export async function generateNow(message, words) {
     let date = DateTime.utc();
-    tz = await getUserTimezone(message.author.id);
+    const tz = await getUserTimezone(message.author.id);
     date = date.setZone(tz, { keepLocalTime: false });
     if (words[0] !== undefined) {
         let success = false;
@@ -35,6 +37,7 @@ export async function generateNow(message, words) {
     }
     sendMessage(message, `\`${date.toLocaleString(DateTime.DATETIME_MED)}\``);
 }
+
 export async function generateUnixTime(message, words) {
     if (words.indexOf("-") === -1) {
         sendMessage(message, "Invalid syntax, please use:\n`time - message`");
@@ -45,6 +48,7 @@ export async function generateUnixTime(message, words) {
         words.slice(0, words.indexOf("-"))
     );
 }
+
 export async function generateUnixTimeNow() {
     const date = DateTime.utc();
     return parseInt(date.toSeconds());
@@ -60,7 +64,7 @@ async function generateTimestampHelper(message, words) {
         return;
     }
     let date = DateTime.utc();
-    tz = await getUserTimezone(message.author.id);
+    const tz = await getUserTimezone(message.author.id);
     date = date.setZone(tz, { keepLocalTime: true });
     for (let word of words) {
         let success = false;
@@ -95,7 +99,7 @@ function setTimezone(word, date, success, keepLocal) {
 }
 
 function parseTime(word, date, success) {
-    timeRegex = /^([0-9]{1,2}):([0-9]{1,2})$/;
+    const timeRegex = /^([0-9]{1,2}):([0-9]{1,2})$/;
     const matches = timeRegex.exec(word);
     if (matches === null) {
         return { date, success }; // error does not match
@@ -110,13 +114,13 @@ function parseTime(word, date, success) {
 }
 
 function parseDate(word, date, success) {
-    dateRegex = /^([0-9]{1,2})\/([0-9]{1,2})\/?([0-9]{4})?$/;
+    const dateRegex = /^([0-9]{1,2})\/([0-9]{1,2})\/?([0-9]{4})?$/;
     const matches = dateRegex.exec(word);
-    day = 0;
-    month = 0;
-    year = 0;
+    let day = 0;
+    let month = 0;
+    let year = 0;
     if (matches === null) {
-        isoDateRegex = /^([0-9]{4})\-([0-9]{2})\-([0-9]{2})$/;
+        const isoDateRegex = /^([0-9]{4})\-([0-9]{2})\-([0-9]{2})$/;
         const isoMatches = isoDateRegex.exec(word);
         if (isoMatches === null) {
             return { date, success }; // error does not match

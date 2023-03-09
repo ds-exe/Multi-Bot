@@ -35,6 +35,7 @@ export function open() {
         if (err) return console.error(err.message);
     };
 }
+
 export function setTimezone(message, word) {
     const userID = message.author.id;
     const timezone = getTimezone(word);
@@ -47,6 +48,7 @@ export function setTimezone(message, word) {
     sendMessage(message, "Successfully set timezone");
     return;
 }
+
 export function getUserTimezone(userID) {
     const query = `SELECT timezone FROM timezones WHERE userID = '${userID}'`;
     return new Promise((resolve, reject) => {
@@ -62,6 +64,7 @@ export function getUserTimezone(userID) {
         });
     });
 }
+
 export function allowRole(message, roleId, guildId) {
     db.run(
         `REPLACE INTO permissions (roleID, guildID) VALUES ('${roleId}', '${guildId}')`
@@ -69,6 +72,7 @@ export function allowRole(message, roleId, guildId) {
     sendMessage(message, "Successfully added permissions");
     return;
 }
+
 export function denyRole(message, roleId, guildId) {
     db.run(
         `DELETE FROM permissions WHERE roleID = '${roleId}' AND guildID = '${guildId}'`
@@ -76,6 +80,7 @@ export function denyRole(message, roleId, guildId) {
     sendMessage(message, "Successfully removed permissions");
     return;
 }
+
 export function hasPermissionRole(message, roles, guildId) {
     return new Promise((resolve, reject) => {
         const roleQuery = roles.map((role) => role.id);
@@ -94,6 +99,7 @@ export function hasPermissionRole(message, roles, guildId) {
         });
     });
 }
+
 export function allowUser(message, userId, guildId) {
     db.run(
         `REPLACE INTO permissionsUser (userID, guildID) VALUES ('${userId}', '${guildId}')`
@@ -101,6 +107,7 @@ export function allowUser(message, userId, guildId) {
     sendMessage(message, "Successfully added permissions");
     return;
 }
+
 export function denyUser(message, userId, guildId) {
     db.run(
         `DELETE FROM permissionsUser WHERE userID = '${userId}' AND guildID = '${guildId}'`
@@ -108,6 +115,7 @@ export function denyUser(message, userId, guildId) {
     sendMessage(message, "Successfully removed permissions");
     return;
 }
+
 export function hasPermissionUser(message, userId, guildId) {
     return new Promise((resolve, reject) => {
         const query = `SELECT * FROM permissionsUser WHERE userID = '${userId}' AND guildID = '${guildId}'`;
@@ -123,6 +131,7 @@ export function hasPermissionUser(message, userId, guildId) {
         });
     });
 }
+
 export function addNotification(userID, timestamp, text, message) {
     const notifyRegex = /^([A-Za-z0-9 ]+)$/;
     const matches = notifyRegex.exec(text);
@@ -134,6 +143,7 @@ export function addNotification(userID, timestamp, text, message) {
     );
     react(message, "👍");
 }
+
 export function sendNotifications(client, currentTimeSeconds) {
     const sqlRead = `SELECT * FROM notifications WHERE timestamp <= ${currentTimeSeconds}`;
 
@@ -157,6 +167,7 @@ export function sendNotifications(client, currentTimeSeconds) {
         }`
     );
 }
+
 export function printTimezoneDataBase() {
     const sqlRead = "SELECT * FROM timezones";
 
@@ -168,6 +179,7 @@ export function printTimezoneDataBase() {
         });
     });
 }
+
 export function printNotifications() {
     const sqlRead = "SELECT * FROM notifications";
 
@@ -179,6 +191,7 @@ export function printNotifications() {
         });
     });
 }
+
 export function getUserPermissionData(guildId) {
     return new Promise((resolve, reject) => {
         const sqlRead = `SELECT userID FROM permissionsUser WHERE guildID = '${guildId}'`;
@@ -191,6 +204,7 @@ export function getUserPermissionData(guildId) {
         });
     });
 }
+
 export function getRolePermissionData(guildId) {
     return new Promise((resolve, reject) => {
         const sqlRead = `SELECT roleID FROM permissions WHERE guildID = '${guildId}'`;
@@ -203,6 +217,7 @@ export function getRolePermissionData(guildId) {
         });
     });
 }
+
 export function close() {
     db.close((err) => {
         if (err) return console.error(err.message);

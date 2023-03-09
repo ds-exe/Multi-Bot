@@ -1,15 +1,13 @@
 import { normalize } from "node:path";
 import { EmbedBuilder } from "discord.js";
 import { readFile } from "fs/promises";
+
 const json = JSON.parse(
     await readFile(new URL(normalize("./../config.json"), import.meta.url))
 );
 const prefix = json.prefix;
 const botTitle = json.botTitle;
 const embedThumbnail = json.embedThumbnail;
-// const { prefix, botTitle, embedThumbnail } = require(normalize(
-//     "./../config.json"
-// ));
 
 let client = null;
 

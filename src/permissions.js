@@ -1,6 +1,5 @@
 import { PermissionsBitField } from "discord.js";
 import { permsEmbed } from "./embeds.js";
-
 import {
     allowRole,
     denyRole,
@@ -16,6 +15,7 @@ let client = null;
 export function init(mainClient) {
     client = mainClient;
 }
+
 export async function run(message, words) {
     if (isDM(message)) {
         sendMessage(message, "Can't use this command in DM's");
@@ -63,7 +63,7 @@ export async function run(message, words) {
 
 function roleAllow(message, words) {
     words = words.join(" ");
-    role = getRole(message, words);
+    let role = getRole(message, words);
     if (role === undefined) {
         return sendMessage(message, "Invalid role");
     } else {
@@ -73,7 +73,7 @@ function roleAllow(message, words) {
 
 function roleDeny(message, words) {
     words = words.join(" ");
-    role = getRole(message, words);
+    let role = getRole(message, words);
     if (role === undefined) {
         return sendMessage(message, "Invalid role");
     } else {
@@ -83,7 +83,7 @@ function roleDeny(message, words) {
 
 async function userAllow(message, words) {
     words = words.join(" ");
-    user = await getUser(message, words);
+    let user = await getUser(message, words);
     if (user === undefined) {
         return sendMessage(message, "Invalid user");
     } else {
@@ -93,7 +93,7 @@ async function userAllow(message, words) {
 
 async function userDeny(message, words) {
     words = words.join(" ");
-    user = await getUser(message, words);
+    let user = await getUser(message, words);
     if (user === undefined) {
         return sendMessage(message, "Invalid user");
     } else {
@@ -105,7 +105,7 @@ function getRole(message, words) {
     const roleName = /^([a-z _-]+)$/;
     const matches = roleName.exec(words);
     if (matches !== null) {
-        role = message.channel.guild.roles.cache.find(
+        let role = message.channel.guild.roles.cache.find(
             (role) => role.name.toLowerCase() === words
         );
         return role;
@@ -113,7 +113,7 @@ function getRole(message, words) {
     const roleId = /^([0-9]+)$/;
     const matches2 = roleId.exec(words);
     if (matches2 !== null) {
-        role = message.channel.guild.roles.cache.find(
+        let role = message.channel.guild.roles.cache.find(
             (role) => role.id.toLowerCase() === words
         );
         return role;
@@ -134,7 +134,7 @@ async function getUserData(message) {
     let rows = await getUserPermissionData(message.guild.id);
     let out = "";
     for (const row of rows) {
-        tmp = await getUser(message, row.userID);
+        let tmp = await getUser(message, row.userID);
         out += tmp.user.username + "#" + tmp.user.discriminator + "\n";
     }
     if (out === "") {
@@ -147,7 +147,7 @@ async function getRoleData(message) {
     let rows = await getRolePermissionData(message.guild.id);
     let out = "";
     for (const row of rows) {
-        tmp = await getRole(message, row.roleID);
+        let tmp = await getRole(message, row.roleID);
         out += tmp.name + "\n";
     }
     if (out === "") {

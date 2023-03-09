@@ -1,11 +1,11 @@
 import { normalize } from "node:path";
 import { readFile } from "fs/promises";
-const json = JSON.parse(
-    await readFile(new URL(normalize("./../timezones.json"), import.meta.url))
-);
-const timezones = json.timezones;
 import { DateTime } from "luxon";
 import { ChannelType } from "discord.js";
+
+const timezones = JSON.parse(
+    await readFile(new URL(normalize("./../timezones.json"), import.meta.url))
+);
 
 export function isDM(message) {
     return (
@@ -13,14 +13,17 @@ export function isDM(message) {
         message.channel.type === ChannelType.GroupDM
     );
 }
+
 export async function sendMessage(message, msg) {
     return await message.channel.send(msg).catch((err) => {});
 }
+
 export async function react(message, reaction) {
     return await message.react(reaction).catch((err) => {});
 }
+
 export function getTimezone(timezone) {
-    zonesRegex = /^([a-z]+)$/;
+    let zonesRegex = /^([a-z]+)$/;
     const zoneMatch = zonesRegex.exec(timezone);
     if (zoneMatch !== null && zoneMatch[1] in timezones) {
         return timezones[zoneMatch[1]];
