@@ -23,9 +23,9 @@ import {
     sendNotifications,
 } from "./SQLDatabase.js";
 import { loadPage } from "./reddit.js";
-import { init, run } from "./music.js";
-import { init as _init, run as _run } from "./permissions.js";
-import { init as __init, musicEmbed, helpEmbed } from "./embeds.js";
+import { init as musicInit, run as musicRun } from "./music.js";
+import { init as permsInit, run as permsRun } from "./permissions.js";
+import { init as embedsInit, musicEmbed, helpEmbed } from "./embeds.js";
 import { isDM, sendMessage } from "./utility.js";
 
 const config = JSON.parse(
@@ -62,9 +62,9 @@ client.on("ready", () => {
         ],
     });
     open();
-    init(client);
-    _init(client);
-    __init(client);
+    musicInit(client);
+    permsInit(client);
+    embedsInit(client);
     setInterval(async () => {
         sendNotifications(client, await generateUnixTimeNow());
     }, 1000 * 30);
@@ -177,10 +177,10 @@ async function next(message) {
         case "shuffle":
         case "loop":
         case "setvolume":
-            await run(command, message);
+            await musicRun(command, message);
             break;
         case "perms":
-            await _run(message, words);
+            await permsRun(message, words);
             break;
         case "restart":
             if (isBotOwner) {
