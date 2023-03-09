@@ -1,70 +1,65 @@
-const Discord = require("discord.js");
-const Embeds = require("./embeds.js");
+import { PermissionsBitField } from "discord.js";
+import { permsEmbed } from "./embeds.js";
 
-const {
+import {
     allowRole,
     denyRole,
     allowUser,
     denyUser,
     getUserPermissionData,
     getRolePermissionData,
-} = require("./SQLDatabase.js");
-const { isDM, sendMessage } = require("./utility.js");
+} from "./SQLDatabase.js";
+import { isDM, sendMessage } from "./utility.js";
 
 let client = null;
 
-module.exports = {
-    init: (mainClient) => {
-        client = mainClient;
-    },
-
-    run: async (message, words) => {
-        if (isDM(message)) {
-            sendMessage(message, "Can't use this command in DM's");
-            return;
-        }
-        if (
-            !message.member.permissions.has(
-                Discord.PermissionsBitField.Flags.Administrator
-            )
-        ) {
-            return sendMessage(
-                message,
-                "This command requires administrator permissions"
-            );
-        }
-        const commands = /^([a-z]+)$/;
-        const matches = commands.exec(words[0]);
-        if (matches === null) {
-            return sendMessage(message, "Invalid command");
-        }
-        const command = matches[1];
-        words.shift();
-        switch (command) {
-            case "allowrole":
-                roleAllow(message, words);
-                break;
-            case "denyrole":
-                roleDeny(message, words);
-                break;
-            case "allowuser":
-                await userAllow(message, words);
-                break;
-            case "denyuser":
-                await userDeny(message, words);
-                break;
-            case "listusers":
-                getUserData(message);
-                break;
-            case "listroles":
-                getRoleData(message);
-                break;
-            default:
-                sendMessage(message, { embeds: [Embeds.permsEmbed] });
-                break;
-        }
-    },
-};
+export function init(mainClient) {
+    client = mainClient;
+}
+export async function run(message, words) {
+    if (isDM(message)) {
+        sendMessage(message, "Can't use this command in DM's");
+        return;
+    }
+    if (
+        !message.member.permissions.has(PermissionsBitField.Flags.Administrator)
+    ) {
+        return sendMessage(
+            message,
+            "This command requires administrator permissions"
+        );
+    }
+    const commands = /^([a-z]+)$/;
+    const matches = commands.exec(words[0]);
+    if (matches === null) {
+        return sendMessage(message, "Invalid command");
+    }
+    const command = matches[1];
+    words.shift();
+    switch (command) {
+        case "allowrole":
+            roleAllow(message, words);
+            break;
+        case "denyrole":
+            roleDeny(message, words);
+            break;
+        case "allowuser":
+            await userAllow(message, words);
+            break;
+        case "denyuser":
+            await userDeny(message, words);
+            break;
+        case "listusers":
+            getUserData(message);
+            break;
+        case "listroles":
+            getRoleData(message);
+            break;
+        default:
+            sendMessage(message, { embeds: [permsEmbed] });
+            break;
+    }
+}
 
 function roleAllow(message, words) {
     words = words.join(" ");

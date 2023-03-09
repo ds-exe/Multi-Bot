@@ -1,26 +1,35 @@
-const path = require("node:path");
-const config = require(path.normalize("./../config.json"));
-const {
+import { normalize } from "node:path";
+import { readFile } from "fs/promises";
+const config = JSON.parse(
+    await readFile(new URL(normalize("./../config.json"), import.meta.url))
+);
+import {
     Client,
     GatewayIntentBits,
     Partials,
     PermissionsBitField,
     ActivityType,
-} = require("discord.js");
-const Timestamp = require("./timestamp.js");
-const {
+} from "discord.js";
+import {
+    generateUnixTimeNow,
+    generateTimestamp,
+    generateTimestampUntil,
+    generateNow,
+    generateUnixTime,
+} from "./timestamp.js";
+import {
     setTimezone,
     getUserTimezone,
     open,
     close,
     addNotification,
     sendNotifications,
-} = require("./SQLDatabase.js");
-const Reddit = require("./reddit.js");
-const Music = require("./music");
-const Permissions = require("./permissions.js");
-const Embeds = require("./embeds.js");
-const { isDM, sendMessage } = require("./utility.js");
+} from "./SQLDatabase.js";
+import { loadPage } from "./reddit.js";
+import { init, run } from "./music.js";
+import { init as _init, run as _run } from "./permissions.js";
+import { init as __init, musicEmbed, helpEmbed } from "./embeds.js";
+import { isDM, sendMessage } from "./utility.js";
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -52,15 +61,16 @@ client.on("ready", () => {
         ],
     });
     open();
-    Music.init(client);
-    Permissions.init(client);
-    Embeds.init(client);
+    init(client);
+    _init(client);
+    __init(client);
     setInterval(async () => {
-        sendNotifications(client, await Timestamp.generateUnixTimeNow());
+        sendNotifications(client, await generateUnixTimeNow());
     }, 1000 * 30);
 });
 
 client.on("messageCreate", async (message) => {
+    console.log("hi2");
     if (message.partial) {
         return;
     }
@@ -100,6 +110,7 @@ function isCommunicationDisabled(message) {
     if (isDM(message)) {
         return false;
     }
+    console.log(message);
     member = message.guild.members.cache.find(
         (member) => member.user === message.client.user
     );
@@ -108,6 +119,7 @@ function isCommunicationDisabled(message) {
 }
 
 async function next(message) {
+    console.log("hi1");
     if (!isDM(message)) {
         message.suppressEmbeds(true);
     }
@@ -126,16 +138,17 @@ async function next(message) {
     switch (command) {
         case "time":
         case "date":
-            await Timestamp.generateTimestamp(message, words);
+            await generateTimestamp(message, words);
             break;
         case "until":
-            await Timestamp.generateTimestampUntil(message, words);
+            await generateTimestampUntil(message, words);
             break;
         case "now":
-            await Timestamp.generateNow(message, words);
+            await generateNow(message, words);
             break;
         case "notify":
-            const time = await Timestamp.generateUnixTime(message, words);
+            console.log("hi");
+            const time = await generateUnixTime(message, words);
             if (!time) {
                 break;
             }
@@ -158,7 +171,7 @@ async function next(message) {
             }
             break;
         case "reddit":
-            await Reddit.loadPage(words, message);
+            await loadPage(words, message);
             break;
         case "play":
         case "skip":
@@ -167,10 +180,10 @@ async function next(message) {
         case "shuffle":
         case "loop":
         case "setvolume":
-            await Music.run(command, message);
+            await run(command, message);
             break;
         case "perms":
-            await Permissions.run(message, words);
+            await _run(message, words);
             break;
         case "restart":
             if (isBotOwner) {
@@ -181,10 +194,10 @@ async function next(message) {
             }
             break;
         case "music":
-            sendMessage(message, { embeds: [Embeds.musicEmbed] });
+            sendMessage(message, { embeds: [musicEmbed] });
             break;
         case "help":
-            sendMessage(message, { embeds: [Embeds.helpEmbed] });
+            sendMessage(message, { embeds: [helpEmbed] });
             break;
         default:
             sendMessage(message, "Syntax Error");

@@ -1,32 +1,39 @@
-const path = require("node:path");
-const Discord = require("discord.js");
-const { prefix, botTitle, embedThumbnail } = require(path.normalize(
-    "./../config.json"
-));
+import { normalize } from "node:path";
+import { EmbedBuilder } from "discord.js";
+import { readFile } from "fs/promises";
+const json = JSON.parse(
+    await readFile(new URL(normalize("./../config.json"), import.meta.url))
+);
+const prefix = json.prefix;
+const botTitle = json.botTitle;
+const embedThumbnail = json.embedThumbnail;
+// const { prefix, botTitle, embedThumbnail } = require(normalize(
+//     "./../config.json"
+// ));
 
 let client = null;
 
-exports.init = async (mainClient) => {
+export async function init(mainClient) {
     client = mainClient;
-    this.helpEmbed = await generateEmbed(
+    helpEmbed = await generateEmbed(
         `\`\`\`📌${prefix}music\n📌${prefix}notify\n📌${prefix}time or ${prefix}until\n📌${prefix}now\n📌${prefix}timezone\n📌${prefix}reddit\n📌${prefix}perms\`\`\``
     );
-    this.musicEmbed = await generateEmbed(
+    musicEmbed = await generateEmbed(
         `\`\`\`📌${prefix}play\n📌${prefix}skip\n📌${prefix}stop\n📌${prefix}leave\n📌${prefix}shuffle\n📌${prefix}loop\n📌${prefix}setvolume\`\`\``
     );
-    this.permsEmbed = await generateEmbed(
+    permsEmbed = await generateEmbed(
         `\`\`\`📌${prefix}perms allowRole/denyRole {role id/role name}\n📌${prefix}perms allowUser/denyUser {user id}\n📌${prefix}perms listUsers/listRoles\`\`\``
     );
-};
+}
 
-exports.helpEmbed = null;
+export let helpEmbed = null;
 
-exports.musicEmbed = null;
+export let musicEmbed = null;
 
-exports.permsEmbed = null;
+export let permsEmbed = null;
 
-exports.timestampEmbed = (time) => {
-    return new Discord.EmbedBuilder()
+export function timestampEmbed(time) {
+    return new EmbedBuilder()
         .setColor("#00FFFF")
         .setTitle("Local time:")
         .setDescription(time)
@@ -34,10 +41,10 @@ exports.timestampEmbed = (time) => {
             name: `Copy Link:`,
             value: `\\${time}`,
         });
-};
+}
 
-exports.trackAdded = (song) => {
-    return new Discord.EmbedBuilder()
+export function trackAdded(song) {
+    return new EmbedBuilder()
         .setColor("#0099ff")
         .setTitle(`Added Track`)
         .setThumbnail(`${song.thumbnail}`)
@@ -46,10 +53,10 @@ exports.trackAdded = (song) => {
             { name: "Track Length", value: song.duration, inline: true },
             { name: "Added by", value: `<@${song.requestedBy}>`, inline: true }
         );
-};
+}
 
-exports.playlistAdded = (playlist) => {
-    return new Discord.EmbedBuilder()
+export function playlistAdded(playlist) {
+    return new EmbedBuilder()
         .setColor("#0099ff")
         .setTitle(`Added Playlist`)
         .setDescription(`[${playlist}](${playlist.url})`)
@@ -66,19 +73,19 @@ exports.playlistAdded = (playlist) => {
                 inline: true,
             }
         );
-};
+}
 
-exports.trackPlaying = (name, link) => {
-    return new Discord.EmbedBuilder()
+export function trackPlaying(name, link) {
+    return new EmbedBuilder()
         .setColor("#0099ff")
         .setDescription(`Started playing [${name}](${link})`);
-};
+}
 
 async function generateEmbed(commands) {
     const creatorID = "74968333413257216";
     const creator = await client.users.fetch(creatorID);
     const userString = creator.username + "#" + creator.discriminator;
-    return new Discord.EmbedBuilder()
+    return new EmbedBuilder()
         .setColor("#0099ff")
         .setTitle(`${botTitle}`)
         .setThumbnail(`${embedThumbnail}`)
