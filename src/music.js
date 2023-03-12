@@ -133,7 +133,16 @@ async function play(message) {
     const args = message.content.split(" ");
     args.shift();
 
-    let { match, isPlaylist } = validateUrl(args.join(" ").trim(), message);
+    let shuffle = false;
+    if (args[0] === "shuffle") {
+        shuffle = true;
+        args.shift();
+    }
+    if (args[0] === undefined) {
+        sendMessage(message, "Invalid url/query");
+        return;
+    }
+    let { match, isPlaylist } = validateUrl(args[0], message);
     if (match === null) {
         return;
     }
@@ -144,6 +153,7 @@ async function play(message) {
     if (isPlaylist) {
         let song = await queue.playlist(match, {
             requestedBy: message.author.id,
+            shuffle: shuffle,
         });
     } else {
         let song = await queue.play(match, { requestedBy: message.author.id });
