@@ -138,11 +138,7 @@ async function play(message) {
         shuffle = true;
         args.shift();
     }
-    if (args[0] === undefined) {
-        sendMessage(message, "Invalid url/query");
-        return;
-    }
-    let { match, isPlaylist } = validateUrl(args[0], message);
+    let { match, isPlaylist } = validateUrl(args.join(" ").trim(), message);
     if (match === null) {
         return;
     }
