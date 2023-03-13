@@ -1,14 +1,17 @@
-import pkg from "sqlite3";
-const { Database, OPEN_READWRITE } = pkg;
+import sqlite3 from "sqlite3";
 import { sendMessage, getTimezone, react } from "./utility.js";
 let db = null;
 
 export function open() {
-    db = new Database("./MultiDatabase.db", OPEN_READWRITE, (err) => {
-        if (err) return console.error(err.message);
+    db = new sqlite3.Database(
+        "./MultiDatabase.db",
+        sqlite3.OPEN_READWRITE,
+        (err) => {
+            if (err) return console.error(err.message);
 
-        console.log("connection successful");
-    });
+            console.log("connection successful");
+        }
+    );
 
     db.run(
         "CREATE TABLE IF NOT EXISTS timezones(userID PRIMARY KEY, timezone)"

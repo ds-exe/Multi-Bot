@@ -17,9 +17,7 @@
     "discord-music-player": "^9.1.1",
     "discord.js": "^14.7.1",
     "isomorphic-unfetch": "^3.1.0",
-    "js-levenshtein": "^1.1.6",
-    "jsonfile": "^4.0.0",
-    "luxon": "^2.3.1",
+    "luxon": "^2.5.2",
     "patch-package": "^6.5.1",
     "sqlite3": "^5.1.5"
   }

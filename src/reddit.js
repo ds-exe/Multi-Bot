@@ -1,5 +1,4 @@
-import pkg from "axios";
-const { get } = pkg;
+import axios from "axios";
 import { hasPermissionRole, hasPermissionUser } from "./SQLDatabase.js";
 import { isDM, sendMessage } from "./utility.js";
 
@@ -28,7 +27,10 @@ export async function loadPage(sub, message) {
         return sendMessage(message, "Invalid subreddit");
     }
 
-    get(`https://www.reddit.com/r/${matches[1]}.json?limit=100&?sort=top&t=all`)
+    axios
+        .get(
+            `https://www.reddit.com/r/${matches[1]}.json?limit=100&?sort=top&t=all`
+        )
         .then((response) => response.data.data.children.map((v) => v.data.url))
         .then((urls) => {
             postPage(urls, message);
