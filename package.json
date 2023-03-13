@@ -20,5 +20,8 @@
     "luxon": "^2.5.2",
     "patch-package": "^6.5.1",
     "sqlite3": "^5.1.5"
+  },
+  "resolutions": {
+    "discord-music-player/@discordjs/voice": "0.15.0"
   }
 }
