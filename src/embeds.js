@@ -17,7 +17,7 @@ export async function init(mainClient) {
         `\`\`\`📌${prefix}music\n📌${prefix}notify\n📌${prefix}time or ${prefix}until\n📌${prefix}now\n📌${prefix}timezone\n📌${prefix}reddit\n📌${prefix}perms\`\`\``
     );
     musicEmbed = await generateEmbed(
-        `\`\`\`📌${prefix}play\n📌${prefix}skip\n📌${prefix}stop\n📌${prefix}leave\n📌${prefix}shuffle\n📌${prefix}repeat\n📌${prefix}setvolume\`\`\``
+        `\`\`\`📌${prefix}play\n📌${prefix}skip\n📌${prefix}stop\n📌${prefix}leave\n📌${prefix}shuffle\n📌${prefix}repeat\n📌${prefix}setvolume\n📌${prefix}nowplaying\`\`\``
     );
     permsEmbed = await generateEmbed(
         `\`\`\`📌${prefix}perms allowRole/denyRole {role id/role name}\n📌${prefix}perms allowUser/denyUser {user id}\n📌${prefix}perms listUsers/listRoles\`\`\``
@@ -49,6 +49,18 @@ export function trackAdded(song) {
         .setDescription(`[${song.name}](${song.url})`)
         .addFields(
             { name: "Track Length", value: song.duration, inline: true },
+            { name: "Added by", value: `<@${song.requestedBy}>`, inline: true }
+        );
+}
+
+export function nowPlayingEmbed(song, progressBar) {
+    return new EmbedBuilder()
+        .setColor("#0099ff")
+        .setTitle(`Now Playing`)
+        .setThumbnail(`${song.thumbnail}`)
+        .setDescription(`[${song.name}](${song.url})`)
+        .addFields(
+            { name: "Track Progress", value: progressBar.times, inline: true },
             { name: "Added by", value: `<@${song.requestedBy}>`, inline: true }
         );
 }

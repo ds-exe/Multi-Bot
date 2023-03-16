@@ -177,6 +177,7 @@ async function next(message) {
         case "shuffle":
         case "repeat":
         case "setvolume":
+        case "nowplaying":
             await musicRun(command, message);
             break;
         case "perms":

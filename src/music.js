@@ -1,7 +1,12 @@
 import { Player, RepeatMode } from "discord-music-player";
 import { isDM, sendMessage, react } from "./utility.js";
 import { hasPermissionRole, hasPermissionUser } from "./SQLDatabase.js";
-import { trackAdded, trackPlaying, playlistAdded } from "./embeds.js";
+import {
+    trackAdded,
+    trackPlaying,
+    playlistAdded,
+    nowPlayingEmbed,
+} from "./embeds.js";
 import { PermissionsBitField } from "discord.js";
 
 let client = null;
@@ -122,6 +127,9 @@ export async function run(command, message) {
             break;
         case "setvolume":
             setVolume(message, guildQueue);
+            break;
+        case "nowplaying":
+            nowPlaying(message, guildQueue);
             break;
         default:
             sendMessage(message, "You need to enter a valid command!");
@@ -297,6 +305,23 @@ function setVolume(message, guildQueue) {
     }
     guildQueue.setVolume(matches[1]);
     sendMessage(message, `Volume set to ${matches[1]}`);
+}
+
+function nowPlaying(message, guildQueue) {
+    if (guildQueue === undefined) {
+        return sendMessage(
+            message,
+            "I need to be in a voice channel view current track"
+        );
+    }
+    if (!guildQueue.isPlaying) {
+        sendMessage(message, "Nothing is playing");
+        return;
+    }
+    const progressBar = guildQueue.createProgressBar();
+    sendMessage(message, {
+        embeds: [nowPlayingEmbed(guildQueue.nowPlaying, progressBar)],
+    });
 }
 
 function handleError(error, queue) {
