@@ -1,4 +1,4 @@
-import { Player } from "discord-music-player";
+import { Player, RepeatMode } from "discord-music-player";
 import { isDM, sendMessage, react } from "./utility.js";
 import { hasPermissionRole, hasPermissionUser } from "./SQLDatabase.js";
 import { trackAdded, trackPlaying, playlistAdded } from "./embeds.js";
@@ -117,8 +117,8 @@ export async function run(command, message) {
         case "shuffle":
             shuffle(message, guildQueue);
             break;
-        case "loop":
-            loop(message, guildQueue);
+        case "repeat":
+            repeat(message, guildQueue);
             break;
         case "setvolume":
             setVolume(message, guildQueue);
@@ -249,16 +249,30 @@ function shuffle(message, guildQueue) {
     react(message, "👍");
 }
 
-function loop(message, guildQueue) {
+function repeat(message, guildQueue) {
     if (guildQueue === undefined) {
-        sendMessage(message, "I need to be in a voice channel to loop");
+        sendMessage(message, "I need to be in a voice channel to repeat");
         return;
     }
-    guildQueue.setRepeatMode(1 - guildQueue.repeatMode);
-    sendMessage(
-        message,
-        "Looping " + (guildQueue.repeatMode !== 0 ? "enabled" : "disabled")
-    );
+    let args = message.content.toLowerCase().split(" ");
+    args.shift();
+    switch (args[0]) {
+        case "off":
+            guildQueue.setRepeatMode(RepeatMode.DISABLED);
+            sendMessage(message, "Repeating disabled");
+            break;
+        case "track":
+            guildQueue.setRepeatMode(RepeatMode.SONG);
+            sendMessage(message, "Repeating track");
+            break;
+        case "queue":
+            guildQueue.setRepeatMode(RepeatMode.QUEUE);
+            sendMessage(message, "Repeating queue");
+            break;
+        default:
+            sendMessage(message, "Valid options: track | queue | off");
+            break;
+    }
 }
 
 function setVolume(message, guildQueue) {

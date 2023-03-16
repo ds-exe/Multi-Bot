@@ -175,7 +175,7 @@ async function next(message) {
         case "stop":
         case "leave":
         case "shuffle":
-        case "loop":
+        case "repeat":
         case "setvolume":
             await musicRun(command, message);
             break;
