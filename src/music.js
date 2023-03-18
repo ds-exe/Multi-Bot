@@ -37,6 +37,12 @@ export function init(mainClient) {
                 embeds: [trackAdded(song)],
             });
         })
+        .on("playlistFound", (queue, playlist) => {
+            sendMessage(
+                queue.data.message,
+                `Loading playlist: \`${playlist.name} | ${playlist.author}\``
+            );
+        })
         .on("playlistAdd", (queue, playlist) => {
             sendMessage(queue.data.message, {
                 embeds: [playlistAdded(playlist)],

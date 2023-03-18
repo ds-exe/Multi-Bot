@@ -1,8 +1,8 @@
 diff --git a/node_modules/discord-music-player/dist/utils/Utils.js b/node_modules/discord-music-player/dist/utils/Utils.js
-index 2b28de6..a034491 100644
+index 2b28de6..77b88fb 100644
 --- a/node_modules/discord-music-player/dist/utils/Utils.js
 +++ b/node_modules/discord-music-player/dist/utils/Utils.js
-@@ -225,29 +225,60 @@ class Utils {
+@@ -225,29 +225,61 @@ class Utils {
          }
          else if (SpotifyPlaylistLink) {
              let SpotifyResultData = await getData(Search).catch(() => null);
@@ -58,6 +58,7 @@ index 2b28de6..a034491 100644
 -                    return null;
 -            })))
 -                .filter((V) => V !== null);
++            Queue.player.emit('playlistFound', Queue, SpotifyResult)
 +            SpotifyResult.songs = [];
 +            for (let i = 0; i < spotifyTracks.length; i += 50) {
 +                SpotifyResult.songs = SpotifyResult.songs.concat((await Promise.all((spotifyTracks.slice(i, i+50) ?? []).map(async (track, index) => {
