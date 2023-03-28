@@ -66,6 +66,14 @@ async function generateTimestampHelper(message, words) {
     let date = DateTime.utc();
     const tz = await getUserTimezone(message.author.id);
     date = date.setZone(tz, { keepLocalTime: true });
+
+    for (let i = 0; i < words.length; i++) {
+        let success = false;
+        ({ date, success } = setTimezoneKeepLocal(words[i], date, success));
+        if (success) {
+            words.splice(i, 1);
+        }
+    }
     for (let word of words) {
         let success = false;
         dateModifiers.forEach((mod) => {
@@ -79,7 +87,7 @@ async function generateTimestampHelper(message, words) {
     return parseInt(date.toSeconds());
 }
 
-const dateModifiers = [parseDate, parseTime, setTimezoneKeepLocal];
+const dateModifiers = [parseDate, parseTime];
 
 function setTimezoneKeepLocal(word, date, success) {
     return setTimezone(word, date, success, true);
