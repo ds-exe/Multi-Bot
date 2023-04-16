@@ -22,6 +22,8 @@
     "sqlite3": "^5.1.5"
   },
   "resolutions": {
-    "discord-music-player/@discordjs/voice": "0.15.0"
+    "discord-music-player/@discordjs/voice": "0.15.0",
+    "discord-music-player/ytdl-core": "4.11.4",
+    "discord-music-player/ytsr": "3.8.2"
   }
 }
