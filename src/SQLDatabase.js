@@ -1,5 +1,6 @@
 import sqlite3 from "sqlite3";
 import { sendMessage, getTimezone, react } from "./utility.js";
+import { resinNotificationEmbed } from "./embeds.js";
 let db = null;
 
 export function open() {
@@ -220,7 +221,15 @@ export function sendResinNotifications(client, currentTimeSeconds) {
 
         rows.forEach(async (row) => {
             (await client.users.fetch(row.userID))
-                .send(row.account) //Add proper message
+                .send({
+                    embeds: [
+                        resinNotificationEmbed(
+                            row.account,
+                            row.notificationResin,
+                            row.resinCapTimestamp
+                        ),
+                    ],
+                })
                 .then(() => {
                     db.run(
                         `DELETE FROM resinNotifications WHERE userID = '${row.userID}' AND account = '${row.account}' AND notificationResin = ${row.notificationResin}`

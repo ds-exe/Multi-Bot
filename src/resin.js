@@ -27,7 +27,7 @@ export function resin(message, words) {
         return sendMessage(message, "Display resin counters for game");
     }
 
-    const customWarningTimeResin = 60; //To enable option
+    const customWarningTimeResin = 60; //Make editable option
     const currentTime = generateUnixTimeNow();
     const secondsUntilFull =
         (games[game]["maxResin"] - resin) * games[game]["resinMins"] * 60;
@@ -39,7 +39,7 @@ export function resin(message, words) {
     const warningTime = currentTime + secondsUntilWarning;
     const customWarningTime = currentTime + secondsUntilCustomWarning;
 
-    //Wipe current account notifications, not needed unless setting custom
+    //Wipe current account notifications, not needed unless adding custom option
     addResinData(
         message.author.id,
         account,
@@ -71,7 +71,7 @@ export function resin(message, words) {
     );
     sendMessage(
         message,
-        `Set resin count for ${account} as ${resin}\nFull <t:${fullTime}:R>\nWarning <t:${warningTime}:R>`
+        `Set resin count for ${account} as ${resin}\nFull <t:${fullTime}:R>`
     );
 }
 
