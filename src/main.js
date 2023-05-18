@@ -200,7 +200,7 @@ async function next(message) {
             sendMessage(message, { embeds: [musicEmbed] });
             break;
         case "resin":
-            resin(message, words);
+            await resin(message, words);
             break;
         case "help":
             sendMessage(message, { embeds: [helpEmbed] });

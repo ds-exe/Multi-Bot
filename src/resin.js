@@ -13,9 +13,9 @@ const games = {
     genshin: { maxResin: 160, resinMins: 8 },
 };
 
-export function resin(message, words) {
+export async function resin(message, words) {
     if (words[0] === undefined) {
-        return sendResinDataAll(message, message.author.id);
+        return await sendResinDataAll(message, message.author.id);
     }
     if (words[0] === "help") {
         return sendMessage(message, "Help message for resin");
@@ -30,7 +30,7 @@ export function resin(message, words) {
         return sendMessage(message, "Resin error message");
     }
     if (resin === undefined) {
-        return sendResinData(message, message.author.id, account);
+        return await sendResinData(message, message.author.id, account);
     }
 
     const customWarningTimeResin = 60; //Make editable option
@@ -99,6 +99,9 @@ function getGameAndResinData(words) {
     }
     if (words[1] === undefined) {
         return { game, account, resin };
+    }
+    if (words[1] === "delete") {
+        //Delete all data and notifications for game
     }
 
     const resinRegex = /^([0-9]+)$/;
