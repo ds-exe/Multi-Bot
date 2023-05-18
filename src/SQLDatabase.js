@@ -37,7 +37,8 @@ export function open() {
     (err) => {
         if (err) return console.error(err.message);
     };
-    //db.run("DROP TABLE IF EXISTS resinData");
+    //db.run("DROP TABLE resinData");
+    //db.run("DROP TABLE resinNotifications");
     db.run(
         "CREATE TABLE IF NOT EXISTS resinData(userID, account, game, startResin int, startTimestamp int, resinCapTimestamp int, PRIMARY KEY (userID, account))"
     );
@@ -45,13 +46,7 @@ export function open() {
         if (err) return console.error(err.message);
     };
     db.run(
-        "CREATE TABLE IF NOT EXISTS resinNotifications(userID, account, timestamp int, resinCapTimestamp int, PRIMARY KEY (userID, account))"
-    );
-    (err) => {
-        if (err) return console.error(err.message);
-    };
-    db.run(
-        "CREATE TABLE IF NOT EXISTS resinNotificationsCustom(userID, account, timestamp int, resinCapTimestamp int, PRIMARY KEY (userID, account))"
+        "CREATE TABLE IF NOT EXISTS resinNotifications(userID, account, notificationResin int, timestamp int, resinCapTimestamp int, PRIMARY KEY (userID, account, notificationResin))"
     );
     (err) => {
         if (err) return console.error(err.message);
@@ -188,6 +183,51 @@ export function sendNotifications(client, currentTimeSeconds) {
             currentTimeSeconds - 86400
         }`
     );
+}
+
+export function addResinData(
+    userID,
+    account,
+    game,
+    startResin,
+    startTimestamp,
+    resinCapTimestamp
+) {
+    db.run(
+        `REPLACE INTO resinData(userID, account, game, startResin, startTimestamp, resinCapTimestamp) 
+        VALUES ('${userID}', '${account}', '${game}', ${startResin}, ${startTimestamp}, ${resinCapTimestamp})`
+    );
+    (err) => {
+        if (err) return console.error(err.message);
+    };
+}
+
+export function addResinNotification(
+    userID,
+    account,
+    notificationResin,
+    timestamp,
+    resinCapTimestamp
+) {
+    db.run(
+        `REPLACE INTO resinNotifications(userID, account, notificationResin, timestamp, resinCapTimestamp) 
+        VALUES ('${userID}', '${account}', ${notificationResin}, ${timestamp}, ${resinCapTimestamp})`
+    );
+    (err) => {
+        if (err) return console.error(err.message);
+    };
+}
+
+export function sendResinNotifications(client, currentTimeSeconds) {
+    const sqlRead = "SELECT * FROM resinNotifications";
+
+    db.all(sqlRead, [], (err, rows) => {
+        if (err) return console.error(err.message);
+
+        rows.forEach((row) => {
+            console.log(row);
+        });
+    });
 }
 
 export function printTimezoneDataBase() {

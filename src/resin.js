@@ -1,5 +1,6 @@
 import { sendMessage } from "./utility.js";
 import { generateUnixTimeNow } from "./timestamp.js";
+import { addResinData, addResinNotification } from "./SQLDatabase.js";
 
 const games = {
     hsr: { maxResin: 180, resinMins: 6 },
@@ -15,11 +16,11 @@ export function resin(message, words) {
     }
 
     let game = undefined;
-    let gameInstance = undefined;
+    let account = undefined;
     let resin = undefined;
-    ({ game, gameInstance, resin } = getGameAndResinData(words));
+    ({ game, account, resin } = getGameAndResinData(words));
 
-    if (game === undefined || gameInstance === undefined) {
+    if (game === undefined || account === undefined) {
         return sendMessage(message, "Resin error message");
     }
     if (resin === undefined) {
@@ -35,7 +36,32 @@ export function resin(message, words) {
     const warningTime = currentTime + secondsUntilWarning;
 
     //Send everything to database
-    sendMessage(message, `Set resin count for ${gameInstance} as ${resin}`);
+    //Wipe current account notifications
+    //Add new ones (including custom)
+    addResinData(
+        message.author.id,
+        account,
+        game,
+        resin,
+        currentTime,
+        fullTime
+    );
+    addResinNotification(message.author.id, account, 60, warningTime, fullTime);
+    addResinNotification(
+        message.author.id,
+        account,
+        games[game]["maxResin"] - 20,
+        warningTime,
+        fullTime
+    );
+    addResinNotification(
+        message.author.id,
+        account,
+        games[game]["maxResin"],
+        fullTime,
+        fullTime
+    );
+    sendMessage(message, `Set resin count for ${account} as ${resin}`);
     sendMessage(message, `Full <t:${fullTime}:R>`);
     sendMessage(message, `Warning <t:${warningTime}:R>`);
     //sendMessage(message, { embeds: [timestampEmbed(`<t:${unixTime}:R>`)] });
@@ -43,30 +69,30 @@ export function resin(message, words) {
 
 function getGameAndResinData(words) {
     let game = undefined;
-    let gameInstance = undefined;
+    let account = undefined;
     let resin = undefined;
 
     const gameRegex = /^([A-z]+)[0-9]?$/;
     const gameMatches = gameRegex.exec(words[0]);
     if (gameMatches === null) {
-        return { game, gameInstance, resin };
+        return { game, account, resin };
     }
     game = gameMatches[1];
-    gameInstance = gameMatches[0];
+    account = gameMatches[0];
 
     if (!(game in games)) {
-        return { game: undefined, gameInstance: undefined, resin };
+        return { game: undefined, account: undefined, resin };
     }
     if (words[1] === undefined) {
-        return { game, gameInstance, resin };
+        return { game, account, resin };
     }
 
     const resinRegex = /^([0-9]+)$/;
     const resinMatches = resinRegex.exec(words[1]);
     if (resinMatches === null) {
-        return { game: undefined, gameInstance: undefined, resin };
+        return { game: undefined, account: undefined, resin };
     }
     resin = Number(resinMatches[1]);
 
-    return { game, gameInstance, resin };
+    return { game, account, resin };
 }

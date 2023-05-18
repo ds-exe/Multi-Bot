@@ -21,6 +21,7 @@ import {
     close,
     addNotification,
     sendNotifications,
+    sendResinNotifications,
 } from "./SQLDatabase.js";
 import { loadPage } from "./reddit.js";
 import { init as musicInit, run as musicRun } from "./music.js";
@@ -68,6 +69,9 @@ client.on("ready", () => {
     embedsInit(client);
     setInterval(async () => {
         sendNotifications(client, generateUnixTimeNow());
+    }, 1000 * 30);
+    setInterval(async () => {
+        sendResinNotifications(client, generateUnixTimeNow());
     }, 1000 * 30);
 });
 
