@@ -22,7 +22,7 @@ export function resin(message, words) {
     if (game === undefined || gameInstance === undefined) {
         return sendMessage(message, "Resin error message");
     }
-    if (resin == undefined) {
+    if (resin === undefined) {
         return sendMessage(message, "Display resin counters for game");
     }
 
