@@ -1,6 +1,12 @@
 import { sendMessage } from "./utility.js";
 import { generateUnixTimeNow } from "./timestamp.js";
-import { addResinData, addResinNotification } from "./SQLDatabase.js";
+import {
+    addResinData,
+    addResinNotification,
+    getResinData,
+    getResinDataAll,
+} from "./SQLDatabase.js";
+import { resinNotificationEmbed } from "./embeds.js";
 
 const games = {
     hsr: { maxResin: 180, resinMins: 6 },
@@ -9,7 +15,7 @@ const games = {
 
 export function resin(message, words) {
     if (words[0] === undefined) {
-        return sendMessage(message, "Display all resin counters for user");
+        return sendResinDataAll(message, message.author.id);
     }
     if (words[0] === "help") {
         return sendMessage(message, "Help message for resin");
@@ -24,7 +30,7 @@ export function resin(message, words) {
         return sendMessage(message, "Resin error message");
     }
     if (resin === undefined) {
-        return sendMessage(message, "Display resin counters for game");
+        return sendResinData(message, message.author.id, account);
     }
 
     const customWarningTimeResin = 60; //Make editable option
@@ -103,4 +109,46 @@ function getGameAndResinData(words) {
     resin = Number(resinMatches[1]);
 
     return { game, account, resin };
+}
+
+async function sendResinData(message, userID, account) {
+    const rows = await getResinData(userID, account);
+    rows.forEach(async (row) => {
+        sendMessage(message, {
+            embeds: [
+                resinNotificationEmbed(
+                    row.account,
+                    generateCurrentResin(row),
+                    row.resinCapTimestamp
+                ),
+            ],
+        });
+    });
+}
+
+async function sendResinDataAll(message, userID) {
+    const rows = await getResinDataAll(userID);
+    rows.forEach(async (row) => {
+        sendMessage(message, {
+            embeds: [
+                resinNotificationEmbed(
+                    row.account,
+                    generateCurrentResin(row),
+                    row.resinCapTimestamp
+                ),
+            ],
+        });
+    });
+}
+
+function generateCurrentResin(row) {
+    return Math.min(
+        Math.floor(
+            row.startResin +
+                (generateUnixTimeNow() - row.startTimestamp) /
+                    games[row.game]["resinMins"] /
+                    60
+        ),
+        games[row.game]["maxResin"]
+    );
 }

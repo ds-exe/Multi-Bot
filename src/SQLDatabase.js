@@ -245,6 +245,28 @@ export function sendResinNotifications(client, currentTimeSeconds) {
     );
 }
 
+export function getResinData(userID, account) {
+    return new Promise((resolve, reject) => {
+        const sqlRead = `SELECT * FROM resinData WHERE userID = '${userID}' AND account = '${account}'`;
+
+        db.all(sqlRead, [], (err, rows) => {
+            if (err) resolve({});
+            resolve(rows);
+        });
+    });
+}
+
+export function getResinDataAll(userID) {
+    return new Promise((resolve, reject) => {
+        const sqlRead = `SELECT * FROM resinData WHERE userID = '${userID}'`;
+
+        db.all(sqlRead, [], (err, rows) => {
+            if (err) resolve({});
+            resolve(rows);
+        });
+    });
+}
+
 export function printResinNotifications() {
     const sqlRead = "SELECT * FROM resinNotifications";
 
