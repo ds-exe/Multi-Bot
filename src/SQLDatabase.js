@@ -38,8 +38,6 @@ export function open() {
     (err) => {
         if (err) return console.error(err.message);
     };
-    //db.run("DROP TABLE resinData");
-    //db.run("DROP TABLE resinNotifications");
     db.run(
         "CREATE TABLE IF NOT EXISTS resinData(userID, account, game, startResin int, startTimestamp int, resinCapTimestamp int, PRIMARY KEY (userID, account))"
     );
