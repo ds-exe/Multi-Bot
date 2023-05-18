@@ -120,7 +120,7 @@ function getGameAndResinData(words) {
 async function sendResinData(message, userID, account) {
     const rows = await getResinData(userID, account);
     if (rows.length <= 0) {
-        return sendMessage(message, "No data for that account");
+        return sendMessage(message, "No resin data found");
     }
     rows.forEach(async (row) => {
         sendMessage(message, {
@@ -137,6 +137,9 @@ async function sendResinData(message, userID, account) {
 
 async function sendResinDataAll(message, userID) {
     const rows = await getResinDataAll(userID);
+    if (rows.length === 0) {
+        return sendMessage(message, "No resin data found");
+    }
     rows.forEach(async (row) => {
         sendMessage(message, {
             embeds: [
