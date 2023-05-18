@@ -41,6 +41,30 @@ export function timestampEmbed(time) {
         });
 }
 
+export function resinNotificationEmbed(
+    account,
+    notificationResin,
+    resinCapTimestamp
+) {
+    return new EmbedBuilder()
+        .setColor("#0099ff")
+        .setTitle("Resin Tracker:")
+        .setDescription(`${account}`)
+        .addFields(
+            {
+                name: `Current Resin:`,
+                value: `${notificationResin}`,
+                inline: true,
+            },
+            { name: "\u200b", value: `\u200b`, inline: true },
+            {
+                name: `Resin full:`,
+                value: `<t:${resinCapTimestamp}:R>`,
+                inline: true,
+            }
+        );
+}
+
 export function trackAdded(song) {
     return new EmbedBuilder()
         .setColor("#0099ff")

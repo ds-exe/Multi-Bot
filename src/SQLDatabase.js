@@ -1,5 +1,6 @@
 import sqlite3 from "sqlite3";
 import { sendMessage, getTimezone, react } from "./utility.js";
+import { resinNotificationEmbed } from "./embeds.js";
 let db = null;
 
 export function open() {
@@ -33,6 +34,18 @@ export function open() {
     };
     db.run(
         "CREATE TABLE IF NOT EXISTS notifications(userID, timestamp int, message, PRIMARY KEY (userID, timestamp))"
+    );
+    (err) => {
+        if (err) return console.error(err.message);
+    };
+    db.run(
+        "CREATE TABLE IF NOT EXISTS resinData(userID, account, game, startResin int, startTimestamp int, resinCapTimestamp int, PRIMARY KEY (userID, account))"
+    );
+    (err) => {
+        if (err) return console.error(err.message);
+    };
+    db.run(
+        "CREATE TABLE IF NOT EXISTS resinNotifications(userID, account, notificationResin int, timestamp int, resinCapTimestamp int, PRIMARY KEY (userID, account, notificationResin))"
     );
     (err) => {
         if (err) return console.error(err.message);
@@ -169,6 +182,108 @@ export function sendNotifications(client, currentTimeSeconds) {
             currentTimeSeconds - 86400
         }`
     );
+}
+
+export function addResinData(
+    userID,
+    account,
+    game,
+    startResin,
+    startTimestamp,
+    resinCapTimestamp
+) {
+    db.run(
+        `REPLACE INTO resinData(userID, account, game, startResin, startTimestamp, resinCapTimestamp) 
+        VALUES ('${userID}', '${account}', '${game}', ${startResin}, ${startTimestamp}, ${resinCapTimestamp})`
+    );
+}
+
+export function addResinNotification(
+    userID,
+    account,
+    notificationResin,
+    timestamp,
+    resinCapTimestamp
+) {
+    db.run(
+        `REPLACE INTO resinNotifications(userID, account, notificationResin, timestamp, resinCapTimestamp) 
+        VALUES ('${userID}', '${account}', ${notificationResin}, ${timestamp}, ${resinCapTimestamp})`
+    );
+}
+
+export function sendResinNotifications(client, currentTimeSeconds) {
+    const sqlRead = `SELECT * FROM resinNotifications WHERE timestamp <= ${currentTimeSeconds}`;
+
+    db.all(sqlRead, [], (err, rows) => {
+        if (err) return console.error(err.message);
+
+        rows.forEach(async (row) => {
+            (await client.users.fetch(row.userID))
+                .send({
+                    embeds: [
+                        resinNotificationEmbed(
+                            row.account,
+                            row.notificationResin,
+                            row.resinCapTimestamp
+                        ),
+                    ],
+                })
+                .then(() => {
+                    db.run(
+                        `DELETE FROM resinNotifications WHERE userID = '${row.userID}' AND account = '${row.account}' AND notificationResin = ${row.notificationResin}`
+                    );
+                })
+                .catch((err) => {});
+        });
+    });
+    db.run(
+        `DELETE FROM resinNotifications WHERE timestamp <= ${
+            currentTimeSeconds - 86400
+        }`
+    );
+}
+
+export function getResinData(userID, account) {
+    return new Promise((resolve, reject) => {
+        const sqlRead = `SELECT * FROM resinData WHERE userID = '${userID}' AND account = '${account}'`;
+
+        db.all(sqlRead, [], (err, rows) => {
+            if (err) resolve({});
+            resolve(rows);
+        });
+    });
+}
+
+export function getResinDataAll(userID) {
+    return new Promise((resolve, reject) => {
+        const sqlRead = `SELECT * FROM resinData WHERE userID = '${userID}'`;
+
+        db.all(sqlRead, [], (err, rows) => {
+            if (err) resolve({});
+            resolve(rows);
+        });
+    });
+}
+
+export function deleteResinData(userID, account) {
+    db.run(
+        `DELETE FROM resinNotifications WHERE userID = '${userID}' AND account = '${account}'`
+    );
+    db.run(
+        `DELETE FROM resinData WHERE userID = '${userID}' AND account = '${account}'`
+    );
+}
+
+export function printResinNotifications() {
+    const sqlRead = "SELECT * FROM resinNotifications";
+
+    db.all(sqlRead, [], (err, rows) => {
+        if (err) return console.error(err.message);
+
+        rows.forEach((row) => {
+            console.log(row);
+        });
+    });
 }
 
 export function printTimezoneDataBase() {

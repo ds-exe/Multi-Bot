@@ -49,7 +49,7 @@ export async function generateUnixTime(message, words) {
     );
 }
 
-export async function generateUnixTimeNow() {
+export function generateUnixTimeNow() {
     const date = DateTime.utc();
     return parseInt(date.toSeconds());
 }

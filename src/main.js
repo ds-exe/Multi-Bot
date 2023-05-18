@@ -21,12 +21,14 @@ import {
     close,
     addNotification,
     sendNotifications,
+    sendResinNotifications,
 } from "./SQLDatabase.js";
 import { loadPage } from "./reddit.js";
 import { init as musicInit, run as musicRun } from "./music.js";
 import { init as permsInit, run as permsRun } from "./permissions.js";
 import { init as embedsInit, musicEmbed, helpEmbed } from "./embeds.js";
 import { isDM, sendMessage } from "./utility.js";
+import { resin } from "./resin.js";
 
 const config = JSON.parse(
     await readFile(new URL(normalize("./../config.json"), import.meta.url))
@@ -66,7 +68,10 @@ client.on("ready", () => {
     permsInit(client);
     embedsInit(client);
     setInterval(async () => {
-        sendNotifications(client, await generateUnixTimeNow());
+        sendNotifications(client, generateUnixTimeNow());
+    }, 1000 * 30);
+    setInterval(async () => {
+        sendResinNotifications(client, generateUnixTimeNow());
     }, 1000 * 30);
 });
 
@@ -193,6 +198,9 @@ async function next(message) {
             break;
         case "music":
             sendMessage(message, { embeds: [musicEmbed] });
+            break;
+        case "resin":
+            await resin(message, words);
             break;
         case "help":
             sendMessage(message, { embeds: [helpEmbed] });
