@@ -197,9 +197,6 @@ export function addResinData(
         `REPLACE INTO resinData(userID, account, game, startResin, startTimestamp, resinCapTimestamp) 
         VALUES ('${userID}', '${account}', '${game}', ${startResin}, ${startTimestamp}, ${resinCapTimestamp})`
     );
-    (err) => {
-        if (err) return console.error(err.message);
-    };
 }
 
 export function addResinNotification(
@@ -213,12 +210,33 @@ export function addResinNotification(
         `REPLACE INTO resinNotifications(userID, account, notificationResin, timestamp, resinCapTimestamp) 
         VALUES ('${userID}', '${account}', ${notificationResin}, ${timestamp}, ${resinCapTimestamp})`
     );
-    (err) => {
-        if (err) return console.error(err.message);
-    };
 }
 
 export function sendResinNotifications(client, currentTimeSeconds) {
+    const sqlRead = `SELECT * FROM resinNotifications WHERE timestamp <= ${currentTimeSeconds}`;
+
+    db.all(sqlRead, [], (err, rows) => {
+        if (err) return console.error(err.message);
+
+        rows.forEach(async (row) => {
+            (await client.users.fetch(row.userID))
+                .send(row.account) //Add proper message
+                .then(() => {
+                    db.run(
+                        `DELETE FROM resinNotifications WHERE userID = '${row.userID}' AND account = '${row.account}' AND notificationResin = ${row.notificationResin}`
+                    );
+                })
+                .catch((err) => {});
+        });
+    });
+    db.run(
+        `DELETE FROM resinNotifications WHERE timestamp <= ${
+            currentTimeSeconds - 86400
+        }`
+    );
+}
+
+export function printResinNotifications() {
     const sqlRead = "SELECT * FROM resinNotifications";
 
     db.all(sqlRead, [], (err, rows) => {

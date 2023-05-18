@@ -27,17 +27,19 @@ export function resin(message, words) {
         return sendMessage(message, "Display resin counters for game");
     }
 
+    const customWarningTimeResin = 60; //To enable option
     const currentTime = generateUnixTimeNow();
     const secondsUntilFull =
         (games[game]["maxResin"] - resin) * games[game]["resinMins"] * 60;
     const secondsUntilWarning =
         (games[game]["maxResin"] - resin - 20) * games[game]["resinMins"] * 60;
+    const secondsUntilCustomWarning =
+        (customWarningTimeResin - resin) * games[game]["resinMins"] * 60;
     const fullTime = currentTime + secondsUntilFull;
     const warningTime = currentTime + secondsUntilWarning;
+    const customWarningTime = currentTime + secondsUntilCustomWarning;
 
-    //Send everything to database
-    //Wipe current account notifications
-    //Add new ones (including custom)
+    //Wipe current account notifications, not needed unless setting custom
     addResinData(
         message.author.id,
         account,
@@ -46,7 +48,13 @@ export function resin(message, words) {
         currentTime,
         fullTime
     );
-    addResinNotification(message.author.id, account, 60, warningTime, fullTime);
+    addResinNotification(
+        message.author.id,
+        account,
+        customWarningTimeResin,
+        customWarningTime,
+        fullTime
+    );
     addResinNotification(
         message.author.id,
         account,
@@ -61,10 +69,10 @@ export function resin(message, words) {
         fullTime,
         fullTime
     );
-    sendMessage(message, `Set resin count for ${account} as ${resin}`);
-    sendMessage(message, `Full <t:${fullTime}:R>`);
-    sendMessage(message, `Warning <t:${warningTime}:R>`);
-    //sendMessage(message, { embeds: [timestampEmbed(`<t:${unixTime}:R>`)] });
+    sendMessage(
+        message,
+        `Set resin count for ${account} as ${resin}\nFull <t:${fullTime}:R>\nWarning <t:${warningTime}:R>`
+    );
 }
 
 function getGameAndResinData(words) {
