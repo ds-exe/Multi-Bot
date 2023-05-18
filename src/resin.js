@@ -17,7 +17,7 @@ export function resin(message, words) {
     let game = undefined;
     let gameInstance = undefined;
     let resin = undefined;
-    ({ game, gameInstance, resin } = getResinData(words));
+    ({ game, gameInstance, resin } = getGameAndResinData(words));
 
     if (game === undefined || gameInstance === undefined) {
         return sendMessage(message, "Resin error message");
