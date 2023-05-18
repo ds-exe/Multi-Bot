@@ -37,6 +37,25 @@ export function open() {
     (err) => {
         if (err) return console.error(err.message);
     };
+    //db.run("DROP TABLE IF EXISTS resinData");
+    db.run(
+        "CREATE TABLE IF NOT EXISTS resinData(userID, account, game, startResin int, startTimestamp int, resinCapTimestamp int, PRIMARY KEY (userID, account))"
+    );
+    (err) => {
+        if (err) return console.error(err.message);
+    };
+    db.run(
+        "CREATE TABLE IF NOT EXISTS resinNotifications(userID, account, timestamp int, resinCapTimestamp int, PRIMARY KEY (userID, account))"
+    );
+    (err) => {
+        if (err) return console.error(err.message);
+    };
+    db.run(
+        "CREATE TABLE IF NOT EXISTS resinNotificationsCustom(userID, account, timestamp int, resinCapTimestamp int, PRIMARY KEY (userID, account))"
+    );
+    (err) => {
+        if (err) return console.error(err.message);
+    };
 }
 
 export function setTimezone(message, word) {
