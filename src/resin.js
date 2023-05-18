@@ -14,27 +14,17 @@ export function resin(message, words) {
         return sendMessage(message, "Help message for resin");
     }
 
-    const gameRegex = /^([A-z]+)[0-9]?$/;
-    const gameMatches = gameRegex.exec(words[0]);
-    if (gameMatches === null) {
-        return sendMessage(message, "Help error message for resin");
-    }
-    const game = gameMatches[1];
-    const gameInstance = gameMatches[0];
+    let game = undefined;
+    let gameInstance = undefined;
+    let resin = undefined;
+    ({ game, gameInstance, resin } = getResinData(words));
 
-    if (!(game in games)) {
-        return sendMessage(message, "Help error message for game");
+    if (game === undefined || gameInstance === undefined) {
+        return sendMessage(message, "Resin error message");
     }
-    if (words[1] === undefined) {
+    if (resin == undefined) {
         return sendMessage(message, "Display resin counters for game");
     }
-
-    const resinRegex = /^([0-9]+)$/;
-    const resinMatches = resinRegex.exec(words[1]);
-    if (resinMatches === null) {
-        return sendMessage(message, "Help error message for resin");
-    }
-    const resin = Number(resinMatches[1]);
 
     const currentTime = generateUnixTimeNow();
     const secondsUntilFull =
@@ -44,8 +34,39 @@ export function resin(message, words) {
     const fullTime = currentTime + secondsUntilFull;
     const warningTime = currentTime + secondsUntilWarning;
 
+    //Send everything to database
     sendMessage(message, `Set resin count for ${gameInstance} as ${resin}`);
     sendMessage(message, `Full <t:${fullTime}:R>`);
     sendMessage(message, `Warning <t:${warningTime}:R>`);
     //sendMessage(message, { embeds: [timestampEmbed(`<t:${unixTime}:R>`)] });
+}
+
+function getGameAndResinData(words) {
+    let game = undefined;
+    let gameInstance = undefined;
+    let resin = undefined;
+
+    const gameRegex = /^([A-z]+)[0-9]?$/;
+    const gameMatches = gameRegex.exec(words[0]);
+    if (gameMatches === null) {
+        return { game, gameInstance, resin };
+    }
+    game = gameMatches[1];
+    gameInstance = gameMatches[0];
+
+    if (!(game in games)) {
+        return { game: undefined, gameInstance: undefined, resin };
+    }
+    if (words[1] === undefined) {
+        return { game, gameInstance, resin };
+    }
+
+    const resinRegex = /^([0-9]+)$/;
+    const resinMatches = resinRegex.exec(words[1]);
+    if (resinMatches === null) {
+        return { game: undefined, gameInstance: undefined, resin };
+    }
+    resin = Number(resinMatches[1]);
+
+    return { game, gameInstance, resin };
 }
