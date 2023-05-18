@@ -1,8 +1,9 @@
-import { sendMessage } from "./utility.js";
+import { react, sendMessage } from "./utility.js";
 import { generateUnixTimeNow } from "./timestamp.js";
 import {
     addResinData,
     addResinNotification,
+    deleteResinData,
     getResinData,
     getResinDataAll,
 } from "./SQLDatabase.js";
@@ -28,6 +29,11 @@ export async function resin(message, words) {
 
     if (game === undefined || account === undefined) {
         return sendMessage(message, "Resin error message");
+    }
+    if (words[1] === "delete") {
+        deleteResinData(message.author.id, account);
+        react(message, "👍");
+        return;
     }
     if (resin === undefined) {
         return await sendResinData(message, message.author.id, account);
@@ -100,14 +106,11 @@ function getGameAndResinData(words) {
     if (words[1] === undefined) {
         return { game, account, resin };
     }
-    if (words[1] === "delete") {
-        //Delete all data and notifications for game
-    }
 
     const resinRegex = /^([0-9]+)$/;
     const resinMatches = resinRegex.exec(words[1]);
     if (resinMatches === null) {
-        return { game: undefined, account: undefined, resin };
+        return { game, account, resin };
     }
     resin = Number(resinMatches[1]);
 
@@ -116,6 +119,9 @@ function getGameAndResinData(words) {
 
 async function sendResinData(message, userID, account) {
     const rows = await getResinData(userID, account);
+    if (rows.length <= 0) {
+        return sendMessage(message, "No data for that account");
+    }
     rows.forEach(async (row) => {
         sendMessage(message, {
             embeds: [

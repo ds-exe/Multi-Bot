@@ -267,6 +267,15 @@ export function getResinDataAll(userID) {
     });
 }
 
+export function deleteResinData(userID, account) {
+    db.run(
+        `DELETE FROM resinNotifications WHERE userID = '${userID}' AND account = '${account}'`
+    );
+    db.run(
+        `DELETE FROM resinData WHERE userID = '${userID}' AND account = '${account}'`
+    );
+}
+
 export function printResinNotifications() {
     const sqlRead = "SELECT * FROM resinNotifications";
 
