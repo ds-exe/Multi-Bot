@@ -85,31 +85,27 @@ export async function resin(message, words) {
 }
 
 function getGameAndResinData(words) {
-    let game = undefined;
-    let account = undefined;
-    let resin = undefined;
-
     const gameRegex = /^([A-z]+)[0-9]?$/;
     const gameMatches = gameRegex.exec(words[0]);
     if (gameMatches === null) {
-        return { game, account, resin };
+        return {};
     }
-    game = gameMatches[1];
-    account = gameMatches[0];
+    const game = gameMatches[1];
+    const account = gameMatches[0];
 
     if (!(game in games)) {
-        return { game: undefined, account: undefined, resin };
+        return { game: undefined, account: undefined };
     }
     if (words[1] === undefined) {
-        return { game, account, resin };
+        return { game, account };
     }
 
     const resinRegex = /^([0-9]+)$/;
     const resinMatches = resinRegex.exec(words[1]);
     if (resinMatches === null) {
-        return { game, account, resin };
+        return { game, account };
     }
-    resin = Number(resinMatches[1]);
+    const resin = Number(resinMatches[1]);
 
     return { game, account, resin };
 }
