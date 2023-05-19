@@ -22,10 +22,7 @@ export async function resin(message, words) {
         return sendMessage(message, "Help message for resin");
     }
 
-    let game = undefined;
-    let account = undefined;
-    let resin = undefined;
-    ({ game, account, resin } = getGameAndResinData(words));
+    const { game, account, resin } = getGameAndResinData(words);
 
     if (game === undefined || account === undefined) {
         return sendMessage(message, "Resin error message");
@@ -137,7 +134,7 @@ async function sendResinData(message, userID, account) {
 
 async function sendResinDataAll(message, userID) {
     const rows = await getResinDataAll(userID);
-    if (rows.length === 0) {
+    if (rows.length <= 0) {
         return sendMessage(message, "No resin data found");
     }
     rows.forEach(async (row) => {
