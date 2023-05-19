@@ -266,16 +266,37 @@ export function getResinDataAll(userID) {
 }
 
 export function deleteResinData(userID, account) {
-    db.run(
-        `DELETE FROM resinNotifications WHERE userID = '${userID}' AND account = '${account}'`
-    );
-    db.run(
-        `DELETE FROM resinData WHERE userID = '${userID}' AND account = '${account}'`
-    );
+    return new Promise((resolve, reject) => {
+        db.run(
+            `DELETE FROM resinData WHERE userID = '${userID}' AND account = '${account}'`,
+            resolve
+        );
+    });
+}
+
+export function deleteResinNotifications(userID, account) {
+    return new Promise((resolve, reject) => {
+        db.run(
+            `DELETE FROM resinNotifications WHERE userID = '${userID}' AND account = '${account}'`,
+            resolve
+        );
+    });
 }
 
 export function printResinNotifications() {
     const sqlRead = "SELECT * FROM resinNotifications";
+
+    db.all(sqlRead, [], (err, rows) => {
+        if (err) return console.error(err.message);
+
+        rows.forEach((row) => {
+            console.log(row);
+        });
+    });
+}
+
+export function printResinData() {
+    const sqlRead = "SELECT * FROM resinData";
 
     db.all(sqlRead, [], (err, rows) => {
         if (err) return console.error(err.message);

@@ -4,6 +4,7 @@ import {
     addResinData,
     addResinNotification,
     deleteResinData,
+    deleteResinNotifications,
     getResinData,
     getResinDataAll,
 } from "./SQLDatabase.js";
@@ -28,7 +29,8 @@ export async function resin(message, words) {
         return sendMessage(message, "Resin error message");
     }
     if (words[1] === "delete") {
-        deleteResinData(message.author.id, account);
+        await deleteResinData(message.author.id, account);
+        await deleteResinNotifications(message.author.id, account);
         react(message, "👍");
         return;
     }
@@ -48,7 +50,7 @@ export async function resin(message, words) {
     const warningTime = currentTime + secondsUntilWarning;
     const customWarningTime = currentTime + secondsUntilCustomWarning;
 
-    //Wipe current account notifications, not needed unless adding custom option
+    await deleteResinNotifications(message.author.id, account);
     addResinData(
         message.author.id,
         account,
@@ -57,20 +59,12 @@ export async function resin(message, words) {
         currentTime,
         fullTime
     );
-    addResinNotification(
-        message.author.id,
-        account,
-        customWarningTimeResin,
-        customWarningTime,
-        fullTime
-    );
-    addResinNotification(
-        message.author.id,
-        account,
-        games[game]["maxResin"] - 20,
-        warningTime,
-        fullTime
-    );
+    sendMessage(message, {
+        embeds: [resinNotificationEmbed(account, resin, fullTime)],
+    });
+    if (resin >= games[game]["maxResin"]) {
+        return;
+    }
     addResinNotification(
         message.author.id,
         account,
@@ -78,9 +72,25 @@ export async function resin(message, words) {
         fullTime,
         fullTime
     );
-    sendMessage(
-        message,
-        `Set resin count for ${account} as ${resin}\nFull <t:${fullTime}:R>`
+    if (resin >= games[game]["maxResin"] - 20) {
+        return;
+    }
+    addResinNotification(
+        message.author.id,
+        account,
+        games[game]["maxResin"] - 20,
+        warningTime,
+        fullTime
+    );
+    if (resin >= customWarningTimeResin) {
+        return;
+    }
+    addResinNotification(
+        message.author.id,
+        account,
+        customWarningTimeResin,
+        customWarningTime,
+        fullTime
     );
 }
 
