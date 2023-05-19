@@ -50,6 +50,12 @@ export function open() {
     (err) => {
         if (err) return console.error(err.message);
     };
+    db.run(
+        "CREATE TABLE IF NOT EXISTS custom_warning_resin(userID, account, customResin int, PRIMARY KEY (userID, account))"
+    );
+    (err) => {
+        if (err) return console.error(err.message);
+    };
 }
 
 export function setTimezone(message, word) {
@@ -61,8 +67,7 @@ export function setTimezone(message, word) {
     db.run(
         `REPLACE INTO timezones (userID, timezone) VALUES ('${userID}', '${timezone}')`
     );
-    sendMessage(message, "Successfully set timezone");
-    return;
+    react(message, "👍");
 }
 
 export function getUserTimezone(userID) {
@@ -265,6 +270,28 @@ export function getResinDataAll(userID) {
     });
 }
 
+export function setCustomWarningTimeResin(message, account, customResin) {
+    db.run(
+        `REPLACE INTO custom_warning_resin (userID, account, customResin) VALUES ('${message.author.id}', '${account}', ${customResin})`
+    );
+    react(message, "👍");
+}
+
+export function getCustomWarningTimeResin(userID, account) {
+    return new Promise((resolve, reject) => {
+        const sqlRead = `SELECT * FROM custom_warning_resin WHERE userID = '${userID}' AND account = '${account}'`;
+
+        db.all(sqlRead, [], (err, rows) => {
+            if (err) reject(err);
+            if (rows.length > 0) {
+                resolve(rows[0].customResin);
+            } else {
+                resolve(60);
+            }
+        });
+    });
+}
+
 export function deleteResinData(userID, account) {
     return new Promise((resolve, reject) => {
         db.run(
@@ -278,6 +305,15 @@ export function deleteResinNotifications(userID, account) {
     return new Promise((resolve, reject) => {
         db.run(
             `DELETE FROM resinNotifications WHERE userID = '${userID}' AND account = '${account}'`,
+            resolve
+        );
+    });
+}
+
+export function deleteCustomWarningTimeResin(userID, account) {
+    return new Promise((resolve, reject) => {
+        db.run(
+            `DELETE FROM custom_warning_resin WHERE userID = '${userID}' AND account = '${account}'`,
             resolve
         );
     });
@@ -297,6 +333,18 @@ export function printResinNotifications() {
 
 export function printResinData() {
     const sqlRead = "SELECT * FROM resinData";
+
+    db.all(sqlRead, [], (err, rows) => {
+        if (err) return console.error(err.message);
+
+        rows.forEach((row) => {
+            console.log(row);
+        });
+    });
+}
+
+export function printWarningTimesDatabase() {
+    const sqlRead = "SELECT * FROM custom_warning_resin";
 
     db.all(sqlRead, [], (err, rows) => {
         if (err) return console.error(err.message);

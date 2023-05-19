@@ -3,10 +3,13 @@ import { generateUnixTimeNow } from "./timestamp.js";
 import {
     addResinData,
     addResinNotification,
+    deleteCustomWarningTimeResin,
     deleteResinData,
     deleteResinNotifications,
+    getCustomWarningTimeResin,
     getResinData,
     getResinDataAll,
+    setCustomWarningTimeResin,
 } from "./SQLDatabase.js";
 import { resinNotificationEmbed } from "./embeds.js";
 
@@ -31,24 +34,24 @@ export async function resin(message, words) {
     if (words[1] === "delete") {
         await deleteResinData(message.author.id, account);
         await deleteResinNotifications(message.author.id, account);
+        await deleteCustomWarningTimeResin(message.author.id, account);
         react(message, "👍");
         return;
+    }
+    if (words[1] === "custom") {
+        return await setCustomResin(message, words, game, account);
     }
     if (resin === undefined) {
         return await sendResinData(message, message.author.id, account);
     }
 
-    const customWarningTimeResin = 60; //Make editable option
     const currentTime = generateUnixTimeNow();
     const secondsUntilFull =
         (games[game]["maxResin"] - resin) * games[game]["resinMins"] * 60;
     const secondsUntilWarning =
         (games[game]["maxResin"] - resin - 20) * games[game]["resinMins"] * 60;
-    const secondsUntilCustomWarning =
-        (customWarningTimeResin - resin) * games[game]["resinMins"] * 60;
     const fullTime = currentTime + secondsUntilFull;
     const warningTime = currentTime + secondsUntilWarning;
-    const customWarningTime = currentTime + secondsUntilCustomWarning;
 
     await deleteResinNotifications(message.author.id, account);
     addResinData(
@@ -82,6 +85,15 @@ export async function resin(message, words) {
         warningTime,
         fullTime
     );
+
+    const customWarningTimeResin = await getCustomWarningTimeResin(
+        message.author.id,
+        account
+    );
+    const secondsUntilCustomWarning =
+        (customWarningTimeResin - resin) * games[game]["resinMins"] * 60;
+    const customWarningTime = currentTime + secondsUntilCustomWarning;
+
     if (resin >= customWarningTimeResin) {
         return;
     }
@@ -166,4 +178,24 @@ function generateCurrentResin(row) {
         ),
         games[row.game]["maxResin"]
     );
+}
+
+async function setCustomResin(message, words, game, account) {
+    const resinRegex = /^([0-9]+)$/;
+    const resinMatches = resinRegex.exec(words[2]);
+    if (resinMatches === null) {
+        const customResinCurrent = await getCustomWarningTimeResin(
+            message.author.id,
+            account
+        );
+        return sendMessage(
+            message,
+            `Current custom resin amount: ${customResinCurrent}`
+        );
+    }
+    const customResin = Number(resinMatches[1]);
+    if (customResin < 0 || customResin > games[game]["maxResin"]) {
+        return sendMessage(message, "Resin amount not in valid range");
+    }
+    return setCustomWarningTimeResin(message, account, customResin);
 }
