@@ -94,7 +94,7 @@ function getGameAndResinData(words) {
     const account = gameMatches[0];
 
     if (!(game in games)) {
-        return { game: undefined, account: undefined };
+        return {};
     }
     if (words[1] === undefined) {
         return { game, account };
