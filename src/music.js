@@ -194,7 +194,8 @@ function validatePlaylistUrl(url, message) {
         return { match: matches[1], isPlaylist: true };
     }
 
-    const spotify = /^(https:\/\/open.spotify.com\/playlist\/[a-zA-Z0-9-_()]+)/;
+    const spotify =
+        /^(https:\/\/open.spotify.com\/playlist\/[a-zA-Z0-9-_()]+|https:\/\/open.spotify.com\/album\/[a-zA-Z0-9-_()]+)/;
     matches = spotify.exec(url);
     if (matches !== null) {
         return { match: matches[1], isPlaylist: true };
