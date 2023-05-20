@@ -271,10 +271,12 @@ export function getResinDataAll(userID) {
 }
 
 export function setCustomWarningTimeResin(message, account, customResin) {
-    db.run(
-        `REPLACE INTO custom_warning_resin (userID, account, customResin) VALUES ('${message.author.id}', '${account}', ${customResin})`
-    );
-    react(message, "👍");
+    return new Promise((resolve, reject) => {
+        db.run(
+            `REPLACE INTO custom_warning_resin (userID, account, customResin) VALUES ('${message.author.id}', '${account}', ${customResin})`,
+            resolve
+        );
+    });
 }
 
 export function getCustomWarningTimeResin(userID, account) {

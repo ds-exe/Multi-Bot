@@ -38,13 +38,24 @@ export async function resin(message, words) {
         react(message, "👍");
         return;
     }
-    if (words[1] === "custom") {
+    if (words[1] === "notify") {
         return await setCustomResin(message, words, game, account);
     }
     if (resin === undefined) {
         return await sendResinData(message, message.author.id, account);
     }
 
+    await setResinNotifications(message, game, account, resin);
+    const currentTime = generateUnixTimeNow();
+    const secondsUntilFull =
+        (games[game]["maxResin"] - resin) * games[game]["resinMins"] * 60;
+    const fullTime = currentTime + secondsUntilFull;
+    sendMessage(message, {
+        embeds: [resinNotificationEmbed(account, resin, fullTime)],
+    });
+}
+
+async function setResinNotifications(message, game, account, resin) {
     const currentTime = generateUnixTimeNow();
     const secondsUntilFull =
         (games[game]["maxResin"] - resin) * games[game]["resinMins"] * 60;
@@ -62,9 +73,6 @@ export async function resin(message, words) {
         currentTime,
         fullTime
     );
-    sendMessage(message, {
-        embeds: [resinNotificationEmbed(account, resin, fullTime)],
-    });
     if (resin >= games[game]["maxResin"]) {
         return;
     }
@@ -197,5 +205,16 @@ async function setCustomResin(message, words, game, account) {
     if (customResin < 0 || customResin > games[game]["maxResin"]) {
         return sendMessage(message, "Resin amount not in valid range");
     }
-    return setCustomWarningTimeResin(message, account, customResin);
+    await setCustomWarningTimeResin(message, account, customResin);
+    react(message, "👍");
+    const rows = await getResinData(message.author.id, account);
+    if (rows.length <= 0) {
+        return;
+    }
+    setResinNotifications(
+        message,
+        game,
+        account,
+        generateCurrentResin(rows[0])
+    );
 }
