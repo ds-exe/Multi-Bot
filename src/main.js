@@ -126,6 +126,7 @@ async function next(message) {
     if (!isDM(message)) {
         message.suppressEmbeds(true);
     }
+    message.content = message.content.replace(`${prefix} `, `${prefix}`);
     const isBotOwner = message.author.id === botOwner;
     let msg = message.content;
     msg = msg.replace(`${prefix}`, "").toLowerCase();
