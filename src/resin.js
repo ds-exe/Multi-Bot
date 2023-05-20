@@ -73,6 +73,15 @@ async function setResinNotifications(message, game, account, resin) {
         currentTime,
         fullTime
     );
+    await setCustomResinNotifications(
+        message,
+        game,
+        account,
+        resin,
+        currentTime,
+        fullTime
+    );
+
     if (resin >= games[game]["maxResin"]) {
         return;
     }
@@ -93,25 +102,40 @@ async function setResinNotifications(message, game, account, resin) {
         warningTime,
         fullTime
     );
+}
 
+async function setCustomResinNotifications(
+    message,
+    game,
+    account,
+    resin,
+    currentTime,
+    fullTime
+) {
     const customWarningTimeResin = await getCustomWarningTimeResin(
         message.author.id,
         account
     );
-    const secondsUntilCustomWarning =
-        (customWarningTimeResin - resin) * games[game]["resinMins"] * 60;
-    const customWarningTime = currentTime + secondsUntilCustomWarning;
+    for (
+        let customResin = customWarningTimeResin;
+        customResin <= games[game]["maxResin"];
+        customResin += customWarningTimeResin
+    ) {
+        if (resin >= customResin) {
+            continue;
+        }
+        const secondsUntilCustomWarning =
+            (customResin - resin) * games[game]["resinMins"] * 60;
+        const customWarningTime = currentTime + secondsUntilCustomWarning;
 
-    if (resin >= customWarningTimeResin) {
-        return;
+        addResinNotification(
+            message.author.id,
+            account,
+            customResin,
+            customWarningTime,
+            fullTime
+        );
     }
-    addResinNotification(
-        message.author.id,
-        account,
-        customWarningTimeResin,
-        customWarningTime,
-        fullTime
-    );
 }
 
 function getGameAndResinData(words) {
