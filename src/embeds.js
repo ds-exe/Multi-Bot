@@ -44,32 +44,13 @@ export function timestampEmbed(time) {
 export function resinNotificationEmbed(
     account,
     notificationResin,
-    resinCapTimestamp
-) {
-    account = account.replace("hsr", "Honkai Star Rail");
-    account = account.replace("genshin", "Genshin");
-    account = account.replace(/[0-9]/, " $&");
-    return new EmbedBuilder()
-        .setColor("#0099ff")
-        .setTitle(`${account}:`)
-        .setDescription(`Current Resin: ${notificationResin}`)
-        .addFields({
-            name: `Resin full:`,
-            value: `<t:${resinCapTimestamp}:R>`,
-            inline: true,
-        });
-}
-
-export function resinNextNotificationEmbed(
-    account,
-    notificationResin,
     nextAlertTimestamp,
     resinCapTimestamp
 ) {
     account = account.replace("hsr", "Honkai Star Rail");
     account = account.replace("genshin", "Genshin");
     account = account.replace(/[0-9]/, " $&");
-    return new EmbedBuilder()
+    let embed = new EmbedBuilder()
         .setColor("#0099ff")
         .setTitle(`${account}:`)
         .setDescription(`Current Resin: ${notificationResin}`)
@@ -86,6 +67,10 @@ export function resinNextNotificationEmbed(
                 inline: true,
             }
         );
+    if (nextAlertTimestamp <= 0) {
+        embed.spliceFields(0, 2);
+    }
+    return embed;
 }
 
 export function trackAdded(song) {

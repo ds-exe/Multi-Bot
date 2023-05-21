@@ -75,7 +75,7 @@ export function getUserTimezone(userID) {
     return new Promise((resolve, reject) => {
         db.all(query, function (err, rows) {
             if (err) {
-                reject(err);
+                return reject(err);
             }
             if (rows.length > 0) {
                 resolve(rows[0].timezone);
@@ -110,7 +110,7 @@ export function hasPermissionRole(message, roles, guildId) {
             .join(",")})`;
         db.all(query, roleQuery, function (err, rows) {
             if (err) {
-                reject(err);
+                return reject(err);
             }
             if (rows.length > 0) {
                 resolve(true);
@@ -142,7 +142,7 @@ export function hasPermissionUser(message, userId, guildId) {
         const query = `SELECT * FROM permissionsUser WHERE userID = '${userId}' AND guildID = '${guildId}'`;
         db.all(query, function (err, rows) {
             if (err) {
-                reject(err);
+                return reject(err);
             }
             if (rows.length > 0) {
                 resolve(true);
@@ -226,22 +226,29 @@ export function sendResinNotifications(client, currentTimeSeconds) {
         if (err) return console.error(err.message);
 
         rows.forEach(async (row) => {
+            await db.run(
+                `DELETE FROM resinNotifications WHERE userID = '${row.userID}' AND account = '${row.account}' AND notificationResin = ${row.notificationResin}`
+            );
             (await client.users.fetch(row.userID))
                 .send({
                     embeds: [
                         resinNotificationEmbed(
                             row.account,
                             row.notificationResin,
+                            await getNextNotification(row.userID, row.account),
                             row.resinCapTimestamp
                         ),
                     ],
                 })
-                .then(() => {
-                    db.run(
-                        `DELETE FROM resinNotifications WHERE userID = '${row.userID}' AND account = '${row.account}' AND notificationResin = ${row.notificationResin}`
+                .catch((err) => {
+                    addResinNotification(
+                        row.userID,
+                        row.account,
+                        row.notificationResin,
+                        row.timestamp,
+                        row.resinCapTimestamp
                     );
-                })
-                .catch((err) => {});
+                });
         });
     });
     db.run(
@@ -256,9 +263,9 @@ export function getNextNotification(userID, account) {
         const sqlRead = `SELECT * FROM resinNotifications WHERE userID = '${userID}' AND account = '${account}'`;
 
         db.all(sqlRead, [], (err, rows) => {
-            if (err) resolve({});
+            if (err) return resolve(0);
             if (rows.length <= 0) {
-                resolve(0); // TODO: better value
+                return resolve(0);
             }
             let min = rows[0].notificationResin;
             let timestamp = rows[0].timestamp;
@@ -277,7 +284,7 @@ export function getResinData(userID, account) {
         const sqlRead = `SELECT * FROM resinData WHERE userID = '${userID}' AND account = '${account}'`;
 
         db.all(sqlRead, [], (err, rows) => {
-            if (err) resolve({});
+            if (err) return resolve({});
             resolve(rows);
         });
     });
@@ -288,7 +295,7 @@ export function getResinDataAll(userID) {
         const sqlRead = `SELECT * FROM resinData WHERE userID = '${userID}'`;
 
         db.all(sqlRead, [], (err, rows) => {
-            if (err) resolve({});
+            if (err) return resolve({});
             resolve(rows);
         });
     });
@@ -308,7 +315,7 @@ export function getCustomWarningTimeResin(userID, account) {
         const sqlRead = `SELECT * FROM custom_warning_resin WHERE userID = '${userID}' AND account = '${account}'`;
 
         db.all(sqlRead, [], (err, rows) => {
-            if (err) reject(err);
+            if (err) return reject(err);
             if (rows.length > 0) {
                 resolve(rows[0].customResin);
             } else {
@@ -411,7 +418,7 @@ export function getUserPermissionData(guildId) {
 
         db.all(sqlRead, [], (err, rows) => {
             if (err) {
-                reject(err);
+                return reject(err);
             }
             resolve(rows);
         });
@@ -424,7 +431,7 @@ export function getRolePermissionData(guildId) {
 
         db.all(sqlRead, [], (err, rows) => {
             if (err) {
-                reject(err);
+                return reject(err);
             }
             resolve(rows);
         });

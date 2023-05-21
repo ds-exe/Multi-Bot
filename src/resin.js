@@ -12,11 +12,11 @@ import {
     getResinDataAll,
     setCustomWarningTimeResin,
 } from "./SQLDatabase.js";
-import { resinNextNotificationEmbed } from "./embeds.js";
+import { resinNotificationEmbed } from "./embeds.js";
 
 const games = {
     hsr: { maxResin: 180, resinMins: 6 },
-    genshin: { maxResin: 160, resinMins: 8 },
+    genshin: { maxResin: 160, resinMins: 1 },
 };
 
 export async function resin(message, words) {
@@ -53,7 +53,7 @@ export async function resin(message, words) {
     const fullTime = currentTime + secondsUntilFull;
     sendMessage(message, {
         embeds: [
-            resinNextNotificationEmbed(
+            resinNotificationEmbed(
                 account,
                 resin,
                 await getNextNotification(message.author.id, account),
@@ -183,7 +183,7 @@ async function sendResinData(message, userID, account) {
     rows.forEach(async (row) => {
         sendMessage(message, {
             embeds: [
-                resinNextNotificationEmbed(
+                resinNotificationEmbed(
                     row.account,
                     generateCurrentResin(row),
                     await getNextNotification(userID, row.account),
@@ -202,7 +202,7 @@ async function sendResinDataAll(message, userID) {
     rows.forEach(async (row) => {
         sendMessage(message, {
             embeds: [
-                resinNextNotificationEmbed(
+                resinNotificationEmbed(
                     row.account,
                     generateCurrentResin(row),
                     await getNextNotification(userID, row.account),
