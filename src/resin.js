@@ -16,7 +16,7 @@ import { resinNotificationEmbed } from "./embeds.js";
 
 const games = {
     hsr: { maxResin: 180, resinMins: 6 },
-    genshin: { maxResin: 160, resinMins: 1 },
+    genshin: { maxResin: 160, resinMins: 8 },
 };
 
 export async function resin(message, words) {
