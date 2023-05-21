@@ -45,6 +45,9 @@ export async function resin(message, words) {
     if (resin === undefined) {
         return await sendResinData(message, message.author.id, account);
     }
+    if (resin < 0 || resin >= games[game]["maxResin"]) {
+        return sendMessage(message, "Resin amount not in valid range");
+    }
 
     await setResinNotifications(message, game, account, resin);
     const currentTime = generateUnixTimeNow();
@@ -89,10 +92,6 @@ async function setResinNotifications(message, game, account, resin) {
         currentTime,
         fullTime
     );
-
-    if (resin >= games[game]["maxResin"]) {
-        return;
-    }
     await addResinNotification(
         message.author.id,
         account,
@@ -165,7 +164,7 @@ function getGameAndResinData(words) {
         return { game, account };
     }
 
-    const resinRegex = /^([0-9]+)$/;
+    const resinRegex = /^(-?[0-9]+)$/;
     const resinMatches = resinRegex.exec(words[1]);
     if (resinMatches === null) {
         return { game, account };
