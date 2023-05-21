@@ -12,10 +12,7 @@ import {
     getResinDataAll,
     setCustomWarningTimeResin,
 } from "./SQLDatabase.js";
-import {
-    resinNotificationEmbed,
-    resinNextNotificationEmbed,
-} from "./embeds.js";
+import { resinNextNotificationEmbed } from "./embeds.js";
 
 const games = {
     hsr: { maxResin: 180, resinMins: 6 },
@@ -55,7 +52,14 @@ export async function resin(message, words) {
         (games[game]["maxResin"] - resin) * games[game]["resinMins"] * 60;
     const fullTime = currentTime + secondsUntilFull;
     sendMessage(message, {
-        embeds: [resinNotificationEmbed(account, resin, fullTime)],
+        embeds: [
+            resinNextNotificationEmbed(
+                account,
+                resin,
+                await getNextNotification(message.author.id, account),
+                fullTime
+            ),
+        ],
     });
 }
 
@@ -89,7 +93,7 @@ async function setResinNotifications(message, game, account, resin) {
     if (resin >= games[game]["maxResin"]) {
         return;
     }
-    addResinNotification(
+    await addResinNotification(
         message.author.id,
         account,
         games[game]["maxResin"],
@@ -99,7 +103,7 @@ async function setResinNotifications(message, game, account, resin) {
     if (resin >= games[game]["maxResin"] - 20) {
         return;
     }
-    addResinNotification(
+    await addResinNotification(
         message.author.id,
         account,
         games[game]["maxResin"] - 20,
@@ -135,7 +139,7 @@ async function setCustomResinNotifications(
             (customResin - resin) * games[game]["resinMins"] * 60;
         const customWarningTime = currentTime + secondsUntilCustomWarning;
 
-        addResinNotification(
+        await addResinNotification(
             message.author.id,
             account,
             customResin,

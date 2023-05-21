@@ -210,10 +210,13 @@ export function addResinNotification(
     timestamp,
     resinCapTimestamp
 ) {
-    db.run(
-        `REPLACE INTO resinNotifications(userID, account, notificationResin, timestamp, resinCapTimestamp) 
-        VALUES ('${userID}', '${account}', ${notificationResin}, ${timestamp}, ${resinCapTimestamp})`
-    );
+    return new Promise((resolve, reject) => {
+        db.run(
+            `REPLACE INTO resinNotifications(userID, account, notificationResin, timestamp, resinCapTimestamp) 
+            VALUES ('${userID}', '${account}', ${notificationResin}, ${timestamp}, ${resinCapTimestamp})`,
+            resolve
+        );
+    });
 }
 
 export function sendResinNotifications(client, currentTimeSeconds) {
