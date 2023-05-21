@@ -248,6 +248,27 @@ export function sendResinNotifications(client, currentTimeSeconds) {
     );
 }
 
+export function getNextNotification(userID, account) {
+    return new Promise((resolve, reject) => {
+        const sqlRead = `SELECT * FROM resinNotifications WHERE userID = '${userID}' AND account = '${account}'`;
+
+        db.all(sqlRead, [], (err, rows) => {
+            if (err) resolve({});
+            if (rows.length <= 0) {
+                resolve(0); // TODO: better value
+            }
+            let min = rows[0].notificationResin;
+            let timestamp = rows[0].timestamp;
+            rows.forEach((row) => {
+                if (row.notificationResin < min) {
+                    timestamp = row.timestamp;
+                }
+            });
+            resolve(timestamp);
+        });
+    });
+}
+
 export function getResinData(userID, account) {
     return new Promise((resolve, reject) => {
         const sqlRead = `SELECT * FROM resinData WHERE userID = '${userID}' AND account = '${account}'`;

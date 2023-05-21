@@ -46,14 +46,37 @@ export function resinNotificationEmbed(
     notificationResin,
     resinCapTimestamp
 ) {
+    account = account.replace("hsr", "Honkai Star Rail");
+    account = account.replace("genshin", "Genshin");
+    account = account.replace(/[0-9]/, " $&");
     return new EmbedBuilder()
         .setColor("#0099ff")
-        .setTitle("Resin Tracker:")
-        .setDescription(`${account}`)
+        .setTitle(`${account}:`)
+        .setDescription(`Current Resin: ${notificationResin}`)
+        .addFields({
+            name: `Resin full:`,
+            value: `<t:${resinCapTimestamp}:R>`,
+            inline: true,
+        });
+}
+
+export function resinNextNotificationEmbed(
+    account,
+    notificationResin,
+    nextAlertTimestamp,
+    resinCapTimestamp
+) {
+    account = account.replace("hsr", "Honkai Star Rail");
+    account = account.replace("genshin", "Genshin");
+    account = account.replace(/[0-9]/, " $&");
+    return new EmbedBuilder()
+        .setColor("#0099ff")
+        .setTitle(`${account}:`)
+        .setDescription(`Current Resin: ${notificationResin}`)
         .addFields(
             {
-                name: `Current Resin:`,
-                value: `${notificationResin}`,
+                name: `Next alert:`,
+                value: `<t:${nextAlertTimestamp}:R>`,
                 inline: true,
             },
             { name: "\u200b", value: `\u200b`, inline: true },

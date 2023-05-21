@@ -7,11 +7,15 @@ import {
     deleteResinData,
     deleteResinNotifications,
     getCustomWarningTimeResin,
+    getNextNotification,
     getResinData,
     getResinDataAll,
     setCustomWarningTimeResin,
 } from "./SQLDatabase.js";
-import { resinNotificationEmbed } from "./embeds.js";
+import {
+    resinNotificationEmbed,
+    resinNextNotificationEmbed,
+} from "./embeds.js";
 
 const games = {
     hsr: { maxResin: 180, resinMins: 6 },
@@ -175,9 +179,10 @@ async function sendResinData(message, userID, account) {
     rows.forEach(async (row) => {
         sendMessage(message, {
             embeds: [
-                resinNotificationEmbed(
+                resinNextNotificationEmbed(
                     row.account,
                     generateCurrentResin(row),
+                    await getNextNotification(userID, row.account),
                     row.resinCapTimestamp
                 ),
             ],
@@ -193,9 +198,10 @@ async function sendResinDataAll(message, userID) {
     rows.forEach(async (row) => {
         sendMessage(message, {
             embeds: [
-                resinNotificationEmbed(
+                resinNextNotificationEmbed(
                     row.account,
                     generateCurrentResin(row),
+                    await getNextNotification(userID, row.account),
                     row.resinCapTimestamp
                 ),
             ],
