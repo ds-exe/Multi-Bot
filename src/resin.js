@@ -116,6 +116,9 @@ async function setCustomResinNotifications(
         message.author.id,
         account
     );
+    if (customWarningTimeResin < 20) {
+        return;
+    }
     for (
         let customResin = customWarningTimeResin;
         customResin <= games[game]["maxResin"];
