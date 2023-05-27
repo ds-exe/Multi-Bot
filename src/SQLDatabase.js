@@ -231,6 +231,14 @@ export function sendResinNotifications(client, currentTimeSeconds) {
             );
             (await client.users.fetch(row.userID))
                 .send({
+                    components: [
+                        getButtons(
+                            await getCustomWarningTimeResin(
+                                row.userID,
+                                row.account
+                            )
+                        ),
+                    ],
                     embeds: [
                         resinNotificationEmbed(
                             row.account,

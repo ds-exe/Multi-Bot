@@ -13,6 +13,7 @@ import {
     setCustomWarningTimeResin,
 } from "./SQLDatabase.js";
 import { resinNotificationEmbed } from "./embeds.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 
 const games = {
     hsr: { maxResin: 180, resinMins: 6 },
@@ -55,6 +56,11 @@ export async function resin(message, words) {
         (games[game]["maxResin"] - resin) * games[game]["resinMins"] * 60;
     const fullTime = currentTime + secondsUntilFull;
     sendMessage(message, {
+        components: [
+            getButtons(
+                await getCustomWarningTimeResin(message.author.id, account)
+            ),
+        ],
         embeds: [
             resinNotificationEmbed(
                 account,
@@ -181,6 +187,11 @@ async function sendResinData(message, userID, account) {
     }
     rows.forEach(async (row) => {
         sendMessage(message, {
+            components: [
+                getButtons(
+                    await getCustomWarningTimeResin(row.userID, row.account)
+                ),
+            ],
             embeds: [
                 resinNotificationEmbed(
                     row.account,
@@ -200,6 +211,11 @@ async function sendResinDataAll(message, userID) {
     }
     rows.forEach(async (row) => {
         sendMessage(message, {
+            components: [
+                getButtons(
+                    await getCustomWarningTimeResin(row.userID, row.account)
+                ),
+            ],
             embeds: [
                 resinNotificationEmbed(
                     row.account,
@@ -252,5 +268,28 @@ async function setCustomResin(message, words, game, account) {
         game,
         account,
         generateCurrentResin(rows[0])
+    );
+}
+
+function getButtons(resin) {
+    const lowResin = new ButtonBuilder()
+        .setCustomId("lowResin")
+        .setLabel("-10")
+        .setStyle(ButtonStyle.Secondary);
+
+    const highResin = new ButtonBuilder()
+        .setCustomId("highResin")
+        .setLabel("-30")
+        .setStyle(ButtonStyle.Secondary);
+
+    const customResin = new ButtonBuilder()
+        .setCustomId("customResin")
+        .setLabel(`-${resin}`)
+        .setStyle(ButtonStyle.Primary);
+
+    return new ActionRowBuilder().addComponents(
+        lowResin,
+        highResin,
+        customResin
     );
 }

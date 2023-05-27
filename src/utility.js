@@ -22,6 +22,10 @@ export async function react(message, reaction) {
     return await message.react(reaction).catch((err) => {});
 }
 
+export async function edit(message, msg) {
+    return await message.edit(msg).catch((err) => {});
+}
+
 export function getTimezone(timezone) {
     let zonesRegex = /^([a-z]+)$/;
     const zoneMatch = zonesRegex.exec(timezone);
