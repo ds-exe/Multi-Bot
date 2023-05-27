@@ -188,7 +188,7 @@ async function sendResinData(message, userID, account) {
                 resinNotificationEmbed(
                     row.account,
                     generateCurrentResin(row),
-                    await getNextNotification(userID, row.account),
+                    await getNextNotification(row.userID, row.account),
                     row.resinCapTimestamp
                 ),
             ],
@@ -212,7 +212,7 @@ async function sendResinDataAll(message, userID) {
                 resinNotificationEmbed(
                     row.account,
                     generateCurrentResin(row),
-                    await getNextNotification(userID, row.account),
+                    await getNextNotification(row.userID, row.account),
                     row.resinCapTimestamp
                 ),
             ],
@@ -275,40 +275,31 @@ export async function handleButtons(interaction) {
     }
     rows.forEach(async (row) => {
         const currentResin = generateCurrentResin(row);
-        if (interaction.customId === "lowResin") {
-            if (currentResin - 10 < 0) {
-                return reply(interaction, "Not enough resin to remove");
-            }
-            await setResinNotifications(
-                interaction.user.id,
-                row.game,
-                account,
-                currentResin - 10
-            );
-        } else if (interaction.customId === "highResin") {
-            if (currentResin - 30 < 0) {
-                return reply(interaction, "Not enough resin to remove");
-            }
-            await setResinNotifications(
-                interaction.user.id,
-                row.game,
-                account,
-                currentResin - 30
-            );
-        } else if (interaction.customId === "customResin") {
-            const customResin = await getCustomWarningTimeResin(
-                interaction.user.id,
-                account
-            );
-            if (currentResin - customResin < 0) {
-                return reply(interaction, "Not enough resin to remove");
-            }
-            await setResinNotifications(
-                interaction.user.id,
-                row.game,
-                account,
-                currentResin - customResin
-            );
+        const resinChange = await customIdToResin(
+            interaction.customId,
+            interaction.user.id,
+            account
+        );
+
+        if (currentResin - resinChange < 0) {
+            return reply(interaction, "Not enough resin to remove");
         }
+        await setResinNotifications(
+            interaction.user.id,
+            row.game,
+            account,
+            currentResin - resinChange
+        );
+        sendResinData(interaction.message, row.userID, account);
     });
+}
+
+async function customIdToResin(customId, userID, account) {
+    if (customId === "lowResin") {
+        return 10;
+    } else if (customId === "highResin") {
+        return 30;
+    } else if (customId === "customResin") {
+        return await getCustomWarningTimeResin(userID, account);
+    }
 }
