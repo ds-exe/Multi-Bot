@@ -45,8 +45,11 @@ export async function resin(message, words) {
     if (resin === undefined) {
         return await sendResinData(message, message.author.id, account);
     }
-    if (resin < 0 || resin >= games[game]["maxResin"]) {
+    if (resin >= games[game]["maxResin"]) {
         return sendMessage(message, "Resin amount not in valid range");
+    }
+    if (resin < 0) {
+        return await reduceResin(message, message.author.id, account, -resin);
     }
 
     await setResinNotifications(message.author.id, game, account, resin);
@@ -269,28 +272,32 @@ export async function handleButtons(interaction) {
     account = account.replace("Genshin", "genshin");
     account = account.replace(/ |:/g, "");
 
-    const rows = await getResinData(interaction.user.id, account);
+    const resinChange = await customIdToResin(
+        interaction.customId,
+        interaction.user.id,
+        account
+    );
+    await reduceResin(interaction, interaction.user.id, account, resinChange);
+}
+
+async function reduceResin(message, userID, account, resinChange) {
+    const rows = await getResinData(userID, account);
     if (rows.length <= 0) {
-        return reply(interaction, "No resin data found");
+        return reply(message, "No resin data found");
     }
     rows.forEach(async (row) => {
         const currentResin = generateCurrentResin(row);
-        const resinChange = await customIdToResin(
-            interaction.customId,
-            interaction.user.id,
-            account
-        );
 
         if (currentResin - resinChange < 0) {
-            return reply(interaction, "Not enough resin to remove");
+            return reply(message, "Not enough resin to remove");
         }
         await setResinNotifications(
-            interaction.user.id,
+            userID,
             row.game,
             account,
             currentResin - resinChange
         );
-        await sendResinData(interaction, row.userID, account);
+        await sendResinData(message, userID, account);
     });
 }
 
