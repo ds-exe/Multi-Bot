@@ -76,8 +76,24 @@ client.on("ready", () => {
     }, 1000 * 30);
 });
 
-client.on(Events.InteractionCreate, (interaction) => {
-    handleButtons(interaction);
+client.on(Events.InteractionCreate, async (interaction) => {
+    try {
+        await handleButtons(interaction);
+    } catch (e) {
+        sendMessage(message, "An unknown error occured");
+        const errorChannel = await client.channels
+            .fetch(errorChannelID)
+            .catch((err) => {});
+        if (!errorChannel) {
+            return;
+        }
+        sendMessage(
+            {
+                channel: errorChannel,
+            },
+            `\`\`\`${e.stack}\`\`\``
+        );
+    }
 });
 
 client.on("messageCreate", async (message) => {
