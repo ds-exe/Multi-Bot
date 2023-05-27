@@ -1,4 +1,4 @@
-import { getButtons, react, sendMessage } from "./utility.js";
+import { getButtons, react, reply, sendMessage } from "./utility.js";
 import { generateUnixTimeNow } from "./timestamp.js";
 import {
     addResinData,
@@ -49,7 +49,7 @@ export async function resin(message, words) {
         return sendMessage(message, "Resin amount not in valid range");
     }
 
-    await setResinNotifications(message, game, account, resin);
+    await setResinNotifications(message.author.id, game, account, resin);
     const currentTime = generateUnixTimeNow();
     const secondsUntilFull =
         (games[game]["maxResin"] - resin) * games[game]["resinMins"] * 60;
@@ -71,7 +71,7 @@ export async function resin(message, words) {
     });
 }
 
-async function setResinNotifications(message, game, account, resin) {
+async function setResinNotifications(userID, game, account, resin) {
     const currentTime = generateUnixTimeNow();
     const secondsUntilFull =
         (games[game]["maxResin"] - resin) * games[game]["resinMins"] * 60;
@@ -80,17 +80,10 @@ async function setResinNotifications(message, game, account, resin) {
     const fullTime = currentTime + secondsUntilFull;
     const warningTime = currentTime + secondsUntilWarning;
 
-    await deleteResinNotifications(message.author.id, account);
-    addResinData(
-        message.author.id,
-        account,
-        game,
-        resin,
-        currentTime,
-        fullTime
-    );
+    await deleteResinNotifications(userID, account);
+    addResinData(userID, account, game, resin, currentTime, fullTime);
     await setCustomResinNotifications(
-        message,
+        userID,
         game,
         account,
         resin,
@@ -98,7 +91,7 @@ async function setResinNotifications(message, game, account, resin) {
         fullTime
     );
     await addResinNotification(
-        message.author.id,
+        userID,
         account,
         games[game]["maxResin"],
         fullTime,
@@ -108,7 +101,7 @@ async function setResinNotifications(message, game, account, resin) {
         return;
     }
     await addResinNotification(
-        message.author.id,
+        userID,
         account,
         games[game]["maxResin"] - 20,
         warningTime,
@@ -117,7 +110,7 @@ async function setResinNotifications(message, game, account, resin) {
 }
 
 async function setCustomResinNotifications(
-    message,
+    userID,
     game,
     account,
     resin,
@@ -125,7 +118,7 @@ async function setCustomResinNotifications(
     fullTime
 ) {
     const customWarningTimeResin = await getCustomWarningTimeResin(
-        message.author.id,
+        userID,
         account
     );
     if (customWarningTimeResin < 20) {
@@ -144,7 +137,7 @@ async function setCustomResinNotifications(
         const customWarningTime = currentTime + secondsUntilCustomWarning;
 
         await addResinNotification(
-            message.author.id,
+            userID,
             account,
             customResin,
             customWarningTime,
@@ -263,9 +256,59 @@ async function setCustomResin(message, words, game, account) {
         return;
     }
     setResinNotifications(
-        message,
+        message.author.id,
         game,
         account,
         generateCurrentResin(rows[0])
     );
+}
+
+export async function handleButtons(interaction) {
+    let account = interaction.message.embeds[0].data.title;
+    account = account.replace("Honkai Star Rail", "hsr");
+    account = account.replace("Genshin", "genshin");
+    account = account.replace(/ |:/g, "");
+
+    const rows = await getResinData(interaction.user.id, account);
+    if (rows.length <= 0) {
+        return reply(interaction, "No resin data found");
+    }
+    rows.forEach(async (row) => {
+        const currentResin = generateCurrentResin(row);
+        if (interaction.customId === "lowResin") {
+            if (currentResin - 10 < 0) {
+                return reply(interaction, "Not enough resin to remove");
+            }
+            await setResinNotifications(
+                interaction.user.id,
+                row.game,
+                account,
+                currentResin - 10
+            );
+        } else if (interaction.customId === "highResin") {
+            if (currentResin - 30 < 0) {
+                return reply(interaction, "Not enough resin to remove");
+            }
+            await setResinNotifications(
+                interaction.user.id,
+                row.game,
+                account,
+                currentResin - 30
+            );
+        } else if (interaction.customId === "customResin") {
+            const customResin = await getCustomWarningTimeResin(
+                interaction.user.id,
+                account
+            );
+            if (currentResin - customResin < 0) {
+                return reply(interaction, "Not enough resin to remove");
+            }
+            await setResinNotifications(
+                interaction.user.id,
+                row.game,
+                account,
+                currentResin - customResin
+            );
+        }
+    });
 }

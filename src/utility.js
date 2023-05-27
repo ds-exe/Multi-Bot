@@ -27,6 +27,10 @@ export async function react(message, reaction) {
     return await message.react(reaction).catch((err) => {});
 }
 
+export async function reply(interaction, msg) {
+    return await interaction.reply(msg).catch((err) => {});
+}
+
 export async function edit(message, msg) {
     return await message.edit(msg).catch((err) => {});
 }

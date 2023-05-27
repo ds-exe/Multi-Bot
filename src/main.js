@@ -6,6 +6,7 @@ import {
     Partials,
     PermissionsBitField,
     ActivityType,
+    Events,
 } from "discord.js";
 import {
     generateUnixTimeNow,
@@ -28,7 +29,7 @@ import { init as musicInit, run as musicRun } from "./music.js";
 import { init as permsInit, run as permsRun } from "./permissions.js";
 import { init as embedsInit, musicEmbed, helpEmbed } from "./embeds.js";
 import { isDM, sendMessage } from "./utility.js";
-import { resin } from "./resin.js";
+import { handleButtons, resin } from "./resin.js";
 
 const config = JSON.parse(
     await readFile(new URL(normalize("./../config.json"), import.meta.url))
@@ -73,6 +74,10 @@ client.on("ready", () => {
     setInterval(async () => {
         sendResinNotifications(client, generateUnixTimeNow());
     }, 1000 * 30);
+});
+
+client.on(Events.InteractionCreate, (interaction) => {
+    handleButtons(interaction);
 });
 
 client.on("messageCreate", async (message) => {
