@@ -80,7 +80,7 @@ client.on(Events.InteractionCreate, async (interaction) => {
     try {
         await handleButtons(interaction);
     } catch (e) {
-        sendMessage(message, "An unknown error occured");
+        reply(interaction, "An unknown error occured");
         const errorChannel = await client.channels
             .fetch(errorChannelID)
             .catch((err) => {});
