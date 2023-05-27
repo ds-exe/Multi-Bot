@@ -1,7 +1,12 @@
 import { normalize } from "node:path";
 import { readFile } from "fs/promises";
 import { DateTime } from "luxon";
-import { ChannelType } from "discord.js";
+import {
+    ChannelType,
+    ActionRowBuilder,
+    ButtonBuilder,
+    ButtonStyle,
+} from "discord.js";
 
 const timezones = JSON.parse(
     await readFile(new URL(normalize("./../timezones.json"), import.meta.url))
@@ -42,4 +47,27 @@ export function getTimezone(timezone) {
         return zoneMatches[1];
     }
     return null;
+}
+
+export function getButtons(resin) {
+    const lowResin = new ButtonBuilder()
+        .setCustomId("lowResin")
+        .setLabel("-10")
+        .setStyle(ButtonStyle.Secondary);
+
+    const highResin = new ButtonBuilder()
+        .setCustomId("highResin")
+        .setLabel("-30")
+        .setStyle(ButtonStyle.Secondary);
+
+    const customResin = new ButtonBuilder()
+        .setCustomId("customResin")
+        .setLabel(`-${resin}`)
+        .setStyle(ButtonStyle.Primary);
+
+    return new ActionRowBuilder().addComponents(
+        lowResin,
+        highResin,
+        customResin
+    );
 }

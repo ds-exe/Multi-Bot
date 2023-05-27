@@ -1,4 +1,4 @@
-import { react, sendMessage } from "./utility.js";
+import { getButtons, react, sendMessage } from "./utility.js";
 import { generateUnixTimeNow } from "./timestamp.js";
 import {
     addResinData,
@@ -13,7 +13,6 @@ import {
     setCustomWarningTimeResin,
 } from "./SQLDatabase.js";
 import { resinNotificationEmbed } from "./embeds.js";
-import { ActionRowBuilder, ButtonBuilder, ButtonStyle } from "discord.js";
 
 const games = {
     hsr: { maxResin: 180, resinMins: 6 },
@@ -268,28 +267,5 @@ async function setCustomResin(message, words, game, account) {
         game,
         account,
         generateCurrentResin(rows[0])
-    );
-}
-
-function getButtons(resin) {
-    const lowResin = new ButtonBuilder()
-        .setCustomId("lowResin")
-        .setLabel("-10")
-        .setStyle(ButtonStyle.Secondary);
-
-    const highResin = new ButtonBuilder()
-        .setCustomId("highResin")
-        .setLabel("-30")
-        .setStyle(ButtonStyle.Secondary);
-
-    const customResin = new ButtonBuilder()
-        .setCustomId("customResin")
-        .setLabel(`-${resin}`)
-        .setStyle(ButtonStyle.Primary);
-
-    return new ActionRowBuilder().addComponents(
-        lowResin,
-        highResin,
-        customResin
     );
 }
