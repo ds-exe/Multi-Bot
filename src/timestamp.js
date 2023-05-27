@@ -29,7 +29,7 @@ export async function generateNow(message, words) {
     date = date.setZone(tz, { keepLocalTime: false });
     if (words[0] !== undefined) {
         let success = false;
-        ({ date, success } = setTimezoneChangeLocal(words[0], date, success));
+        ({ date, success } = setTimezone(words[0], date, success));
         if (!success) {
             sendMessage(message, "Not valid timezone");
             return;
@@ -65,11 +65,11 @@ async function generateTimestampHelper(message, words) {
     }
     let date = DateTime.utc();
     const tz = await getUserTimezone(message.author.id);
-    date = date.setZone(tz, { keepLocalTime: true });
+    date = date.setZone(tz, { keepLocalTime: false });
 
     for (let i = 0; i < words.length; i++) {
         let success = false;
-        ({ date, success } = setTimezoneKeepLocal(words[i], date, success));
+        ({ date, success } = setTimezone(words[i], date, success));
         if (success) {
             words.splice(i, 1);
         }
@@ -89,19 +89,11 @@ async function generateTimestampHelper(message, words) {
 
 const dateModifiers = [parseDate, parseTime];
 
-function setTimezoneKeepLocal(word, date, success) {
-    return setTimezone(word, date, success, true);
-}
-
-function setTimezoneChangeLocal(word, date, success) {
-    return setTimezone(word, date, success, false);
-}
-
-function setTimezone(word, date, success, keepLocal) {
+function setTimezone(word, date, success) {
     const timezone = getTimezone(word);
     if (timezone !== null) {
         success = true;
-        date = date.setZone(timezone, { keepLocalTime: keepLocal });
+        date = date.setZone(timezone, { keepLocalTime: false });
     }
     return { date, success };
 }
