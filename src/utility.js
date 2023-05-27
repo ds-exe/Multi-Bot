@@ -67,7 +67,8 @@ export function getButtons(resin) {
     const customResin = new ButtonBuilder()
         .setCustomId("customResin")
         .setLabel(`-${resin}`)
-        .setStyle(ButtonStyle.Primary);
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(resin <= 0);
 
     return new ActionRowBuilder().addComponents(
         lowResin,

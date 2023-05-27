@@ -281,6 +281,9 @@ export async function handleButtons(interaction) {
 }
 
 async function reduceResin(message, userID, account, resinChange) {
+    if (resinChange <= 0) {
+        return reply(message, "Invalid resin change");
+    }
     const rows = await getResinData(userID, account);
     if (rows.length <= 0) {
         return reply(message, "No resin data found");
