@@ -175,10 +175,10 @@ function getGameAndResinData(words) {
 async function sendResinData(message, userID, account) {
     const rows = await getResinData(userID, account);
     if (rows.length <= 0) {
-        return sendMessage(message, "No resin data found");
+        return reply(message, "No resin data found");
     }
     rows.forEach(async (row) => {
-        sendMessage(message, {
+        reply(message, {
             components: [
                 getButtons(
                     await getCustomWarningTimeResin(row.userID, row.account)
@@ -290,7 +290,7 @@ export async function handleButtons(interaction) {
             account,
             currentResin - resinChange
         );
-        sendResinData(interaction.message, row.userID, account);
+        await sendResinData(interaction, row.userID, account);
     });
 }
 
