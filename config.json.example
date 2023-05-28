@@ -6,6 +6,7 @@
     "token": "replace token here",
     "owner": "replace owner here",
     "embedThumbnail": "replace help thumbnail",
+    "enableNotifications": true,
     "botTitle": "replace help title",
     "errorChannelID": "not required, add ID here for a channel if wanted"
 }

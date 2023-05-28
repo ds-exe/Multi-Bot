@@ -30,6 +30,7 @@ import { init as permsInit, run as permsRun } from "./permissions.js";
 import { init as embedsInit, musicEmbed, helpEmbed } from "./embeds.js";
 import { isDM, sendMessage } from "./utility.js";
 import { handleButtons, resin } from "./resin.js";
+import { send } from "node:process";
 
 const config = JSON.parse(
     await readFile(new URL(normalize("./../config.json"), import.meta.url))
@@ -51,6 +52,7 @@ const token = config.token;
 const prefix = config.prefix;
 const botOwner = config.owner;
 const errorChannelID = config.errorChannelID;
+const enableNotifications = config.enableNotifications;
 
 client.on("ready", () => {
     console.log("Connected as " + client.user.tag);
@@ -172,6 +174,9 @@ async function next(message) {
             await generateNow(message, words);
             break;
         case "notify":
+            if (!enableNotifications) {
+                return sendMessage(message, "Notifications Disabled");
+            }
             const time = await generateUnixTime(message, words);
             if (!time) {
                 break;
