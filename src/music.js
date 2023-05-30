@@ -178,8 +178,9 @@ function validateUrl(url, message) {
         return { match: matches[1], isPlaylist: false };
     }
 
+    const urlFixed = url.replace(/com\/intl\-[a-z]+\//, "com/");
     const spotify = /^(https:\/\/open.spotify.com\/track\/[a-zA-Z0-9-_()]+)/;
-    matches = spotify.exec(url);
+    matches = spotify.exec(urlFixed);
     if (matches !== null) {
         return { match: matches[1], isPlaylist: false };
     }
