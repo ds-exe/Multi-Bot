@@ -199,7 +199,9 @@ export function addResinData(
 ) {
     db.run(
         `REPLACE INTO resinData(userID, account, game, startResin, startTimestamp, resinCapTimestamp) 
-        VALUES ('${userID}', '${account}', '${game}', ${startResin}, ${startTimestamp}, ${resinCapTimestamp})`
+        VALUES ('${userID}', '${account}', '${game}', ${Math.floor(
+            startResin
+        )}, ${startTimestamp}, ${resinCapTimestamp})`
     );
 }
 

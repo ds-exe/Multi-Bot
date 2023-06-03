@@ -53,7 +53,7 @@ export function resinNotificationEmbed(
     let embed = new EmbedBuilder()
         .setColor("#0099ff")
         .setTitle(`${account}:`)
-        .setDescription(`Current Resin: ${notificationResin}`)
+        .setDescription(`Current Resin: ${Math.floor(notificationResin)}`)
         .addFields(
             {
                 name: `Next alert:`,
