@@ -448,9 +448,15 @@ export function getRolePermissionData(guildId) {
     });
 }
 
-export function close() {
-    db.close((err) => {
-        if (err) return console.error(err.message);
+export async function close() {
+    return new Promise((resolve, reject) => {
+        db.close((err) => {
+            if (err) {
+                console.error(err.message);
+                return reject();
+            }
+            console.log("shutdown successful");
+            return resolve();
+        });
     });
-    console.log("shutdown successful");
 }

@@ -217,7 +217,7 @@ async function next(message) {
         case "restart":
             if (isBotOwner) {
                 await sendMessage(message, "Restarting");
-                close();
+                await close();
                 client.destroy();
                 process.exit(1);
             }
