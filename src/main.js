@@ -228,6 +228,11 @@ async function next(message) {
         case "resin":
             await resin(message, words);
             break;
+        case "hsr":
+        case "genshin":
+            words.unshift(command);
+            await resin(message, words);
+            break;
         case "help":
             sendMessage(message, { embeds: [helpEmbed] });
             break;
