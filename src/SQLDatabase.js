@@ -240,7 +240,8 @@ export function sendResinNotifications(client, currentTimeSeconds) {
             const currentResin = await getCustomWarningTimeResin(
                 row.userID,
                 row.account
-            )(await client.users.fetch(row.userID))
+            );
+            (await client.users.fetch(row.userID))
                 .send({
                     components: [
                         getButtons(currentResin),
