@@ -59,20 +59,40 @@ export function getButtons(resin) {
         .setLabel("-10")
         .setStyle(ButtonStyle.Secondary);
 
-    const highResin = new ButtonBuilder()
-        .setCustomId("highResin")
+    const midResin = new ButtonBuilder()
+        .setCustomId("midResin")
         .setLabel("-30")
         .setStyle(ButtonStyle.Secondary);
 
+    const highResin = new ButtonBuilder()
+        .setCustomId("highResin")
+        .setLabel("-40")
+        .setStyle(ButtonStyle.Secondary);
+
+    return new ActionRowBuilder().addComponents(lowResin, midResin, highResin);
+}
+
+export function getButtons2(resin) {
     const customResin = new ButtonBuilder()
         .setCustomId("customResin")
         .setLabel(`-${resin}`)
         .setStyle(ButtonStyle.Primary)
         .setDisabled(resin <= 0);
 
+    const customResin2 = new ButtonBuilder()
+        .setCustomId("customResin2")
+        .setLabel(`-${resin * 2}`)
+        .setStyle(ButtonStyle.Primary)
+        .setDisabled(resin <= 0);
+
+    const refresh = new ButtonBuilder()
+        .setCustomId("refresh")
+        .setLabel(`🔄`)
+        .setStyle(ButtonStyle.Primary);
+
     return new ActionRowBuilder().addComponents(
-        lowResin,
-        highResin,
-        customResin
+        customResin,
+        customResin2,
+        refresh
     );
 }

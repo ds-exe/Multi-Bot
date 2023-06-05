@@ -1,4 +1,10 @@
-import { getButtons, react, reply, sendMessage } from "./utility.js";
+import {
+    getButtons,
+    getButtons2,
+    react,
+    reply,
+    sendMessage,
+} from "./utility.js";
 import { generateUnixTimeNow } from "./timestamp.js";
 import {
     addResinData,
@@ -57,12 +63,12 @@ export async function resin(message, words) {
     const secondsUntilFull =
         (games[game]["maxResin"] - resin) * games[game]["resinMins"] * 60;
     const fullTime = currentTime + secondsUntilFull;
+    const currentResin = await getCustomWarningTimeResin(
+        message.author.id,
+        account
+    );
     sendMessage(message, {
-        components: [
-            getButtons(
-                await getCustomWarningTimeResin(message.author.id, account)
-            ),
-        ],
+        components: [getButtons(currentResin), getButtons2(currentResin)],
         embeds: [
             resinNotificationEmbed(
                 account,
@@ -181,12 +187,12 @@ async function sendResinData(message, userID, account) {
         return reply(message, "No resin data found");
     }
     rows.forEach(async (row) => {
+        const currentResin = await getCustomWarningTimeResin(
+            row.userID,
+            row.account
+        );
         reply(message, {
-            components: [
-                getButtons(
-                    await getCustomWarningTimeResin(row.userID, row.account)
-                ),
-            ],
+            components: [getButtons(currentResin), getButtons2(currentResin)],
             embeds: [
                 resinNotificationEmbed(
                     row.account,
@@ -205,12 +211,12 @@ async function sendResinDataAll(message, userID) {
         return sendMessage(message, "No resin data found");
     }
     rows.forEach(async (row) => {
+        const currentResin = await getCustomWarningTimeResin(
+            row.userID,
+            row.account
+        );
         sendMessage(message, {
-            components: [
-                getButtons(
-                    await getCustomWarningTimeResin(row.userID, row.account)
-                ),
-            ],
+            components: [getButtons(currentResin), getButtons2(currentResin)],
             embeds: [
                 resinNotificationEmbed(
                     row.account,
@@ -270,6 +276,10 @@ export async function handleButtons(interaction) {
     account = account.replace("Genshin", "genshin");
     account = account.replace(/ |:/g, "");
 
+    if (interaction.customId == "refresh") {
+        return await sendResinData(interaction, interaction.user.id, account);
+    }
+
     const resinChange = await customIdToResin(
         interaction.customId,
         interaction.user.id,
@@ -305,9 +315,13 @@ async function reduceResin(message, userID, account, resinChange) {
 async function customIdToResin(customId, userID, account) {
     if (customId === "lowResin") {
         return 10;
-    } else if (customId === "highResin") {
+    } else if (customId === "midResin") {
         return 30;
+    } else if (customId === "highResin") {
+        return 40;
     } else if (customId === "customResin") {
         return await getCustomWarningTimeResin(userID, account);
+    } else if (customId === "customResin2") {
+        return (await getCustomWarningTimeResin(userID, account)) * 2;
     }
 }

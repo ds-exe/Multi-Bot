@@ -1,5 +1,11 @@
 import sqlite3 from "sqlite3";
-import { sendMessage, getTimezone, react, getButtons } from "./utility.js";
+import {
+    sendMessage,
+    getTimezone,
+    react,
+    getButtons,
+    getButtons2,
+} from "./utility.js";
 import { resinNotificationEmbed } from "./embeds.js";
 let db = null;
 
@@ -231,15 +237,14 @@ export function sendResinNotifications(client, currentTimeSeconds) {
             await db.run(
                 `DELETE FROM resinNotifications WHERE userID = '${row.userID}' AND account = '${row.account}' AND notificationResin = ${row.notificationResin}`
             );
-            (await client.users.fetch(row.userID))
+            const currentResin = await getCustomWarningTimeResin(
+                row.userID,
+                row.account
+            )(await client.users.fetch(row.userID))
                 .send({
                     components: [
-                        getButtons(
-                            await getCustomWarningTimeResin(
-                                row.userID,
-                                row.account
-                            )
-                        ),
+                        getButtons(currentResin),
+                        getButtons2(currentResin),
                     ],
                     embeds: [
                         resinNotificationEmbed(
