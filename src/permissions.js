@@ -135,7 +135,7 @@ async function getUserData(message) {
     let out = "";
     for (const row of rows) {
         let tmp = await getUser(message, row.userID);
-        out += tmp.user.username + "#" + tmp.user.discriminator + "\n";
+        out += tmp.user.username + "\n";
     }
     if (out === "") {
         out = "No user permissions found";

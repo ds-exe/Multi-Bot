@@ -126,7 +126,7 @@ export function trackPlaying(name, link) {
 async function generateEmbed(commands) {
     const creatorID = "74968333413257216";
     const creator = await client.users.fetch(creatorID);
-    const userString = creator.username + "#" + creator.discriminator;
+    const userString = creator.username;
     return new EmbedBuilder()
         .setColor("#0099ff")
         .setTitle(`${botTitle}`)
