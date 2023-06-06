@@ -87,7 +87,7 @@ export function getButtons2(resin) {
 
     const refresh = new ButtonBuilder()
         .setCustomId("refresh")
-        .setLabel(`🔄`)
+        .setLabel(`↻`)
         .setStyle(ButtonStyle.Primary);
 
     return new ActionRowBuilder().addComponents(
