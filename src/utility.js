@@ -76,13 +76,13 @@ export function getButtons2(resin) {
     const customResin = new ButtonBuilder()
         .setCustomId("customResin")
         .setLabel(`-${resin}`)
-        .setStyle(ButtonStyle.Primary)
+        .setStyle(ButtonStyle.Secondary)
         .setDisabled(resin <= 0);
 
     const customResin2 = new ButtonBuilder()
         .setCustomId("customResin2")
         .setLabel(`-${resin * 2}`)
-        .setStyle(ButtonStyle.Primary)
+        .setStyle(ButtonStyle.Secondary)
         .setDisabled(resin <= 0);
 
     const refresh = new ButtonBuilder()
