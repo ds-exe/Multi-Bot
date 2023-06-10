@@ -1,4 +1,3 @@
-//import { Player, RepeatMode } from "discord-music-distube";
 import { DisTube, RepeatMode } from "distube";
 import { SpotifyPlugin } from "@distube/spotify";
 import { isDM, sendMessage, react } from "./utility.js";
@@ -279,45 +278,4 @@ function nowPlaying(message) {
     //     embeds: [nowPlayingEmbed(guildQueue.nowPlaying, progressBar)],
     // });
     sendMessage(message, queue.songs[0].name);
-}
-
-function handleError(error, queue) {
-    if (error === "Status code: 410") {
-        if (queue.nowPlaying.data && queue.nowPlaying.data.errored) {
-            sendMessage(
-                queue.data.message,
-                `Failed to find non age-restricted version of \`${queue.nowPlaying.name}\``
-            );
-            return;
-        }
-        sendMessage(
-            queue.data.message,
-            `Searching for non age-restricted version`
-        );
-        queue
-            .play(queue.nowPlaying.name, {
-                requestedBy: null,
-                data: { errored: true },
-            })
-            .catch((_) => {});
-    } else if (error === "Status code: 403") {
-        if (queue.nowPlaying.data && queue.nowPlaying.data.errored) {
-            sendMessage(
-                queue.data.message,
-                `Playback of \`${queue.nowPlaying.name}\` failed`
-            );
-            return;
-        }
-        queue
-            .play(queue.nowPlaying.url, {
-                requestedBy: null,
-                data: { errored: true },
-            })
-            .catch((_) => {});
-    } else {
-        sendMessage(
-            queue.data.message,
-            `Error: ${error}\nPlayback of \`${queue.nowPlaying.name}\` failed`
-        );
-    }
 }
