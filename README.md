@@ -7,9 +7,10 @@ Prerequisites:
 
 1. `git clone https://github.com/ds-exe/Multi-Bot.git && cd Multi-Bot`
 2. `npm install -g yarn`
-3. `yarn`
-4. Remove `.example` from both `MultiDatabase.db.example` and `config.json.example`
-5. Edit `config.json` to populate all fields as required
+3. `yarn set version stable`
+4. `yarn`
+5. Remove `.example` from both `MultiDatabase.db.example` and `config.json.example`
+6. Edit `config.json` to populate all fields as required
 
 Run the bot via your chosen script (launch.bat included for windows, launch.sh for linux via pm2)
 

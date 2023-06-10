@@ -205,11 +205,21 @@ function validateSearch(query, message) {
 }
 
 function skip(message) {
+    const queue = client.distube.getQueue(message);
+    if (!queue) {
+        sendMessage(message, "Nothing is playing");
+        return;
+    }
     client.distube.skip(message);
     react(message, "👍");
 }
 
 function stop(message) {
+    const queue = client.distube.getQueue(message);
+    if (!queue) {
+        sendMessage(message, "Nothing is playing");
+        return;
+    }
     client.distube.stop(message);
     react(message, "👍");
 }
@@ -220,11 +230,21 @@ function leave(message) {
 }
 
 function shuffle(message) {
+    const queue = client.distube.getQueue(message);
+    if (!queue) {
+        sendMessage(message, "Nothing is playing");
+        return;
+    }
     client.distube.shuffle(message);
     react(message, "👍");
 }
 
 function repeat(message) {
+    const queue = client.distube.getQueue(message);
+    if (!queue) {
+        sendMessage(message, "Nothing is playing");
+        return;
+    }
     let args = message.content.toLowerCase().split(" ");
     args.shift();
     switch (args[0]) {
@@ -247,6 +267,11 @@ function repeat(message) {
 }
 
 function setVolume(message) {
+    const queue = client.distube.getQueue(message);
+    if (!queue) {
+        sendMessage(message, "Nothing is playing");
+        return;
+    }
     let args = message.content.split(" ");
     args.shift();
     const volume = /^([0-9]+)$/;
