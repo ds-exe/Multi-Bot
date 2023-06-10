@@ -9,8 +9,11 @@ import {
     nowPlayingEmbed,
 } from "./embeds.js";
 import { PermissionsBitField } from "discord.js";
+import { generateUnixTimeNow } from "./timestamp.js";
 
 let client = null;
+let lastPlayed = {};
+const timeoutSeconds = 9000;
 
 export function init(mainClient) {
     client = mainClient;
@@ -309,10 +312,14 @@ function nowPlaying(message) {
 }
 
 function leaveChannelDelay(queue) {
+    lastPlayed[queue.id] = generateUnixTimeNow();
     setTimeout(() => {
         const newQueue = client.distube.getQueue(queue);
         if (!newQueue) {
+            if (generateUnixTimeNow() - timeoutSeconds < lastPlayed[queue.id]) {
+                return;
+            }
             client.distube.voices.get(queue)?.leave();
         }
-    }, 900000);
+    }, timeoutSeconds * 1000);
 }
