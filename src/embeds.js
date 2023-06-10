@@ -80,20 +80,28 @@ export function trackAdded(song) {
         .setThumbnail(`${song.thumbnail}`)
         .setDescription(`[${song.name}](${song.url})`)
         .addFields(
-            { name: "Track Length", value: song.duration, inline: true },
-            { name: "Added by", value: `<@${song.requestedBy}>`, inline: true }
+            {
+                name: "Track Length",
+                value: song.formattedDuration,
+                inline: true,
+            },
+            { name: "Added by", value: `<@${song.user.id}>`, inline: true }
         );
 }
 
-export function nowPlayingEmbed(song, progressBar) {
+export function nowPlayingEmbed(song, queue) {
     return new EmbedBuilder()
         .setColor("#0099ff")
         .setTitle(`Now Playing`)
         .setThumbnail(`${song.thumbnail}`)
         .setDescription(`[${song.name}](${song.url})`)
         .addFields(
-            { name: "Track Progress", value: progressBar.times, inline: true },
-            { name: "Added by", value: `<@${song.requestedBy}>`, inline: true }
+            {
+                name: "Track Progress",
+                value: `${queue.formattedCurrentTime}/${queue.formattedDuration}`,
+                inline: true,
+            },
+            { name: "Added by", value: `<@${song.user.id}>`, inline: true }
         );
 }
 
@@ -101,7 +109,7 @@ export function playlistAdded(playlist) {
     return new EmbedBuilder()
         .setColor("#0099ff")
         .setTitle(`Added Playlist`)
-        .setDescription(`[${playlist}](${playlist.url})`)
+        .setDescription(`[${playlist.name}](${playlist.url})`)
         .addFields(
             {
                 name: "Playlist Length",
@@ -111,16 +119,16 @@ export function playlistAdded(playlist) {
             { name: "\u200b", value: `\u200b`, inline: true },
             {
                 name: "Added by",
-                value: `<@${playlist.songs[0].requestedBy}>`,
+                value: `<@${playlist.user.id}>`,
                 inline: true,
             }
         );
 }
 
-export function trackPlaying(name, link) {
+export function trackPlaying(song) {
     return new EmbedBuilder()
         .setColor("#0099ff")
-        .setDescription(`Started playing [${name}](${link})`);
+        .setDescription(`Started playing [${song.name}](${song.url})`);
 }
 
 async function generateEmbed(commands) {
