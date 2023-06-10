@@ -143,7 +143,7 @@ async function play(message) {
         shuffle = true;
         args.shift();
     }
-    let { match, isPlaylist } = validateUrl(args.join(" ").trim(), message);
+    const match = validateUrl(args.join(" ").trim(), message);
     if (match === null) {
         return;
     }
@@ -168,14 +168,14 @@ function validateUrl(url, message) {
         /^(https:\/\/(www.)?youtu.be\/[0-9a-zA-Z_-]+|https:\/\/(www.)?youtube.com\/watch\?v=[0-9a-zA-Z_-]+)/;
     let matches = youtube.exec(url);
     if (matches !== null) {
-        return { match: matches[1], isPlaylist: false };
+        return matches[1];
     }
 
     const urlFixed = url.replace(/com\/intl\-[a-z]+\//, "com/");
     const spotify = /^(https:\/\/open.spotify.com\/track\/[a-zA-Z0-9-_()]+)/;
     matches = spotify.exec(urlFixed);
     if (matches !== null) {
-        return { match: matches[1], isPlaylist: false };
+        return matches[1];
     }
     return validatePlaylistUrl(url, message);
 }
@@ -185,14 +185,14 @@ function validatePlaylistUrl(url, message) {
         /^(https:\/\/(www.)?youtube.com\/playlist\?list=[0-9a-zA-Z_-]+)/;
     let matches = youtube.exec(url);
     if (matches !== null) {
-        return { match: matches[1], isPlaylist: true };
+        return matches[1];
     }
 
     const spotify =
         /^(https:\/\/open.spotify.com\/playlist\/[a-zA-Z0-9-_()]+|https:\/\/open.spotify.com\/album\/[a-zA-Z0-9-_()]+)/;
     matches = spotify.exec(url);
     if (matches !== null) {
-        return { match: matches[1], isPlaylist: true };
+        return matches[1];
     }
     return validateSearch(url, message);
 }
@@ -201,10 +201,10 @@ function validateSearch(query, message) {
     const search = /^([a-zA-Z0-9-_() ]+)$/;
     let matches = search.exec(query);
     if (matches !== null) {
-        return { match: matches[1], isPlaylist: false };
+        return matches[1];
     }
     sendMessage(message, "Invalid url/query");
-    return { match: null };
+    return null;
 }
 
 function skip(message) {
