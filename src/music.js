@@ -18,6 +18,7 @@ export function init(mainClient) {
         plugins: [new SpotifyPlugin({ emitEventsAfterFetching: true })],
         emptyCooldown: 900000, // 15 mins
         leaveOnEmpty: true,
+        leaveOnStop: false,
     });
     client.distube = distube;
     client.distube
@@ -208,6 +209,10 @@ function skip(message) {
     const queue = client.distube.getQueue(message);
     if (!queue) {
         sendMessage(message, "Nothing is playing");
+        return;
+    }
+    if (queue.songs.length <= 1) {
+        stop(message);
         return;
     }
     client.distube.skip(message);
