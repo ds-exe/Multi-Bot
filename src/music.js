@@ -13,7 +13,7 @@ import { generateUnixTimeNow } from "./timestamp.js";
 
 let client = null;
 let lastPlayed = {};
-const timeoutSeconds = 9000;
+const timeoutSeconds = 900;
 
 export function init(mainClient) {
     client = mainClient;
