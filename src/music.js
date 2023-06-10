@@ -29,25 +29,28 @@ export function init(mainClient) {
             // queue.data.previousMessage = await sendMessage(queue.data.message, {
             //     embeds: [trackPlaying(newSong.name, newSong.url)],
             // });
-            sendMessage({ channel: queue.textChannel }, song);
+            await sendMessage(
+                { channel: queue.textChannel },
+                {
+                    embeds: [trackPlaying(song)],
+                }
+            );
         })
         .on("addSong", (queue, song) => {
-            // if (song.data && song.data.errored) {
-            //     return;
-            // }
-            // if (queue.repeatMode !== 0) {
-            //     return;
-            // }
-            // sendMessage(queue.data.message, {
-            //     embeds: [trackAdded(song)],
-            // });
-            sendMessage({ channel: queue.textChannel }, song);
+            sendMessage(
+                { channel: queue.textChannel },
+                {
+                    embeds: [trackAdded(song)],
+                }
+            );
         })
         .on("addList", (queue, playlist) => {
-            // sendMessage(queue.data.message, {
-            //     embeds: [playlistAdded(playlist)],
-            // });
-            sendMessage(message, playlist);
+            sendMessage(
+                { channel: queue.textChannel },
+                {
+                    embeds: [playlistAdded(playlist)],
+                }
+            );
         })
         .on("error", (textChannel, e) => {
             sendMessage({ channel: textChannel }, e);
@@ -154,7 +157,7 @@ async function play(message) {
             member: message.member,
         });
         if (shuffle) {
-            shuffle(message);
+            client.distube.shuffle(message);
         }
     } else {
         sendMessage(message, "You must join a voice channel first.");

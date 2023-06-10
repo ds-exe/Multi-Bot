@@ -14,7 +14,7 @@
   "license": "MIT",
   "dependencies": {
     "@discordjs/opus": "^0.9.0",
-    "@discordjs/voice": "^0.7.4",
+    "@discordjs/voice": "^0.16.0",
     "@distube/spotify": "^1.5.1",
     "axios": "0.26.0",
     "discord.js": "^14.11.0",
@@ -25,11 +25,6 @@
     "luxon": "^2.5.2",
     "patch-package": "^6.5.1",
     "sqlite3": "^5.1.5"
-  },
-  "resolutions": {
-    "discord-music-player/@discordjs/voice": "0.15.0",
-    "discord-music-player/ytdl-core": "4.11.4",
-    "discord-music-player/ytsr": "3.8.2"
   },
   "packageManager": "yarn@3.6.0"
 }
