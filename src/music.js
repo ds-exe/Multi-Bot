@@ -270,9 +270,7 @@ function nowPlaying(message) {
         sendMessage(message, "Nothing is playing");
         return;
     }
-    const progressBar = guildQueue.createProgressBar();
-    // sendMessage(message, {
-    //     embeds: [nowPlayingEmbed(guildQueue.nowPlaying, progressBar)],
-    // });
-    sendMessage(message, queue.songs[0].name);
+    sendMessage(message, {
+        embeds: [nowPlayingEmbed(queue.songs[0], queue)],
+    });
 }

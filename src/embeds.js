@@ -89,15 +89,19 @@ export function trackAdded(song) {
         );
 }
 
-export function nowPlayingEmbed(song, progressBar) {
+export function nowPlayingEmbed(song, queue) {
     return new EmbedBuilder()
         .setColor("#0099ff")
         .setTitle(`Now Playing`)
         .setThumbnail(`${song.thumbnail}`)
         .setDescription(`[${song.name}](${song.url})`)
         .addFields(
-            { name: "Track Progress", value: progressBar.times, inline: true },
-            { name: "Added by", value: `<@${song.requestedBy}>`, inline: true }
+            {
+                name: "Track Progress",
+                value: `${queue.formattedCurrentTime}/${queue.formattedDuration}`,
+                inline: true,
+            },
+            { name: "Added by", value: `<@${song.user.id}>`, inline: true }
         );
 }
 
