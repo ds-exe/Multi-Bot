@@ -22,13 +22,10 @@ export function init(mainClient) {
     client.distube = distube;
     client.distube
         .on("playSong", async (queue, song) => {
-            // if (queue.data.previousMessage) {
-            //     queue.data.previousMessage.delete();
-            // }
-            // queue.data.previousMessage = await sendMessage(queue.data.message, {
-            //     embeds: [trackPlaying(newSong.name, newSong.url)],
-            // });
-            await sendMessage(
+            if (queue.previousMessage) {
+                queue.previousMessage.delete();
+            }
+            queue.previousMessage = await sendMessage(
                 { channel: queue.textChannel },
                 {
                     embeds: [trackPlaying(song)],
