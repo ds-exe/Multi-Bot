@@ -16,8 +16,6 @@ export function init(mainClient) {
     client = mainClient;
     const distube = new DisTube(client, {
         plugins: [new SpotifyPlugin({ emitEventsAfterFetching: true })],
-        emptyCooldown: 900000, // 15 mins
-        leaveOnEmpty: true,
         leaveOnStop: false,
     });
     client.distube = distube;
@@ -63,6 +61,9 @@ export function init(mainClient) {
                 { channel: queue.textChannel },
                 `Everyone left the Voice Channel, queue ended.`
             );
+        })
+        .on("finish", (queue) => {
+            leaveChannelDelay(queue);
         });
 }
 
@@ -213,6 +214,7 @@ function skip(message) {
     }
     if (queue.songs.length <= 1) {
         stop(message);
+        leaveChannelDelay(queue);
         return;
     }
     client.distube.skip(message);
@@ -226,6 +228,7 @@ function stop(message) {
         return;
     }
     client.distube.stop(message);
+    leaveChannelDelay(queue);
     react(message, "👍");
 }
 
@@ -303,4 +306,13 @@ function nowPlaying(message) {
     sendMessage(message, {
         embeds: [nowPlayingEmbed(queue.songs[0], queue)],
     });
+}
+
+function leaveChannelDelay(queue) {
+    setTimeout(() => {
+        const newQueue = client.distube.getQueue(queue);
+        if (!newQueue) {
+            client.distube.voices.get(queue)?.leave();
+        }
+    }, 900000);
 }
