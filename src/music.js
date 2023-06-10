@@ -16,7 +16,7 @@ let client = null;
 export function init(mainClient) {
     client = mainClient;
     const distube = new DisTube(client, {
-        plugins: [new SpotifyPlugin()],
+        plugins: [new SpotifyPlugin({ emitEventsAfterFetching: true })],
         emptyCooldown: 900000, // 15 mins
         leaveOnEmpty: true,
     });
