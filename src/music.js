@@ -296,7 +296,7 @@ function setVolume(message) {
     if (matches[1] > 100 || matches[1] < 1) {
         return sendMessage(message, "Invalid volume, please use 1-100");
     }
-    client.distube.setVolume(message, matches[1]);
+    client.distube.setVolume(message, Number(matches[1]));
     sendMessage(message, `Volume set to ${matches[1]}`);
 }
 
