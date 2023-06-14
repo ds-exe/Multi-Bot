@@ -123,9 +123,19 @@ function getRole(message, words) {
 
 async function getUser(message, words) {
     const userId = /^([0-9]+)$/;
-    const matches2 = userId.exec(words);
-    if (matches2 !== null) {
+    const matches = userId.exec(words);
+    if (matches !== null) {
         return await message.guild.members.fetch(words);
+    }
+    const username = /^([a-z\.\_0-9]+)$/;
+    const matches2 = username.exec(words);
+    if (matches2 !== null) {
+        const user = (
+            await message.guild.members.fetch({ query: words, limit: 1 })
+        )
+            .entries()
+            .next().value;
+        return user ? user[1] : undefined;
     }
     return undefined;
 }
