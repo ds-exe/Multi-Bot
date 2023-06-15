@@ -5,8 +5,10 @@ import {
     react,
     getButtons,
     getButtons2,
+    isDM,
 } from "./utility.js";
 import { resinNotificationEmbed } from "./embeds.js";
+import { PermissionsBitField } from "discord.js";
 let db = null;
 
 export function open() {
@@ -108,7 +110,7 @@ export function denyRole(message, roleId, guildId) {
     return;
 }
 
-export function hasPermissionRole(message, roles, guildId) {
+function hasPermissionRole(message, roles, guildId) {
     return new Promise((resolve, reject) => {
         const roleQuery = roles.map((role) => role.id);
         const query = `SELECT * FROM permissions WHERE guildID = '${guildId}' AND roleID in (${roleQuery
@@ -143,7 +145,7 @@ export function denyUser(message, userId, guildId) {
     return;
 }
 
-export function hasPermissionUser(message, userId, guildId) {
+function hasPermissionUser(message, userId, guildId) {
     return new Promise((resolve, reject) => {
         const query = `SELECT * FROM permissionsUser WHERE userID = '${userId}' AND guildID = '${guildId}'`;
         db.all(query, function (err, rows) {
@@ -157,6 +159,21 @@ export function hasPermissionUser(message, userId, guildId) {
             }
         });
     });
+}
+
+export async function hasPermission(message) {
+    return (
+        isDM(message) ||
+        message.member.permissions.has(
+            PermissionsBitField.Flags.Administrator
+        ) ||
+        (await hasPermissionRole(
+            message,
+            message.member.roles.cache,
+            message.guild.id
+        )) ||
+        (await hasPermissionUser(message, message.author.id, message.guild.id))
+    );
 }
 
 export function addNotification(userID, timestamp, text, message) {

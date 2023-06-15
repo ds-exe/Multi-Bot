@@ -1,17 +1,9 @@
 import axios from "axios";
-import { hasPermissionRole, hasPermissionUser } from "./SQLDatabase.js";
-import { isDM, sendMessage } from "./utility.js";
+import { sendMessage } from "./utility.js";
+import { hasPermission } from "./SQLDatabase.js";
 
 export async function loadPage(sub, message) {
-    if (
-        !isDM(message) &&
-        !(await hasPermissionRole(
-            message,
-            message.member.roles.cache,
-            message.guild.id
-        )) &&
-        !(await hasPermissionUser(message, message.author.id, message.guild.id))
-    ) {
+    if (!(await hasPermission(message))) {
         return sendMessage(
             message,
             "You do not have permission to use this command!"

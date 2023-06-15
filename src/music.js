@@ -1,7 +1,6 @@
 import { DisTube, RepeatMode } from "distube";
 import { SpotifyPlugin } from "@distube/spotify";
 import { isDM, sendMessage, react } from "./utility.js";
-import { hasPermissionRole, hasPermissionUser } from "./SQLDatabase.js";
 import {
     trackAdded,
     trackPlaying,
@@ -10,6 +9,7 @@ import {
 } from "./embeds.js";
 import { PermissionsBitField } from "discord.js";
 import { generateUnixTimeNow } from "./timestamp.js";
+import { hasPermission } from "./SQLDatabase.js";
 
 let client = null;
 let lastPlayed = {};
@@ -75,14 +75,7 @@ export async function run(command, message) {
         sendMessage(message, "Can't use this command in DM's");
         return;
     }
-    if (
-        !(await hasPermissionRole(
-            message,
-            message.member.roles.cache,
-            message.guild.id
-        )) &&
-        !(await hasPermissionUser(message, message.author.id, message.guild.id))
-    ) {
+    if (!(await hasPermission(message))) {
         return sendMessage(
             message,
             "You do not have permission to use this command!"
