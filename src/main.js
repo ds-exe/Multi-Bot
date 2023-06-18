@@ -116,6 +116,9 @@ client.on("messageCreate", async (message) => {
         try {
             await next(message);
         } catch (e) {
+            if (e.errorCode === "NON_NSFW") {
+                return sendMessage(message, "Unable to play nsfw tracks");
+            }
             sendMessage(message, "An unknown error occured");
             const errorChannel = await client.channels
                 .fetch(errorChannelID)
