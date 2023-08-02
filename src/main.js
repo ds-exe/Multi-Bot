@@ -30,6 +30,7 @@ import { init as permsInit, run as permsRun } from "./permissions.js";
 import { init as embedsInit, musicEmbed, helpEmbed } from "./embeds.js";
 import { isDM, sendMessage } from "./utility.js";
 import { handleButtons, resin } from "./resin.js";
+import { filterMessage } from "./contentfilter.js";
 
 const config = JSON.parse(
     await readFile(new URL(normalize("./../config.json"), import.meta.url))
@@ -104,35 +105,40 @@ client.on("messageCreate", async (message) => {
     if (isCommunicationDisabled(message)) {
         return;
     }
-    if (message.content.startsWith(prefix) && !message.author.bot) {
-        if (
-            message.channel.permissionsFor &&
-            !message.channel
-                .permissionsFor(message.client.user)
-                .has(PermissionsBitField.Flags.SendMessages)
-        ) {
+    if (message.author.bot) {
+        return;
+    }
+    if (!message.content.startsWith(prefix)) {
+        filterMessage(message);
+        return;
+    }
+    if (
+        message.channel.permissionsFor &&
+        !message.channel
+            .permissionsFor(message.client.user)
+            .has(PermissionsBitField.Flags.SendMessages)
+    ) {
+        return;
+    }
+    try {
+        await next(message);
+    } catch (e) {
+        if (e && e.errorCode === "NON_NSFW") {
+            return sendMessage(message, "Unable to play nsfw tracks");
+        }
+        sendMessage(message, "An unknown error occured");
+        const errorChannel = await client.channels
+            .fetch(errorChannelID)
+            .catch((err) => {});
+        if (!errorChannel) {
             return;
         }
-        try {
-            await next(message);
-        } catch (e) {
-            if (e && e.errorCode === "NON_NSFW") {
-                return sendMessage(message, "Unable to play nsfw tracks");
-            }
-            sendMessage(message, "An unknown error occured");
-            const errorChannel = await client.channels
-                .fetch(errorChannelID)
-                .catch((err) => {});
-            if (!errorChannel) {
-                return;
-            }
-            sendMessage(
-                {
-                    channel: errorChannel,
-                },
-                `\`\`\`${e.stack}\`\`\``
-            );
-        }
+        sendMessage(
+            {
+                channel: errorChannel,
+            },
+            `\`\`\`${e.stack}\`\`\``
+        );
     }
 });
 
