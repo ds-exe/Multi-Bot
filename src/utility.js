@@ -35,6 +35,10 @@ export async function edit(message, msg) {
     return await message.edit(msg).catch((err) => {});
 }
 
+export async function deleteMessage(message) {
+    return await message.delete().catch((err) => {});
+}
+
 export function getTimezone(timezone) {
     let zonesRegex = /^([a-z]+)$/;
     const zoneMatch = zonesRegex.exec(timezone);
