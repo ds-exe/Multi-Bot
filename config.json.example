@@ -7,6 +7,7 @@
     "owner": "replace owner here",
     "embedThumbnail": "replace help thumbnail",
     "enableNotifications": true,
+    "enableFilter": true,
     "botTitle": "replace help title",
     "errorChannelID": "not required, add ID here for a channel if wanted"
 }

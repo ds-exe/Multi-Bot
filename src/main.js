@@ -53,6 +53,7 @@ const prefix = config.prefix;
 const botOwner = config.owner;
 const errorChannelID = config.errorChannelID;
 const enableNotifications = config.enableNotifications;
+const enableFilter = config.enableFilter;
 
 client.on("ready", () => {
     console.log("Connected as " + client.user.tag);
@@ -118,6 +119,9 @@ client.on("messageCreate", async (message) => {
     }
     try {
         if (!message.content.startsWith(prefix)) {
+            if (!enableFilter) {
+                return;
+            }
             await filterMessage(message);
             return;
         }
