@@ -64,6 +64,12 @@ export function open() {
     (err) => {
         if (err) return console.error(err.message);
     };
+    db.run(
+        "CREATE TABLE IF NOT EXISTS filters(guildID, filter, PRIMARY KEY (guildID, filter))"
+    );
+    (err) => {
+        if (err) return console.error(err.message);
+    };
 }
 
 export function setTimezone(message, word) {
@@ -461,6 +467,37 @@ export function getUserPermissionData(guildId) {
 export function getRolePermissionData(guildId) {
     return new Promise((resolve, reject) => {
         const sqlRead = `SELECT roleID FROM permissions WHERE guildID = '${guildId}'`;
+
+        db.all(sqlRead, [], (err, rows) => {
+            if (err) {
+                return reject(err);
+            }
+            resolve(rows);
+        });
+    });
+}
+
+export function addFilterDB(guildID, filter) {
+    return new Promise((resolve, reject) => {
+        db.run(
+            `REPLACE INTO filters(guildID, filter) VALUES ('${guildID}', '${filter}')`,
+            resolve
+        );
+    });
+}
+
+export function deleteFilterDB(guildID, filter) {
+    return new Promise((resolve, reject) => {
+        db.run(
+            `DELETE FROM filters WHERE guildID = '${guildID}' AND filter = '${filter}'`,
+            resolve
+        );
+    });
+}
+
+export function getFilters(guildID) {
+    return new Promise((resolve, reject) => {
+        const sqlRead = `SELECT filter FROM filters WHERE guildID = '${guildID}'`;
 
         db.all(sqlRead, [], (err, rows) => {
             if (err) {
