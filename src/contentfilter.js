@@ -7,7 +7,7 @@ export async function filterMessage(message) {
     for (const filterItem of filters) {
         const filter = filterItem.filter;
         if (message.content.includes(filter)) {
-            message.content = message.content.replace(filter, "[redacted]");
+            message.content = message.content.replaceAll(filter, "[redacted]");
             filtered = true;
         }
     }
