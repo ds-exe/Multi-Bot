@@ -108,10 +108,6 @@ client.on("messageCreate", async (message) => {
     if (message.author.bot) {
         return;
     }
-    if (!message.content.startsWith(prefix)) {
-        filterMessage(message);
-        return;
-    }
     if (
         message.channel.permissionsFor &&
         !message.channel
@@ -121,6 +117,10 @@ client.on("messageCreate", async (message) => {
         return;
     }
     try {
+        if (!message.content.startsWith(prefix)) {
+            await filterMessage(message);
+            return;
+        }
         await next(message);
     } catch (e) {
         if (e && e.errorCode === "NON_NSFW") {
