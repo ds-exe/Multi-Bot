@@ -231,8 +231,8 @@ async function sendResinDataAll(message, userID) {
 
 function generateCurrentResin(row) {
     return Math.min(
-        games[row.game]["maxResin"] -
-            (row.resinCapTimestamp - generateUnixTimeNow()) /
+        row.startResin +
+            (generateUnixTimeNow() - row.startTimestamp) /
                 games[row.game]["resinMins"] /
                 60,
         games[row.game]["maxResin"]
