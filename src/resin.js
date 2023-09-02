@@ -229,6 +229,7 @@ async function sendResinDataAll(message, userID) {
     });
 }
 
+// Calculating from maxResin to prevent desync issues
 function generateCurrentResin(row) {
     return Math.min(
         games[row.game]["maxResin"] -
