@@ -127,7 +127,11 @@ client.on("messageCreate", async (message) => {
         }
         await next(message);
     } catch (e) {
-        if (e && e.errorCode === "NON_NSFW") {
+        if (
+            e &&
+            (e.errorCode === "NON_NSFW" ||
+                e.message.includes("Sign in to confirm your age"))
+        ) {
             return sendMessage(message, "Unable to play nsfw tracks");
         }
         sendMessage(message, "An unknown error occured");
