@@ -31,6 +31,7 @@ import { init as embedsInit, musicEmbed, helpEmbed } from "./embeds.js";
 import { isDM, sendMessage } from "./utility.js";
 import { handleButtons, resin } from "./resin.js";
 import { addFilter, deleteFilter, filterMessage } from "./contentfilter.js";
+import { sendAvatar } from "./avatar.js";
 
 const config = JSON.parse(
     await readFile(new URL(normalize("./../config.json"), import.meta.url))
@@ -179,6 +180,9 @@ async function next(message) {
     words.shift();
     const command = matches[1];
     switch (command) {
+        case "avatar":
+            await sendAvatar(message, client, words);
+            break;
         case "time":
         case "date":
             await generateTimestamp(message, words);
