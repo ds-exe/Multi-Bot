@@ -4,6 +4,7 @@ Prerequisites:
 
 -   Node.js 16.9 or higher (latest LTS works)
 -   git
+-   ffmpeg (or add to package.json `"ffmpeg-static": "^5.2.0",`)
 
 1. `git clone https://github.com/ds-exe/Multi-Bot.git && cd Multi-Bot`
 2. `npm install`
