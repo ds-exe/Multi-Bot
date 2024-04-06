@@ -24,7 +24,6 @@ import {
     sendNotifications,
     sendResinNotifications,
 } from "./SQLDatabase.js";
-import { loadPage } from "./reddit.js";
 import { init as musicInit, run as musicRun } from "./music.js";
 import { init as permsInit, run as permsRun } from "./permissions.js";
 import { init as embedsInit, musicEmbed, helpEmbed } from "./embeds.js";
@@ -218,9 +217,6 @@ async function next(message) {
             } else {
                 setTimezone(message, words[0]);
             }
-            break;
-        case "reddit":
-            await loadPage(words, message);
             break;
         case "play":
         case "skip":

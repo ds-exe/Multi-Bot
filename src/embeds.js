@@ -14,7 +14,7 @@ let client = null;
 export async function init(mainClient) {
     client = mainClient;
     helpEmbed = await generateEmbed(
-        `\`\`\`📌${prefix}music\n📌${prefix}avatar @user\n📌${prefix}time or ${prefix}until\n📌${prefix}now\n📌${prefix}timezone\n📌${prefix}reddit\n📌${prefix}perms\`\`\``
+        `\`\`\`📌${prefix}music\n📌${prefix}avatar @user\n📌${prefix}time or ${prefix}until\n📌${prefix}now\n📌${prefix}timezone\n📌${prefix}perms\`\`\``
     );
     musicEmbed = await generateEmbed(
         `\`\`\`📌${prefix}play\n📌${prefix}skip\n📌${prefix}stop\n📌${prefix}leave\n📌${prefix}shuffle\n📌${prefix}repeat\n📌${prefix}setvolume\n📌${prefix}nowplaying\`\`\``
